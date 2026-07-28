@@ -1,44 +1,39 @@
 {
   "expo": {
-    "name": "rn-habitude",
+    "name": "habitude",
     "slug": "rn-habitude",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "rnhabitude",
+    "scheme": "habitude",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "platforms": ["ios"],
     "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      "bundleIdentifier": "com.anddersonrds.habitude",
+      "supportsTablet": false,
+      "icon": "./assets/app-icon.icon",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
       },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "buildNumber": "1"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
+          "backgroundColor": "#FFFFFF",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "imageWidth": 96,
           "dark": {
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-sqlite",
+      "./plugins/withoutPushEntitlement",
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true,
