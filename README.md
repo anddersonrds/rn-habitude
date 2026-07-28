@@ -1,50 +1,60 @@
-# Welcome to your Expo app 👋
+# habitude
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A local-first daily habit tracker for iOS. Habit + attitude: check off the small
+things, and watch the pattern build.
 
-## Get started
+- **Today** — the day's habits as a checklist, tapped to check in, with a
+  progress bar and a celebration once everything is done.
+- **Habits** — a native SwiftUI list you reorder by dragging, each row showing
+  its streak and a three-week heat strip.
+- **History** — a GitHub-style heat graph per habit, colored with that habit's
+  accent, plus current streak, best streak, and completion rate.
+- **Reminders** — local notifications per habit, with a "Check in" action.
+- **Widget** — the same heat graph on the Home Screen, updated whenever you
+  check a habit in.
 
-1. Install dependencies
+Everything lives in a local SQLite database. No accounts, no network, no
+payments.
 
-   ```bash
-   npm install
-   ```
+## Requirements
 
-2. Start the app
+- Xcode 26 or newer, iOS 26 SDK
+- A physical iPhone or an iOS 26 simulator
+- [Bun](https://bun.sh) (the lockfile is `bun.lock`)
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Running
 
 ```bash
-npm run reset-project
+bun install
+npx expo run:ios --device
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+The first build compiles the native project including the widget extension, so
+it takes a while. Later runs reuse it.
 
-## Learn more
+## Stack
 
-To learn more about developing your project with Expo, look at the following resources:
+Expo SDK 57 with Expo Router, `@expo/ui` for native SwiftUI screens,
+`expo-widgets` for the Home Screen widget, `expo-sqlite` for persistence,
+`expo-notifications` for reminders, `expo-symbols` for SF Symbols,
+`expo-glass-effect` for Liquid Glass, and Reanimated for the transitions.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Layout
 
-## Join the community
+```
+src/
+  app/            file-based routes
+  components/     shared UI and per-screen views
+  constants/      icon grid, habit colors, layout metrics
+  lib/            database, store, streak math, notifications, widget sync
+  theme/          semantic colors and the navigation theme
+widgets/          the Home Screen widget, built with Expo UI components
+plugins/          config plugin for the widget's container background
+```
 
-Join our community of developers creating universal apps.
+## Notes
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- iOS only. There are no Android code paths.
+- `patches/expo-modules-jsi@57.0.4.patch` works around a Swift 6.2 compile error
+  in that package (`abs(_:)` is ambiguous in a `guard`); it swaps the call for
+  the equivalent `.magnitude`. Remove it once upstream ships a fix.
