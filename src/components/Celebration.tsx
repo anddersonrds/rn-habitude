@@ -1,5 +1,5 @@
 import { Text } from "@/components/ui/Text";
-import { accent } from "@/theme/colors";
+import { accent, success } from "@/theme/colors";
 import { GlassView } from "expo-glass-effect";
 import { Color } from "expo-router";
 import { SymbolView } from "expo-symbols";
@@ -138,10 +138,12 @@ export function Celebration({ colors, onFinished }: Props) {
         )}
         <Animated.View style={badgeStyle}>
           <GlassView style={styles.badge} glassEffectStyle="regular">
+            {/* The same seal, in the same green, as the Today "all done" seal.
+                They appear within a second of each other. */}
             <SymbolView
               name="checkmark.seal.fill"
               size={44}
-              tintColor={accent}
+              tintColor={success}
             />
           </GlassView>
         </Animated.View>
