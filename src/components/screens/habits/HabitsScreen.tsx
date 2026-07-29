@@ -33,6 +33,7 @@ import {
   onTapGesture,
   opacity,
   shapes,
+  tag,
 } from "@expo/ui/swift-ui/modifiers";
 import { Color, router, Stack } from "expo-router";
 import { useState } from "react";
@@ -96,7 +97,7 @@ function HabitRow({
   const schedule = scheduleLabel(habit);
 
   return (
-    <ContextMenu>
+    <ContextMenu modifiers={[tag(habit.id)]}>
       <ContextMenu.Items>
         <Button label="Open" systemImage="chart.bar.fill" onPress={onOpen} />
         <Button label="Edit" systemImage="pencil" onPress={onEdit} />
@@ -334,22 +335,24 @@ export function HabitsScreen() {
             </HStack>
           </Section>
 
-          {/* `List.ForEach` sits directly under `List`, which is what gives
-              SwiftUI a reorderable collection to attach `onMove` to. */}
-          <List.ForEach onMove={move}>
-            {rows.map(({ habit, states, streak }) => (
-              <HabitRow
-                key={habit.id}
-                habit={habit}
-                states={states}
-                streak={streak}
-                neutral={neutral}
-                onOpen={() => router.push(`/habit/${habit.id}`)}
-                onEdit={() => router.push(`/habit-form?id=${habit.id}`)}
-                onDelete={() => confirmDelete(habit)}
-              />
-            ))}
-          </List.ForEach>
+          {/* Matches the structure the `@expo/ui` docs use for a reorderable
+              list: the `ForEach` inside its own `Section`, `tag` on every row. */}
+          <Section>
+            <List.ForEach onMove={move}>
+              {rows.map(({ habit, states, streak }) => (
+                <HabitRow
+                  key={habit.id}
+                  habit={habit}
+                  states={states}
+                  streak={streak}
+                  neutral={neutral}
+                  onOpen={() => router.push(`/habit/${habit.id}`)}
+                  onEdit={() => router.push(`/habit-form?id=${habit.id}`)}
+                  onDelete={() => confirmDelete(habit)}
+                />
+              ))}
+            </List.ForEach>
+          </Section>
         </List>
       </Host>
     </>
