@@ -8,16 +8,21 @@ export const HABIT_COLORS = [
   "#FF3B30", // red
   "#FF9500", // orange
   "#FFCC00", // yellow
+  "#A2D729", // lime
   "#34C759", // green
   "#00C7BE", // mint
   "#30B0C7", // teal
+  "#32ADE6", // cyan
   "#007AFF", // blue
   "#5856D6", // indigo
+  "#8A4FE8", // violet
   "#AF52DE", // purple
+  "#E24BC0", // magenta
   "#FF2D55", // pink
 ] as const;
 
-export const DEFAULT_HABIT_COLOR = HABIT_COLORS[3];
+/** By value, not by index: inserting a color would silently move an index. */
+export const DEFAULT_HABIT_COLOR = "#34C759"; // green
 
 /**
  * A fixed grid of habit-relevant SF Symbols. Deliberately closed: no free-form
