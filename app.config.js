@@ -1,3 +1,6 @@
+/** `package.json` owns the version; the native `Info.plist` follows on prebuild. */
+const { version } = require("./package.json");
+
 /**
  * The Home Screen widget shares data with the app through an App Group, and
  * App Groups need a paid Apple Developer membership. On a free personal team
@@ -31,5 +34,6 @@ const widgetPlugins = [
 
 module.exports = ({ config }) => ({
   ...config,
+  version,
   plugins: [...(config.plugins ?? []), ...(widgetEnabled ? widgetPlugins : [])],
 });
