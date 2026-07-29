@@ -30,6 +30,7 @@ import {
   foregroundStyle,
   frame,
   listStyle,
+  moveDisabled,
   onTapGesture,
   opacity,
   shapes,
@@ -152,15 +153,18 @@ function HabitRow({
     </HStack>
   );
 
-  // While reordering, the row is the bare content. Two reasons, and only the
-  // second one is still a live hypothesis: the long press that opens the menu
-  // competes with the reorder drag, and - the reason this shipped - the
-  // documented reorderable list has a plain leaf view as its row, while a
-  // `ContextMenu` is a container with slots. See B-004.
+  // Reordering swaps the whole row, it does not just change a modifier. A
+  // `ContextMenu` row is a container with slots and its drops are discarded; the
+  // bare content is a leaf, which is what the documented reorderable list uses
+  // and the only shape that actually reorders here. Verified on device both
+  // ways.
   if (reordering) return content;
 
+  // Outside reorder mode the long press belongs to the context menu, so the row
+  // must not be draggable at all. Without this the row still lifts and then
+  // always snaps back, which is an affordance promising something it cannot do.
   return (
-    <ContextMenu modifiers={[tag(habit.id)]}>
+    <ContextMenu modifiers={[tag(habit.id), moveDisabled()]}>
       <ContextMenu.Items>
         <Button label="Open" systemImage="chart.bar.fill" onPress={onOpen} />
         <Button label="Edit" systemImage="pencil" onPress={onEdit} />
