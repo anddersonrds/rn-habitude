@@ -23,12 +23,23 @@ import {
 } from "@expo/ui/swift-ui";
 import { font, foregroundStyle } from "@expo/ui/swift-ui/modifiers";
 import * as Application from "expo-application";
+import Constants from "expo-constants";
 import type * as Notifications from "expo-notifications";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState, type ComponentProps } from "react";
 import { Alert, AppState, Linking } from "react-native";
 
 type SettingsIcon = NonNullable<ComponentProps<typeof Image>["systemName"]>;
+
+/**
+ * `expoConfig` is embedded at bundle time and derives from `package.json`, so
+ * it follows a JavaScript reload. `nativeApplicationVersion` reads the
+ * installed binary's `Info.plist`, which only changes on a native rebuild, and
+ * is the secondary source for that reason. The em dash is the last resort: a
+ * placeholder is honest, a hardcoded version is a number that never shipped.
+ */
+const version =
+  Constants.expoConfig?.version ?? Application.nativeApplicationVersion ?? "—";
 
 function SettingsLabel({
   label,
@@ -265,7 +276,7 @@ export default function SettingsScreen() {
             label={<SettingsLabel label="Version" systemImage="info.circle.fill" />}
           >
             <Text modifiers={[font({ design: "rounded" })]}>
-              {Application.nativeApplicationVersion ?? "1.0.0"}
+              {version}
             </Text>
           </LabeledContent>
         </Section>
