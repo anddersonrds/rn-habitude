@@ -82,6 +82,7 @@ function HabitRow({
   states,
   streak,
   neutral,
+  reordering,
   onOpen,
   onEdit,
   onDelete,
@@ -90,11 +91,73 @@ function HabitRow({
   states: number[];
   streak: number;
   neutral: string;
+  reordering: boolean;
   onOpen: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
   const schedule = scheduleLabel(habit);
+
+  const content = (
+    <HStack
+      spacing={12}
+      modifiers={[
+        // `tag` rides on whichever view is the row's root, so it moves here
+        // when the context menu is gone.
+        ...(reordering ? [tag(habit.id)] : []),
+        contentShape(shapes.rectangle()),
+        accessibilityLabel(
+          `${habit.name}, ${schedule}${streak > 0 ? `, ${streak}-day streak` : ""}`,
+        ),
+        accessibilityHint(
+          reordering
+            ? "Drag the handle to reorder."
+            : "Opens habit history. Long press for more actions.",
+        ),
+        ...(reordering ? [] : [onTapGesture(onOpen)]),
+      ]}
+    >
+      <Image
+        systemName={habit.icon as never}
+        color={habit.color}
+        size={19}
+        modifiers={[
+          frame({ width: 40, height: 40 }),
+          background(
+            `${habit.color}26`,
+            shapes.roundedRectangle({ cornerRadius: 11 }),
+          ),
+        ]}
+      />
+      <VStack alignment="leading" spacing={3}>
+        <Text modifiers={[font({ design: "rounded", textStyle: "headline" })]}>
+          {habit.name}
+        </Text>
+        <HStack spacing={5}>
+          {streak > 0 && (
+            <Image systemName="flame.fill" color={habit.color} size={10} />
+          )}
+          <Text
+            modifiers={[
+              font({ design: "rounded", textStyle: "footnote" }),
+              opacity(0.55),
+            ]}
+          >
+            {streak > 0 ? `${streak} days  ·  ${schedule}` : schedule}
+          </Text>
+        </HStack>
+      </VStack>
+      <Spacer />
+      <HeatStrip states={states} color={habit.color} neutral={neutral} />
+    </HStack>
+  );
+
+  // While reordering, the row is the bare content. Two reasons, and only the
+  // second one is still a live hypothesis: the long press that opens the menu
+  // competes with the reorder drag, and - the reason this shipped - the
+  // documented reorderable list has a plain leaf view as its row, while a
+  // `ContextMenu` is a container with slots. See B-004.
+  if (reordering) return content;
 
   return (
     <ContextMenu modifiers={[tag(habit.id)]}>
@@ -108,54 +171,7 @@ function HabitRow({
           onPress={onDelete}
         />
       </ContextMenu.Items>
-      <ContextMenu.Trigger>
-        <HStack
-          spacing={12}
-          modifiers={[
-            contentShape(shapes.rectangle()),
-            accessibilityLabel(
-              `${habit.name}, ${schedule}${streak > 0 ? `, ${streak}-day streak` : ""}`,
-            ),
-            accessibilityHint("Opens habit history. Long press for more actions."),
-            onTapGesture(onOpen),
-          ]}
-        >
-          <Image
-            systemName={habit.icon as never}
-            color={habit.color}
-            size={19}
-            modifiers={[
-              frame({ width: 40, height: 40 }),
-              background(
-                `${habit.color}26`,
-                shapes.roundedRectangle({ cornerRadius: 11 }),
-              ),
-            ]}
-          />
-          <VStack alignment="leading" spacing={3}>
-            <Text
-              modifiers={[font({ design: "rounded", textStyle: "headline" })]}
-            >
-              {habit.name}
-            </Text>
-            <HStack spacing={5}>
-              {streak > 0 && (
-                <Image systemName="flame.fill" color={habit.color} size={10} />
-              )}
-              <Text
-                modifiers={[
-                  font({ design: "rounded", textStyle: "footnote" }),
-                  opacity(0.55),
-                ]}
-              >
-                {streak > 0 ? `${streak} days  ·  ${schedule}` : schedule}
-              </Text>
-            </HStack>
-          </VStack>
-          <Spacer />
-          <HeatStrip states={states} color={habit.color} neutral={neutral} />
-        </HStack>
-      </ContextMenu.Trigger>
+      <ContextMenu.Trigger>{content}</ContextMenu.Trigger>
     </ContextMenu>
   );
 }
@@ -277,7 +293,9 @@ export function HabitsScreen() {
         >
           <Section
             title={
-              state.habits.length === 1 ? "1 habit" : `${state.habits.length} habits`
+              state.habits.length === 1
+                ? "1 habit"
+                : `${state.habits.length} habits`
             }
             footer={
               <Text
@@ -346,6 +364,7 @@ export function HabitsScreen() {
                   states={states}
                   streak={streak}
                   neutral={neutral}
+                  reordering={reordering}
                   onOpen={() => router.push(`/habit/${habit.id}`)}
                   onEdit={() => router.push(`/habit-form?id=${habit.id}`)}
                   onDelete={() => confirmDelete(habit)}
