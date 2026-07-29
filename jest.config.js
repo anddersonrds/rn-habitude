@@ -21,6 +21,7 @@ module.exports = {
       { ...babelOptions, presets: [require.resolve("expo/internal/babel-preset")] },
     ],
   },
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   moduleNameMapper: {
     "^@/assets/(.*)$": "<rootDir>/assets/$1",
     "^@/(.*)$": "<rootDir>/src/$1",
