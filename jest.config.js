@@ -21,6 +21,10 @@ module.exports = {
       { ...babelOptions, presets: [require.resolve("expo/internal/babel-preset")] },
     ],
   },
+  setupFiles: [
+    ...iosPreset.setupFiles,
+    require.resolve("react-native-gesture-handler/jestSetup.js"),
+  ],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   moduleNameMapper: {
     "^@/assets/(.*)$": "<rootDir>/assets/$1",

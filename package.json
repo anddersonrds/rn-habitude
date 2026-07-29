@@ -10,9 +10,9 @@
     "prebuild:widget": "HABITUDE_WIDGET=1 expo prebuild --platform ios --clean",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:ci": "jest --coverage --ci"
+    "test": "LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 TZ=America/Sao_Paulo jest",
+    "test:watch": "bun run test --watch",
+    "test:ci": "bun run test --coverage --ci"
   },
   "dependencies": {
     "@expo/ui": "~57.0.4",
