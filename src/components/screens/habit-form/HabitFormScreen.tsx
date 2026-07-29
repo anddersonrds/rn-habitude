@@ -42,6 +42,7 @@ import {
   StyleSheet,
   Switch,
   TextInput,
+  useWindowDimensions,
   View,
 } from "react-native";
 import {
@@ -57,6 +58,31 @@ import Animated, {
 const CONDITIONAL_LAYOUT = LinearTransition.duration(200);
 const CONDITIONAL_ENTER = FadeInDown.duration(180);
 const CONDITIONAL_EXIT = FadeOutUp.duration(140);
+
+/** Swatch diameter in the color grid. */
+const COLOR_RING = 42;
+/** Smallest acceptable gap; this is what decides how many fit per row. */
+const COLOR_GAP_MIN = 6;
+/** Horizontal padding inside the color card. Shared by the style and the math. */
+const COLOR_CARD_PADDING = 12;
+
+/**
+ * How many swatches fit per row, and the gap that makes a full row span the
+ * card exactly. Applying that same gap to a partial row is the whole point:
+ * `justifyContent: "space-between"` spreads a partial row across the full
+ * width, which is what pushed two leftover swatches to opposite edges.
+ */
+function colorGridMetrics(windowWidth: number) {
+  const width = windowWidth - layout.screenPadding * 2 - COLOR_CARD_PADDING * 2;
+  const columns = Math.max(
+    1,
+    Math.floor((width + COLOR_GAP_MIN) / (COLOR_RING + COLOR_GAP_MIN)),
+  );
+  const gap =
+    columns > 1 ? (width - columns * COLOR_RING) / (columns - 1) : COLOR_GAP_MIN;
+
+  return { columns, gap };
+}
 
 function timeToDate(hhmm: string): Date {
   const [hours, minutes] = hhmm.split(":").map(Number);
@@ -75,6 +101,7 @@ export function HabitFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { habits } = useAppState();
   const editing = id ? habits.find((habit) => habit.id === id) : undefined;
+  const { width: windowWidth } = useWindowDimensions();
 
   const [name, setName] = useState(editing?.name ?? "");
   const [icon, setIcon] = useState<string>(editing?.icon ?? DEFAULT_HABIT_ICON);
@@ -95,6 +122,15 @@ export function HabitFormScreen() {
     ? ALL_WEEKDAYS
     : [...weekdays].sort((a, b) => a - b);
   const canSave = trimmedName.length > 0 && effectiveWeekdays.length > 0;
+
+  // Explicit rows rather than `flexWrap`: the derived gap makes a full row
+  // exactly the container width, and whether flexbox wraps at exact equality
+  // is a floating point coin flip.
+  const { columns: colorColumns, gap: colorGap } = colorGridMetrics(windowWidth);
+  const colorRows = Array.from(
+    { length: Math.ceil(HABIT_COLORS.length / colorColumns) },
+    (_, row) => HABIT_COLORS.slice(row * colorColumns, (row + 1) * colorColumns),
+  );
 
   const toggleWeekday = (day: number) => {
     Keyboard.dismiss();
@@ -389,36 +425,46 @@ export function HabitFormScreen() {
           </Text>
           <View style={styles.colorCard}>
             <View style={styles.colorGrid}>
-              {HABIT_COLORS.map((optionColor) => {
-                const selected = optionColor === color;
-                return (
-                  <Pressable
-                    key={optionColor}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Color ${optionColor}`}
-                    accessibilityState={{ selected }}
-                    onPress={() => {
-                      Keyboard.dismiss();
-                      haptic.selection();
-                      setColor(optionColor);
-                    }}
-                    style={[styles.colorRing, selected && { borderColor: optionColor }]}
-                  >
-                    <View
-                      style={[styles.colorDot, { backgroundColor: optionColor }]}
-                    >
-                      {selected && (
-                        <SymbolView
-                          name="checkmark"
-                          size={13}
-                          weight="bold"
-                          tintColor={foregroundOnColor(optionColor)}
-                        />
-                      )}
-                    </View>
-                  </Pressable>
-                );
-              })}
+              {colorRows.map((rowColors, row) => (
+                <View key={row} style={[styles.colorRow, { gap: colorGap }]}>
+                  {rowColors.map((optionColor) => {
+                    const selected = optionColor === color;
+                    return (
+                      <Pressable
+                        key={optionColor}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Color ${optionColor}`}
+                        accessibilityState={{ selected }}
+                        onPress={() => {
+                          Keyboard.dismiss();
+                          haptic.selection();
+                          setColor(optionColor);
+                        }}
+                        style={[
+                          styles.colorRing,
+                          selected && { borderColor: optionColor },
+                        ]}
+                      >
+                        <View
+                          style={[
+                            styles.colorDot,
+                            { backgroundColor: optionColor },
+                          ]}
+                        >
+                          {selected && (
+                            <SymbolView
+                              name="checkmark"
+                              size={13}
+                              weight="bold"
+                              tintColor={foregroundOnColor(optionColor)}
+                            />
+                          )}
+                        </View>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              ))}
             </View>
           </View>
 
@@ -588,18 +634,18 @@ const styles = StyleSheet.create({
     backgroundColor: Color.ios.secondarySystemGroupedBackground,
     borderRadius: layout.cardRadius,
     borderCurve: "continuous",
-    padding: 12,
+    padding: COLOR_CARD_PADDING,
   },
   colorGrid: {
+    gap: COLOR_GAP_MIN,
+  },
+  colorRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    gap: 6,
   },
   colorRing: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: COLOR_RING,
+    height: COLOR_RING,
+    borderRadius: COLOR_RING / 2,
     borderWidth: 2.5,
     borderColor: "transparent",
     alignItems: "center",
