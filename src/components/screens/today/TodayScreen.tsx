@@ -1,6 +1,6 @@
 import { Celebration } from "@/components/Celebration";
 import { EmptyState } from "@/components/EmptyState";
-import { accent } from "@/theme/colors";
+import { accent, success } from "@/theme/colors";
 import {
   Button,
   Host,
@@ -40,7 +40,6 @@ import { StyleSheet, View } from "react-native";
 import { EaseView } from "react-native-ease";
 import { useTodayModel, type TodayItem } from "./useTodayModel";
 
-const DONE_GREEN = "#34C759";
 const STATUS_ANIMATION = Animation.spring({ duration: 0.32, bounce: 0.18 });
 const LIST_CHANGE_ANIMATION = Animation.easeInOut({ duration: 0.22 });
 const PROGRESS_ANIMATION = Animation.spring({ duration: 0.55, bounce: 0.06 });
@@ -124,7 +123,7 @@ function HabitRow({
           label={done ? "Undo" : "Check in"}
           systemImage={done ? "arrow.uturn.backward" : "checkmark"}
           onPress={onToggle}
-          modifiers={[tint(done ? accent : DONE_GREEN)]}
+          modifiers={[tint(done ? accent : success)]}
         />
       </SwipeActions.Actions>
 
@@ -236,7 +235,7 @@ export function TodayScreen() {
                       {model.allDone && (
                         <Image
                           systemName="checkmark.seal.fill"
-                          color={DONE_GREEN}
+                          color={success}
                           size={17}
                         />
                       )}
@@ -245,7 +244,7 @@ export function TodayScreen() {
                       value={model.progress}
                       modifiers={[
                         progressViewStyle("linear"),
-                        tint(model.allDone ? DONE_GREEN : accent),
+                        tint(model.allDone ? success : accent),
                         animation(PROGRESS_ANIMATION, model.progress),
                         accessibilityLabel("Today's progress"),
                         accessibilityValue(
