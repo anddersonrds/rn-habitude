@@ -181,10 +181,15 @@ function HabitRow({
 }
 
 /**
- * The whole screen is a native SwiftUI `List`, which is what makes rows
- * reorderable by dragging: `List.ForEach`'s `onMove` is SwiftUI's own
- * drag-and-drop, so the lift, the gap, and the drop animation are all system
- * behavior rather than a gesture reimplementation.
+ * The whole screen is a native SwiftUI `List`. Reordering is `List.ForEach`'s
+ * `onMove`, so the lift, the gap, and the drop animation are system behavior
+ * rather than a gesture reimplementation.
+ *
+ * Reordering is confined to its own mode for a structural reason, not a
+ * stylistic one: a row wrapped in `ContextMenu` has its drops discarded, and
+ * only a leaf row reorders. `HabitRow` therefore returns a different shape in
+ * each mode, and outside reorder mode the row is `moveDisabled` so it never
+ * offers a drag it cannot finish.
  */
 export function HabitsScreen() {
   const state = useAppState();
@@ -287,9 +292,10 @@ export function HabitsScreen() {
         <List
           modifiers={[
             listStyle("insetGrouped"),
-            // Edit mode shows SwiftUI's grabber handles. Rows carry a context
-            // menu, which claims the long press, so reordering gets its own
-            // explicit mode instead of competing for the same gesture.
+            // Edit mode shows SwiftUI's grabber handles. The long press is
+            // already the context menu's and `ContextMenu` cannot be
+            // retriggered, so reordering gets its own mode rather than
+            // competing for the same gesture.
             environment("editMode", reordering ? "active" : "inactive"),
             animation(EDIT_ANIMATION, reordering),
             animation(LIST_CHANGE_ANIMATION, state.habits.length),
@@ -357,8 +363,9 @@ export function HabitsScreen() {
             </HStack>
           </Section>
 
-          {/* Matches the structure the `@expo/ui` docs use for a reorderable
-              list: the `ForEach` inside its own `Section`, `tag` on every row. */}
+          {/* `List.ForEach` sits in its own `Section`, matching the documented
+              structure. Necessary but not sufficient: what actually decides
+              whether a drop sticks is the row's shape, in `HabitRow`. */}
           <Section>
             <List.ForEach onMove={move}>
               {rows.map(({ habit, states, streak }) => (
