@@ -25,6 +25,13 @@ export const colors: Record<
 export const accent = appConfig.accent;
 
 /**
+ * The one green that means "complete". Apple's `systemGreen`, shared by the
+ * Today undo swipe tint, the "all done" seal, and the progress bar once every
+ * habit is checked in.
+ */
+export const success = "#34C759";
+
+/**
  * Returns the higher-contrast foreground for a six-digit hex color.
  *
  * Habit accents are user-selectable, so a fixed white foreground becomes
