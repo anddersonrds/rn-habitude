@@ -1,0 +1,159 @@
+/* eslint-disable @typescript-eslint/no-require-imports --
+the database module applies its schema at import, so each case has to reload it
+rather than close over one instance.
+*/
+import { addDays, weekdayOf } from "@/lib/dates";
+import type { Habit } from "@/lib/types";
+import { resetDatabase } from "@/test-utils/sqlite";
+import { freezeClock, restoreClock } from "@/test-utils/time";
+
+/* A Wednesday. */
+const TODAY = "2026-07-29";
+
+/** Twelve weeks of history, ending today. */
+const HISTORY_STARTS = addDays(TODAY, -(12 * 7 - 1));
+
+type Loaded = {
+  seedSampleData: () => Habit[];
+  db: typeof import("@/lib/db").db;
+};
+
+function freshSampleData(): Loaded {
+  resetDatabase();
+  jest.resetModules();
+  return {
+    seedSampleData: require("@/lib/sample-data").seedSampleData,
+    db: require("@/lib/db").db,
+  };
+}
+
+function habitRows(db: Loaded["db"]) {
+  return db.getAllSync<{ id: string; created_at: string; weekdays: string }>(
+    "SELECT id, created_at, weekdays FROM habits ORDER BY sort_order",
+  );
+}
+
+function completionDates(db: Loaded["db"], habitId: string): string[] {
+  return db
+    .getAllSync<{ date: string }>(
+      "SELECT date FROM completions WHERE habit_id = ? ORDER BY date",
+      [habitId],
+    )
+    .map((row) => row.date);
+}
+
+beforeEach(() => freezeClock(`${TODAY}T12:00:00-03:00`));
+afterEach(restoreClock);
+
+describe("seedSampleData", () => {
+  it("should insert every sample habit with twelve weeks of history behind it", () => {
+    const { seedSampleData, db } = freshSampleData();
+
+    seedSampleData();
+
+    const rows = habitRows(db);
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows.every((row) => row.id.startsWith("sample-"))).toBe(true);
+    expect(rows.every((row) => row.created_at === HISTORY_STARTS)).toBe(true);
+  });
+
+  it("should give every sample habit completions to draw", () => {
+    const { seedSampleData, db } = freshSampleData();
+
+    seedSampleData();
+
+    for (const row of habitRows(db)) {
+      expect(completionDates(db, row.id).length).toBeGreaterThan(0);
+    }
+  });
+
+  it("should return the habits that carry a reminder, and only those", () => {
+    const { seedSampleData } = freshSampleData();
+
+    const needingReminders = seedSampleData();
+
+    expect(needingReminders.length).toBeGreaterThan(0);
+    expect(
+      needingReminders.every((habit) => habit.reminderTime !== null),
+    ).toBe(true);
+  });
+
+  it("should never complete a day the habit is not scheduled on", () => {
+    const { seedSampleData, db } = freshSampleData();
+
+    seedSampleData();
+
+    for (const row of habitRows(db)) {
+      const weekdays: number[] = JSON.parse(row.weekdays);
+      const offSchedule = completionDates(db, row.id).filter(
+        (date) => !weekdays.includes(weekdayOf(date)),
+      );
+      expect(offSchedule).toEqual([]);
+    }
+  });
+
+  it("should never complete a day before the history starts or after today", () => {
+    const { seedSampleData, db } = freshSampleData();
+
+    seedSampleData();
+
+    for (const row of habitRows(db)) {
+      const dates = completionDates(db, row.id);
+      expect(dates[0] >= HISTORY_STARTS).toBe(true);
+      expect(dates[dates.length - 1] <= TODAY).toBe(true);
+    }
+  });
+
+  it("should paint the same story every time it runs", () => {
+    const first = freshSampleData();
+    first.seedSampleData();
+    const painted = habitRows(first.db).map((row) => [
+      row.id,
+      completionDates(first.db, row.id),
+    ]);
+
+    const second = freshSampleData();
+    second.seedSampleData();
+
+    expect(
+      habitRows(second.db).map((row) => [
+        row.id,
+        completionDates(second.db, row.id),
+      ]),
+    ).toEqual(painted);
+  });
+
+  it("should replace a previous run instead of stacking a second one on it", () => {
+    const { seedSampleData, db } = freshSampleData();
+    seedSampleData();
+    const first = habitRows(db).map((row) => row.id);
+
+    seedSampleData();
+
+    expect(habitRows(db).map((row) => row.id)).toEqual(first);
+  });
+
+  it("should leave a habit the user created alone", () => {
+    const { seedSampleData, db } = freshSampleData();
+    db.runSync(
+      `INSERT INTO habits (id, name, icon, color, weekdays, reminder_time, created_at, notification_ids, sort_order)
+       VALUES ('mine', 'Mine', 'star', '#32ADE6', '[0,1,2,3,4,5,6]', NULL, ?, '[]', 99)`,
+      [TODAY],
+    );
+
+    seedSampleData();
+
+    expect(habitRows(db).map((row) => row.id)).toContain("mine");
+  });
+
+  it("should leave one habit checked in today, so Today opens with work left", () => {
+    const { seedSampleData, db } = freshSampleData();
+
+    seedSampleData();
+
+    const doneToday = habitRows(db).filter((row) =>
+      completionDates(db, row.id).includes(TODAY),
+    );
+    expect(doneToday).toHaveLength(1);
+  });
+});
