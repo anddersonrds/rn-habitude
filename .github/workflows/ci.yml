@@ -4,17 +4,15 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
-# A second push supersedes the first: cancel the run in flight rather than
-# queueing behind it.
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
 
 jobs:
-  # One job on purpose. At this size the install and the cache restore cost more
-  # than the checks, so paying for them once beats three parallel jobs, and the
-  # pull request shows one check instead of three.
+  # One job: the install and cache restore cost more than the checks, so paying
+  # for them once beats three parallel jobs.
   verify:
+    name: Lint, typecheck and tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -23,11 +21,8 @@ jobs:
         with:
           bun-version: 1.3.10
 
-      # Load-bearing, not boilerplate. Bun is the package manager and the script
-      # runner, but `bun run` launches the test runner's bin through its node
-      # shebang, and the SQLite adapter the suite depends on is a Node builtin
-      # that does not exist in Bun. Without this the whole src/lib suite fails
-      # here while passing locally.
+      # Required: the suite's SQLite adapter is a Node builtin that Bun does not
+      # carry. Without this, every src/lib test fails here and passes locally.
       - uses: actions/setup-node@v7
         with:
           node-version: 24
