@@ -1,0 +1,19 @@
+# Neither hook replaces the pull request check. Both can be skipped with
+# --no-verify, and pre-commit only ever sees the files that are staged.
+pre-commit:
+  parallel: true
+  jobs:
+    - name: lint
+      glob: "*.{js,jsx,ts,tsx}"
+      run: bunx eslint --max-warnings 0 {staged_files}
+    - name: test
+      glob: "*.{js,jsx,ts,tsx}"
+      # --passWithNoTests is what lets a staged file with no related test commit.
+      run: bun run test --findRelatedTests --bail --passWithNoTests {staged_files}
+
+pre-push:
+  jobs:
+    - name: typecheck
+      run: bun run typecheck
+    - name: test
+      run: bun run test:ci
