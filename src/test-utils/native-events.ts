@@ -46,7 +46,7 @@ export function typeInto(target: TestInstance, text: string): Promise<void> {
 /** Flips a switch to a value. */
 export function toggleSwitch(target: TestInstance, value: boolean): Promise<void> {
   /* `onValueChange` never reaches the host node: React Native reads the value
-   * off the native `onChange` payload and calls it from there. */
+     off the native `onChange` payload and calls it from there. */
   return dispatch(target, "onChange", { nativeEvent: { value } });
 }
 

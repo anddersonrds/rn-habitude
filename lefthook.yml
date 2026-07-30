@@ -5,8 +5,6 @@ pre-commit:
   jobs:
     - name: lint
       glob: "*.{js,jsx,ts,tsx}"
-      # --max-warnings 0 makes a warning block the commit without turning every
-      # warning into an error for everyone else.
       run: bunx eslint --max-warnings 0 {staged_files}
     - name: test
       glob: "*.{js,jsx,ts,tsx}"

@@ -63,8 +63,8 @@ export function stableIds(): void {
   let step = 0;
   jest.spyOn(Math, "random").mockImplementation(() => {
     step += 1;
-    /* Additive recurrence on the golden ratio: moves the leading digits, which
-     * is the part an id is built from. */
+    /* Additive recurrence on the golden ratio: moves the leading digits,
+       which is the part an id is built from. */
     return (step * 0.6180339887498949) % 1;
   });
 }

@@ -24,7 +24,7 @@ export type TestDatabase = {
 };
 
 /* Held on the global scope, not in module state: tests reset the module
- * registry between cases, which would discard the seeded rows with it. */
+   registry between cases, which would discard the seeded rows with it. */
 const DATABASE: unique symbol = Symbol.for("habitude.test-database");
 
 type Holder = { current: DatabaseSync };

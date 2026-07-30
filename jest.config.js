@@ -31,8 +31,8 @@ module.exports = {
     "src/**/*.{ts,tsx}",
     "!src/test-utils/**",
     /* Route files that only re-export a screen. The parentheses are escaped
-     * because a bare `(onboarding)` reads as a glob group and matches nothing.
-     * `(tabs)/settings/index.tsx` is a real screen and stays included. */
+       because a bare `(onboarding)` reads as a glob group and matches nothing.
+       `(tabs)/settings/index.tsx` is a real screen and stays included. */
     "!src/app/habit-form.tsx",
     "!src/app/\\(onboarding\\)/index.tsx",
     "!src/app/\\(tabs\\)/\\(today\\)/index.tsx",
