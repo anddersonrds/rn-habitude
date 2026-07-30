@@ -1,10 +1,10 @@
 const iosPreset = require("jest-expo/ios/jest-preset");
 
 /*
- * The platform presets rebuild the babel-jest entry and keep only `caller`,
- * dropping the preset the bare `jest-expo` config resolves. Without this,
- * nothing strips TypeScript.
- */
+The platform presets rebuild the babel-jest entry and keep only `caller`,
+dropping the preset the bare `jest-expo` config resolves. Without this, nothing
+strips TypeScript.
+*/
 const BABEL_TRANSFORM = "\\.[jt]sx?$";
 const [, babelOptions] = iosPreset.transform[BABEL_TRANSFORM];
 
@@ -30,9 +30,11 @@ module.exports = {
   collectCoverageFrom: [
     "src/**/*.{ts,tsx}",
     "!src/test-utils/**",
-    /* Route files that only re-export a screen. The parentheses are escaped
-       because a bare `(onboarding)` reads as a glob group and matches nothing.
-       `(tabs)/settings/index.tsx` is a real screen and stays included. */
+    /*
+    Route files that only re-export a screen. The parentheses are escaped
+    because a bare `(onboarding)` reads as a glob group and matches nothing.
+    `(tabs)/settings/index.tsx` is a real screen and stays included.
+    */
     "!src/app/habit-form.tsx",
     "!src/app/\\(onboarding\\)/index.tsx",
     "!src/app/\\(tabs\\)/\\(today\\)/index.tsx",

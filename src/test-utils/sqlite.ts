@@ -23,8 +23,10 @@ export type TestDatabase = {
   withTransactionSync(task: () => void): void;
 };
 
-/* Held on the global scope, not in module state: tests reset the module
-   registry between cases, which would discard the seeded rows with it. */
+/*
+Held on the global scope, not in module state: tests reset the module registry
+between cases, which would discard the seeded rows with it.
+*/
 const DATABASE: unique symbol = Symbol.for("habitude.test-database");
 
 type Holder = { current: DatabaseSync };
