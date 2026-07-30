@@ -43,5 +43,6 @@ module.exports = {
   /* Each threshold is switched on by the work that covers its scope. */
   coverageThreshold: {
     "./src/lib/": { statements: 90, branches: 85 },
+    "./src/components/screens/**/use*.ts": { statements: 90, branches: 85 },
   },
 };
