@@ -9,7 +9,7 @@
     "ios:widget": "HABITUDE_WIDGET=1 expo run:ios",
     "prebuild:widget": "HABITUDE_WIDGET=1 expo prebuild --platform ios --clean",
     "postinstall": "lefthook install",
-    "lint": "expo lint",
+    "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "test": "LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 TZ=America/Sao_Paulo jest",
     "test:watch": "bun run test --watch",
