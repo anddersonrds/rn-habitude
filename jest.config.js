@@ -41,5 +41,7 @@ module.exports = {
     "!src/app/\\(tabs\\)/habits/index.tsx",
   ],
   /* Each threshold is switched on by the work that covers its scope. */
-  coverageThreshold: {},
+  coverageThreshold: {
+    "./src/lib/": { statements: 90, branches: 85 },
+  },
 };
