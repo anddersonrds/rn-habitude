@@ -1,18 +1,12 @@
+import { STEPS, useOnboardingModel } from "@/components/onboarding/useOnboardingModel";
 import { appFontFamily, Text } from "@/components/ui/Text";
 import { layout } from "@/constants/layout";
-import { haptic } from "@/lib/haptics";
-import {
-  ensureNotificationPermission,
-  getNotificationPermission,
-} from "@/lib/notifications";
-import { setOnboarded } from "@/lib/store";
 import { accent, foregroundOnColor } from "@/theme/colors";
 import { GlassView } from "expo-glass-effect";
-import type * as Notifications from "expo-notifications";
 import { Color } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { PressableScale } from "pressto";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { EaseView } from "react-native-ease";
 import Animated, {
@@ -25,37 +19,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const STEP_TRANSITION = { type: "timing" as const, duration: 170 };
 const DOT_LAYOUT_MS = 180;
-
-type StepId = "welcome" | "consistency" | "reminders";
-
-const STEPS: {
-  id: StepId;
-  title: string;
-  description: string;
-  cta: string;
-}[] = [
-  {
-    id: "welcome",
-    title: "habitude",
-    description:
-      "A habit is a small thing done often. Track a few, and watch them add up.",
-    cta: "Continue",
-  },
-  {
-    id: "consistency",
-    title: "See your consistency",
-    description:
-      "Every check-in fills a square. Streaks and history make the pattern obvious.",
-    cta: "Continue",
-  },
-  {
-    id: "reminders",
-    title: "A nudge at the right time",
-    description:
-      "Give a habit a reminder time and habitude will tap you on the shoulder.",
-    cta: "Allow notifications",
-  },
-];
 
 /** A miniature heat grid, so the core idea is visible before any data exists. */
 function HeatPreview() {
@@ -191,13 +154,8 @@ function ConsistencyStep() {
   );
 }
 
-function RemindersStep({
-  permission,
-}: {
-  permission: Notifications.NotificationPermissionsStatus | null;
-}) {
+function RemindersStep({ allowed }: { allowed: boolean }) {
   const reduceMotion = useReducedMotion();
-  const allowed = permission?.granted === true;
 
   return (
     <View style={styles.body}>
@@ -313,90 +271,17 @@ function StepTransition({
 /** Three screens: what the app is, how consistency reads, and reminders. */
 export function OnboardingFlow() {
   const { top, bottom } = useSafeAreaInsets();
-  const reduceMotion = useReducedMotion();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [visible, setVisible] = useState(true);
-  const [permission, setPermission] =
-    useState<Notifications.NotificationPermissionsStatus | null>(null);
-  const [requesting, setRequesting] = useState(false);
-  const pendingIndex = useRef<number | null>(null);
-
-  const currentStep = STEPS[currentIndex];
-  const isLast = currentIndex === STEPS.length - 1;
-  const cannotAsk =
-    permission != null && !permission.granted && !permission.canAskAgain;
-  const ctaLabel = !isLast
-    ? currentStep.cta
-    : permission?.granted
-      ? "Start tracking"
-      : cannotAsk
-        ? "Maybe later"
-        : requesting
-          ? "Requesting…"
-          : currentStep.cta;
-
-  useEffect(() => {
-    if (currentStep.id === "reminders") {
-      void getNotificationPermission().then(setPermission);
-    }
-  }, [currentStep.id]);
-
-  const navigateToStep = (index: number) => {
-    if (index < 0 || index >= STEPS.length || index === currentIndex) return;
-    if (reduceMotion) {
-      pendingIndex.current = null;
-      setVisible(true);
-      setCurrentIndex(index);
-      return;
-    }
-    pendingIndex.current = index;
-    setVisible(false);
-  };
-
-  const handleTransitionEnd = () => {
-    if (visible || pendingIndex.current === null) return;
-    setCurrentIndex(pendingIndex.current);
-    pendingIndex.current = null;
-    setVisible(true);
-  };
-
-  const advance = async () => {
-    if (requesting) return;
-
-    if (!isLast) {
-      haptic.tap();
-      navigateToStep(currentIndex + 1);
-      return;
-    }
-
-    // Last step: ask once, then finish either way.
-    if (!permission?.granted && !cannotAsk) {
-      setRequesting(true);
-      try {
-        const granted = await ensureNotificationPermission();
-        setPermission(await getNotificationPermission());
-        if (granted) {
-          haptic.success();
-          return;
-        }
-      } finally {
-        setRequesting(false);
-      }
-    }
-
-    haptic.success();
-    setOnboarded();
-  };
+  const model = useOnboardingModel();
 
   return (
     <View style={[styles.container, { paddingTop: top + 8 }]}>
       <View style={styles.header}>
         <View style={styles.headerAction}>
-          {currentIndex > 0 && (
+          {model.canGoBack && (
             <PressableScale
               accessibilityRole="button"
               accessibilityLabel="Previous step"
-              onPress={() => navigateToStep(currentIndex - 1)}
+              onPress={model.goBack}
               style={styles.backButton}
             >
               <SymbolView
@@ -408,18 +293,18 @@ export function OnboardingFlow() {
             </PressableScale>
           )}
         </View>
-        <ProgressDots currentIndex={currentIndex} />
+        <ProgressDots currentIndex={model.currentIndex} />
         <View style={styles.headerAction}>
           <Text variant="footnote" tertiary style={styles.stepCount}>
-            {currentIndex + 1}/{STEPS.length}
+            {model.stepNumber}/{model.stepCount}
           </Text>
         </View>
       </View>
 
       <StepTransition
-        reduceMotion={!!reduceMotion}
-        visible={visible}
-        onTransitionEnd={handleTransitionEnd}
+        reduceMotion={model.reduceMotion}
+        visible={model.visible}
+        onTransitionEnd={model.handleTransitionEnd}
       >
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
@@ -431,17 +316,17 @@ export function OnboardingFlow() {
         >
           <View style={styles.titleBlock}>
             <Text variant="largeTitle" style={styles.titleText}>
-              {currentStep.title}
+              {model.step.title}
             </Text>
             <Text variant="title3" secondary style={styles.stepDescription}>
-              {currentStep.description}
+              {model.step.description}
             </Text>
           </View>
 
-          {currentStep.id === "welcome" && <WelcomeStep />}
-          {currentStep.id === "consistency" && <ConsistencyStep />}
-          {currentStep.id === "reminders" && (
-            <RemindersStep permission={permission} />
+          {model.step.id === "welcome" && <WelcomeStep />}
+          {model.step.id === "consistency" && <ConsistencyStep />}
+          {model.step.id === "reminders" && (
+            <RemindersStep allowed={model.permissionGranted} />
           )}
         </ScrollView>
       </StepTransition>
@@ -456,24 +341,24 @@ export function OnboardingFlow() {
           >
             <PressableScale
               accessibilityRole="button"
-              accessibilityLabel={ctaLabel}
-              accessibilityState={{ disabled: requesting }}
-              onPress={() => void advance()}
+              accessibilityLabel={model.ctaLabel}
+              accessibilityState={{ disabled: model.requesting }}
+              onPress={() => void model.advance()}
               style={[
                 styles.cta,
                 { backgroundColor: accent },
-                requesting && styles.ctaDisabled,
+                model.requesting && styles.ctaDisabled,
               ]}
             >
               <Text
                 variant="headline"
                 style={{ color: foregroundOnColor(accent) }}
               >
-                {ctaLabel}
+                {model.ctaLabel}
               </Text>
-              {!requesting && (
+              {!model.requesting && (
                 <SymbolView
-                  name={isLast ? "checkmark" : "arrow.right"}
+                  name={model.isLast ? "checkmark" : "arrow.right"}
                   size={17}
                   weight="semibold"
                   tintColor={foregroundOnColor(accent)}
@@ -481,14 +366,11 @@ export function OnboardingFlow() {
               )}
             </PressableScale>
           </GlassView>
-          {isLast && !permission?.granted && (
+          {model.canSkip && (
             <PressableScale
               accessibilityRole="button"
               accessibilityLabel="Skip notifications"
-              onPress={() => {
-                haptic.tap();
-                setOnboarded();
-              }}
+              onPress={model.skip}
               style={styles.skip}
             >
               <Text variant="footnote" tertiary>
