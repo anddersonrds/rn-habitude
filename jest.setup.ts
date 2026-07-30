@@ -18,6 +18,46 @@ jest.mock("expo-widgets", () => ({
   createWidget: () => ({ updateSnapshot: jest.fn() }),
 }));
 
+/*
+The gesture handler's own mock swaps `BaseButton` - which is what `pressto`
+renders - for a `TouchableNativeFeedback`, and that takes a single child.
+Every button in this app that puts an icon beside its label hands it two, so
+the stand-in wraps them. Accessibility props still reach the wrapper, which is
+what a role query finds.
+*/
+jest.mock("react-native-gesture-handler", () => {
+  const React = require("react") as typeof import("react");
+  const { View } = require("react-native") as typeof import("react-native");
+  const actual = jest.requireActual<typeof import("react-native-gesture-handler")>(
+    "react-native-gesture-handler",
+  );
+
+  function Button({ children, ...rest }: { children?: React.ReactNode }) {
+    return React.createElement(
+      actual.BaseButton,
+      rest,
+      React.createElement(View, null, children),
+    );
+  }
+
+  return {
+    __esModule: true,
+    ...actual,
+    BaseButton: Button,
+    RawButton: Button,
+    RectButton: Button,
+  };
+});
+
+/*
+Insets come from the native view rather than from a provider the app renders,
+so a screen reading them throws under the runner. The package ships this mock
+for exactly that; it keeps the contexts real and defaults the insets to zero.
+*/
+jest.mock("react-native-safe-area-context", () =>
+  require("react-native-safe-area-context/jest/mock").default,
+);
+
 /* Worklets has to be mocked before Reanimated's setup, which imports it. */
 jest.mock("react-native-worklets", () => require("react-native-worklets/src/mock"));
 jest.mock("react-native-keyboard-controller", () =>
