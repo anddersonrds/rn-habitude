@@ -1,24 +1,17 @@
 import { DatabaseSync } from "node:sqlite";
 
 /**
- * `jest-expo` auto-mocks every Expo native module, and its `ExpoSQLite` stub is a
- * set of functions returning `undefined`. This codebase does real work at import
- * time - `db.ts` opens the database and creates the schema, `store.ts` loads
- * state - so with the stub those modules throw before a test runs and most of
- * the app is unreachable.
+ * Replaces `expo-sqlite` with a real in-memory database, so `db.ts` and
+ * `store.ts` run the SQL that ships. The runner's own stub returns `undefined`
+ * from everything, which makes both modules throw at import.
  *
- * The fix is a real in-memory database rather than a fake. `db.ts` and `store.ts`
- * then run the SQL that ships: real primary key conflicts, real `INSERT OR
- * IGNORE`, real `ON CONFLICT DO UPDATE`, real rollback.
- *
- * The runner has to be Node 24 for `node:sqlite` to exist. Bun stays the package
- * manager and the script runner; `bun run` launches Jest's bin through its
- * `#!/usr/bin/env node` shebang, so Node is what executes the suite.
+ * Requires Node 24. Bun stays the package manager and script runner; it
+ * launches the test runner's bin through its node shebang.
  */
 
 type BindValue = string | number | bigint | null | Uint8Array;
 
-/** The five methods the app calls, and the only five this translates. */
+/** The five methods the app calls, and the only five translated here. */
 export type TestDatabase = {
   execSync(source: string): void;
   runSync(
@@ -30,9 +23,8 @@ export type TestDatabase = {
   withTransactionSync(task: () => void): void;
 };
 
-// The database lives on the global scope rather than in module state because
-// tests reset the module registry between cases and re-import the store. Module
-// state would be discarded with it, taking the seeded rows along.
+/* Held on the global scope, not in module state: tests reset the module
+ * registry between cases, which would discard the seeded rows with it. */
 const DATABASE: unique symbol = Symbol.for("habitude.test-database");
 
 type Holder = { current: DatabaseSync };
@@ -43,8 +35,8 @@ function holder(): Holder {
 }
 
 /**
- * Discards the database and opens an empty one. The schema goes with it, so a
- * caller resets the module registry afterwards and lets `db.ts` recreate it.
+ * Opens an empty database. The schema goes with the old one, so reset the
+ * module registry afterwards and let `db.ts` recreate it.
  */
 export function resetDatabase(): void {
   const held = holder();
@@ -52,10 +44,7 @@ export function resetDatabase(): void {
   held.current = new DatabaseSync(":memory:");
 }
 
-/**
- * A stable handle: it reads the current database on every call, so a reset
- * cannot strand a module that captured it at import time.
- */
+/** Reads the current database on every call, so a reset cannot strand it. */
 export function getTestDatabase(): TestDatabase {
   return {
     execSync(source) {
@@ -65,7 +54,7 @@ export function getTestDatabase(): TestDatabase {
       const result = holder().current.prepare(source).run(...params);
       return {
         changes: Number(result.changes),
-        // `node:sqlite` spells the second word differently from `expo-sqlite`.
+        /* `node:sqlite` spells this `lastInsertRowid`. */
         lastInsertRowId: Number(result.lastInsertRowid),
       };
     },
@@ -73,8 +62,7 @@ export function getTestDatabase(): TestDatabase {
       return holder().current.prepare(source).all(...params) as never;
     },
     getFirstSync(source, params = []) {
-      // `StatementSync.get` answers `undefined`; the contract everywhere in
-      // `db.ts` and `store.ts` is `null`.
+      /* `StatementSync.get` answers `undefined`; the contract is `null`. */
       return (holder().current.prepare(source).get(...params) ?? null) as never;
     },
     withTransactionSync(task) {
@@ -84,6 +72,7 @@ export function getTestDatabase(): TestDatabase {
         task();
         database.exec("COMMIT");
       } catch (error) {
+        /* `deleteHabit` and `reorderHabits` need the transaction atomic. */
         database.exec("ROLLBACK");
         throw error;
       }
@@ -91,7 +80,6 @@ export function getTestDatabase(): TestDatabase {
   };
 }
 
-/** The `expo-sqlite` surface the app imports, backed by the in-memory database. */
 export function expoSqliteMock(): { openDatabaseSync: () => TestDatabase } {
   return { openDatabaseSync: getTestDatabase };
 }

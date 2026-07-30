@@ -9,8 +9,7 @@ describe("dateKey", () => {
     expect(dateKey(new Date(2026, 0, 5))).toBe("2026-01-05");
   });
 
-  it("reads the local date rather than the UTC one", () => {
-    // 23:30 local on the 29th is already the 30th in UTC.
+  it("reads the local date late at night, when UTC is already the next day", () => {
     expect(dateKey(new Date(2026, 6, 29, 23, 30))).toBe("2026-07-29");
   });
 });

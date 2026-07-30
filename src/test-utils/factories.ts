@@ -1,11 +1,5 @@
 import type { AppState, CompletionMap, Habit } from "@/lib/types";
 
-/**
- * A habit has eight fields and four of them are JSON-encoded on the way into
- * the database. Building one inline in every test is how a schema change turns
- * into an afternoon of edits.
- */
-
 const EVERY_WEEKDAY = [0, 1, 2, 3, 4, 5, 6];
 
 let sequence = 0;
@@ -26,7 +20,9 @@ export function makeHabit(overrides: Partial<Habit> = {}): Habit {
 }
 
 /** Builds the habit id to date key map the store keeps completions in. */
-export function makeCompletions(byHabit: Record<string, string[]> = {}): CompletionMap {
+export function makeCompletions(
+  byHabit: Record<string, string[]> = {},
+): CompletionMap {
   const completions: CompletionMap = {};
   for (const [habitId, dates] of Object.entries(byHabit)) {
     completions[habitId] = {};
