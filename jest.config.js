@@ -44,5 +44,13 @@ module.exports = {
   coverageThreshold: {
     "./src/lib/": { statements: 90, branches: 85 },
     "./src/components/screens/**/use*.ts": { statements: 90, branches: 85 },
+    /*
+    Named one path at a time rather than by their roots: the SwiftUI-backed
+    screens live under `src/components/` and `src/app/` too, and are not
+    covered yet.
+    */
+    "./src/components/onboarding/": { statements: 60 },
+    "./src/app/habit/": { statements: 60 },
+    "./src/app/habit-history.tsx": { statements: 60 },
   },
 };
