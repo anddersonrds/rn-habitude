@@ -1,3 +1,9 @@
+import {
+  DEVICE,
+  LOCALES,
+  getLanguagePreference,
+  setLanguage,
+} from "@/i18n/i18next";
 import { haptic } from "@/lib/haptics";
 import {
   ensureNotificationPermission,
@@ -14,7 +20,7 @@ import * as Application from "expo-application";
 import Constants from "expo-constants";
 import type * as Notifications from "expo-notifications";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, AppState, Linking } from "react-native";
 
@@ -36,10 +42,27 @@ const version =
 export function useSettingsModel() {
   /* Subscribes the screen to the language, and gives the alerts their copy at
   the moment they are raised rather than at import. */
-  const { t } = useTranslation(["settings", "common"]);
+  const { t } = useTranslation(["settings", "common", "language"]);
   const { habits, completions } = useAppState();
   const [permission, setPermission] =
     useState<Notifications.NotificationPermissionsStatus | null>(null);
+  const [language, setActiveLanguage] = useState(getLanguagePreference);
+
+  /* Sorted by label at runtime, so the order cannot drift from the names. */
+  const languages = useMemo(
+    () => [
+      { tag: DEVICE, label: t("language:systemDefault") },
+      ...LOCALES.map(({ tag, label }) => ({ tag, label })).sort((one, other) =>
+        one.label.localeCompare(other.label),
+      ),
+    ],
+    [t],
+  );
+
+  const chooseLanguage = (tag: string) => {
+    setLanguage(tag);
+    setActiveLanguage(tag);
+  };
 
   const refreshPermission = useCallback(() => {
     void getNotificationPermission().then(setPermission);
@@ -141,6 +164,9 @@ export function useSettingsModel() {
     ),
     hasHabits: habits.length > 0,
     version,
+    languages,
+    language,
+    chooseLanguage,
     requestPermission,
     openSystemSettings,
     sendTest,

@@ -1,10 +1,12 @@
 import SettingsScreen from "@/app/(tabs)/settings";
-import i18n from "@/i18n/i18next";
+import i18n, { DEVICE, setLanguage } from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
+import ptBR from "@/i18n/locales/pt-BR";
+import { getSetting } from "@/lib/db";
 import { createHabit, deleteAllData, getAppState } from "@/lib/store";
 import type { HabitInput } from "@/lib/types";
 import { accent } from "@/theme/colors";
-import { pressButton } from "@/test-utils/native-events";
+import { chooseOption, pressButton } from "@/test-utils/native-events";
 import { modifier, nativeView, nativeViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
@@ -35,6 +37,7 @@ const notifications = jest.requireMock<{
 
 /* Asserted against the catalog, so a case proves the key rather than the copy. */
 const copy = en.translations.settings;
+const language = en.translations.language;
 
 const TODAY = "2026-07-29";
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
@@ -72,6 +75,25 @@ function settingsButton(container: TestInstance, label: string): TestInstance {
   return found;
 }
 
+/**
+ * Found by the handler rather than by its label, since the label is itself
+ * translated and moves as soon as a language is picked.
+ */
+function languagePicker(container: TestInstance): TestInstance {
+  const found = nativeViews(container).find(
+    (node) => typeof node.props.onSelectionChange === "function",
+  );
+  if (!found) throw new Error("No row offers a language to pick.");
+  return found;
+}
+
+/** The languages a picker offers, in the order it draws them. */
+function optionsOf(picker: TestInstance): string[] {
+  return picker
+    .queryAll((node) => typeof node.props.text === "string")
+    .map((node) => node.props.text as string);
+}
+
 /** The line drawn right after a labelled row, which is that row's value. */
 function valueAfter(container: TestInstance, label: string): string {
   const drawn = drawnText(container);
@@ -88,7 +110,9 @@ async function renderSettings(permission: unknown = GRANTED) {
 
 beforeEach(async () => {
   /* Pinned rather than inherited: a change to how the device is resolved must
-  not rewrite what these cases assert. */
+  not rewrite what these cases assert. The preference is a stored row, so it
+  outlives the case that wrote it unless it is cleared here. */
+  setLanguage(DEVICE);
   await i18n.changeLanguage("en");
   freezeClock(`${TODAY}T12:00:00-03:00`);
   stableIds();
@@ -166,7 +190,7 @@ describe("the settings screen", () => {
     const { container } = await renderSettings();
 
     expect(() => nativeView(container, "label", copy.deleteAllData)).toThrow(
-      "none",
+      copy.deleteAllData,
     );
   });
 
@@ -183,5 +207,62 @@ describe("the settings screen", () => {
       expect.any(Array),
     );
     expect(getAppState().habits).toHaveLength(1);
+  });
+});
+
+describe("the language row", () => {
+  it("should carry the section's own title as its label", async () => {
+    const { container } = await renderSettings();
+
+    expect(languagePicker(container).props.label).toBe(language.title);
+  });
+
+  it("should offer the system default first, then the languages by name", async () => {
+    const { container } = await renderSettings();
+
+    expect(optionsOf(languagePicker(container))).toEqual([
+      language.systemDefault,
+      "English",
+      "Português (Brasil)",
+    ]);
+  });
+
+  it("should push a list rather than open a menu", async () => {
+    const { container } = await renderSettings();
+
+    expect(modifier(languagePicker(container), "pickerStyle")).toMatchObject({
+      style: "navigationLink",
+    });
+  });
+
+  it("should show the device as the selection until one is chosen", async () => {
+    const { container } = await renderSettings();
+
+    expect(languagePicker(container).props.selection).toBe(DEVICE);
+  });
+
+  it("should store the language it is given and switch to it", async () => {
+    const { container } = await renderSettings();
+
+    await chooseOption(languagePicker(container), "pt-BR");
+
+    expect(getSetting("language")).toBe("pt-BR");
+    expect(i18n.language).toBe("pt-BR");
+    expect(languagePicker(container).props.selection).toBe("pt-BR");
+    /* The screen redraws in the new language without being remounted. */
+    expect(languagePicker(container).props.label).toBe(
+      ptBR.translations.language.title,
+    );
+  });
+
+  it("should follow the device again when the system default is chosen", async () => {
+    const { container } = await renderSettings();
+    await chooseOption(languagePicker(container), "pt-BR");
+
+    await chooseOption(languagePicker(container), DEVICE);
+
+    expect(getSetting("language")).toBe(DEVICE);
+    /* The runner's device reports en-US. */
+    expect(i18n.language).toBe("en");
   });
 });

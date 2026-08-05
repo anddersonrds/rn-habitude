@@ -171,6 +171,32 @@ describe("changing the language", () => {
   });
 });
 
+describe("the preference the picker shows", () => {
+  it("should be the stored tag", () => {
+    const { getLanguagePreference } = load({
+      preferences: [device("en-US")],
+      stored: "pt-BR",
+    });
+
+    expect(getLanguagePreference()).toBe("pt-BR");
+  });
+
+  it("should be the device on a fresh install", () => {
+    const { getLanguagePreference } = load({ preferences: [device("pt-BR")] });
+
+    expect(getLanguagePreference()).toBe("device");
+  });
+
+  it("should be the device when the stored tag matches no catalog", () => {
+    const { getLanguagePreference } = load({
+      preferences: [device("en-US")],
+      stored: "sv-SE",
+    });
+
+    expect(getLanguagePreference()).toBe("device");
+  });
+});
+
 describe("coming back to the foreground", () => {
   it("should follow the device's new language while it is the preference", () => {
     const { i18next, setPreferences, appStateChanges } = load({

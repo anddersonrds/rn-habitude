@@ -94,6 +94,7 @@ type AlertButtons = { text: string; style?: string; onPress?: () => void }[];
 
 type Loaded = {
   store: StoreModule;
+  i18n: typeof import("@/i18n/i18next");
   useSettingsModel: ModelModule["useSettingsModel"];
   haptic: { [K in keyof HapticsModule["haptic"]]: jest.Mock };
   getPermission: jest.Mock;
@@ -118,6 +119,7 @@ function load(): Loaded {
   const i18n = require("@/i18n/i18next") as typeof import("@/i18n/i18next");
   void i18n.default.changeLanguage("en");
   return {
+    i18n,
     store: require("@/lib/store"),
     useSettingsModel: require("@/components/screens/settings/useSettingsModel")
       .useSettingsModel,
@@ -551,6 +553,64 @@ describe("seeing the onboarding again", () => {
 
     expect(store.getAppState().onboarded).toBe(false);
     expect(haptic.impact).toHaveBeenCalledTimes(1);
+    await unmount();
+  });
+});
+
+describe("choosing a language", () => {
+  it("should offer the system default first, then the languages by name", async () => {
+    const { result, unmount } = await renderModel(GRANTED);
+
+    expect(result.current.languages).toEqual([
+      { tag: "device", label: en.translations.language.systemDefault },
+      { tag: "en", label: "English" },
+      { tag: "pt-BR", label: "Português (Brasil)" },
+    ]);
+    await unmount();
+  });
+
+  it("should start on the device while nothing has been chosen", async () => {
+    const { result, unmount } = await renderModel(GRANTED);
+
+    expect(result.current.language).toBe("device");
+    await unmount();
+  });
+
+  it("should start on the language already stored", async () => {
+    resetDatabase();
+    const loaded = load();
+    loaded.getPermission.mockResolvedValue(GRANTED);
+    loaded.i18n.setLanguage("pt-BR");
+
+    const { result, unmount } = await loaded.testingLibrary.renderHook(() =>
+      loaded.useSettingsModel(),
+    );
+
+    expect(result.current.language).toBe("pt-BR");
+    await unmount();
+  });
+
+  it("should store and apply the language it is given", async () => {
+    const { act, i18n, result, unmount } = await renderModel(GRANTED);
+
+    await act(async () => result.current.chooseLanguage("pt-BR"));
+
+    expect(result.current.language).toBe("pt-BR");
+    expect(i18n.getLanguagePreference()).toBe("pt-BR");
+    expect(i18n.default.language).toBe("pt-BR");
+    await unmount();
+  });
+
+  it("should go back to the device when the system default is chosen", async () => {
+    const { act, i18n, result, unmount } = await renderModel(GRANTED);
+    await act(async () => result.current.chooseLanguage("pt-BR"));
+
+    await act(async () => result.current.chooseLanguage("device"));
+
+    expect(result.current.language).toBe("device");
+    expect(i18n.getLanguagePreference()).toBe("device");
+    /* The runner's device reports en-US. */
+    expect(i18n.default.language).toBe("en");
     await unmount();
   });
 });

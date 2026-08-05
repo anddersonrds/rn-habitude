@@ -7,10 +7,16 @@ import {
   Image,
   Label,
   LabeledContent,
+  Picker,
   Section,
   Text,
 } from "@expo/ui/swift-ui";
-import { font, foregroundStyle } from "@expo/ui/swift-ui/modifiers";
+import {
+  font,
+  foregroundStyle,
+  pickerStyle,
+  tag,
+} from "@expo/ui/swift-ui/modifiers";
 import type { ComponentProps } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -54,7 +60,7 @@ function SettingsButton({
 }
 
 export default function SettingsScreen() {
-  const { t } = useTranslation("settings");
+  const { t } = useTranslation(["settings", "language"]);
   const {
     permissionLabel,
     permissionColor,
@@ -64,6 +70,9 @@ export default function SettingsScreen() {
     totalCheckIns,
     hasHabits,
     version,
+    languages,
+    language,
+    chooseLanguage,
     requestPermission,
     openSystemSettings,
     sendTest,
@@ -175,6 +184,27 @@ export default function SettingsScreen() {
               {version}
             </Text>
           </LabeledContent>
+        </Section>
+
+        <Section title={t("language:title")}>
+          {/* SwiftUI draws the row, its current value, the push and the
+          checkmark. `automatic` inside a Form can resolve to a popup menu,
+          which has neither a row value nor a pushed list. */}
+          <Picker
+            label={t("language:title")}
+            selection={language}
+            onSelectionChange={chooseLanguage}
+            modifiers={[pickerStyle("navigationLink")]}
+          >
+            {languages.map((entry) => (
+              <Text
+                key={entry.tag}
+                modifiers={[tag(entry.tag), font({ design: "rounded" })]}
+              >
+                {entry.label}
+              </Text>
+            ))}
+          </Picker>
         </Section>
       </Form>
     </Host>

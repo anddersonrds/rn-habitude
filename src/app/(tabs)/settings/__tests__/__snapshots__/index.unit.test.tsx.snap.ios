@@ -515,6 +515,81 @@ exports[`the settings screen should render the whole screen 1`] = `
             </ViewManagerAdapter_ExpoUI>
           </ViewManagerAdapter_ExpoUI>
         </ViewManagerAdapter_ExpoUI>
+        <ViewManagerAdapter_ExpoUI
+          title="Language"
+        >
+          <ViewManagerAdapter_ExpoUI
+            name="content"
+          >
+            <ViewManagerAdapter_ExpoUI
+              label="Language"
+              modifiers={
+                [
+                  {
+                    "$type": "pickerStyle",
+                    "style": "navigationLink",
+                  },
+                ]
+              }
+              onGlobalEvent={[Function]}
+              onSelectionChange={[Function]}
+              selection="device"
+            >
+              <ViewManagerAdapter_ExpoUI
+                name="content"
+              >
+                <ViewManagerAdapter_ExpoUI
+                  modifiers={
+                    [
+                      {
+                        "$type": "tag",
+                        "tag": "device",
+                      },
+                      {
+                        "$type": "font",
+                        "design": "rounded",
+                      },
+                    ]
+                  }
+                  onGlobalEvent={[Function]}
+                  text="System default"
+                />
+                <ViewManagerAdapter_ExpoUI
+                  modifiers={
+                    [
+                      {
+                        "$type": "tag",
+                        "tag": "en",
+                      },
+                      {
+                        "$type": "font",
+                        "design": "rounded",
+                      },
+                    ]
+                  }
+                  onGlobalEvent={[Function]}
+                  text="English"
+                />
+                <ViewManagerAdapter_ExpoUI
+                  modifiers={
+                    [
+                      {
+                        "$type": "tag",
+                        "tag": "pt-BR",
+                      },
+                      {
+                        "$type": "font",
+                        "design": "rounded",
+                      },
+                    ]
+                  }
+                  onGlobalEvent={[Function]}
+                  text="Português (Brasil)"
+                />
+              </ViewManagerAdapter_ExpoUI>
+            </ViewManagerAdapter_ExpoUI>
+          </ViewManagerAdapter_ExpoUI>
+        </ViewManagerAdapter_ExpoUI>
       </ViewManagerAdapter_ExpoUI>
     </ViewManagerAdapter_ExpoUI>
   </KeyboardProvider>

@@ -19,7 +19,7 @@ export const DEVICE = "device";
  * Every language the app ships. A locale carries its own tag, label and device
  * codes, so adding one is a new file plus an entry here.
  */
-export const LOCALES: Locale[] = [en, ptBR];
+export const LOCALES: Locale[] = [ptBR, en];
 
 const FALLBACK = en.tag;
 
@@ -59,6 +59,17 @@ export function resolveLanguage(): string {
     if (match) return match.tag;
   }
   return resolveFromDevice();
+}
+
+/**
+ * What the picker shows as selected: a tag, or `DEVICE` while the app follows
+ * the phone. A stored value no catalog matches reads as `DEVICE`, which is the
+ * language the app is actually running in that case.
+ */
+export function getLanguagePreference(): string {
+  const stored = getSetting(LANGUAGE_SETTING);
+  if (stored === null) return DEVICE;
+  return LOCALES.some((locale) => locale.tag === stored) ? stored : DEVICE;
 }
 
 /** Persists the preference and applies it. `DEVICE` re-reads the device. */
