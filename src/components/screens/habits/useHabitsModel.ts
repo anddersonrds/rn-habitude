@@ -6,6 +6,7 @@ import { computeStreaks, trailingDayStates } from "@/lib/streaks";
 import type { Habit } from "@/lib/types";
 import { router } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
 
 /** Days of history shown in each row's inline heat strip. */
@@ -25,6 +26,7 @@ export type HabitRowModel = {
  * action the list can take, so the SwiftUI view stays a thin render layer.
  */
 export function useHabitsModel() {
+  const { t } = useTranslation("schedule");
   const state = useAppState();
   const [reordering, setReordering] = useState(false);
   const today = todayKey();
@@ -33,7 +35,7 @@ export function useHabitsModel() {
     habit,
     states: trailingDayStates(habit, state.completions[habit.id], STRIP_DAYS, today),
     streak: computeStreaks(habit, state.completions[habit.id], today).current,
-    schedule: scheduleLabel(habit),
+    schedule: scheduleLabel(habit, t),
   }));
 
   const bestStreak = rows.reduce((best, row) => Math.max(best, row.streak), 0);

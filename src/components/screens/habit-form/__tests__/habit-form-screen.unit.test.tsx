@@ -3,8 +3,10 @@ import {
   DEFAULT_HABIT_COLOR,
   DEFAULT_HABIT_ICON,
   HABIT_ICONS,
-  WEEKDAY_NAMES,
+  WEEKDAY_KEYS,
 } from "@/constants/habit-options";
+import i18n from "@/i18n/i18next";
+import en from "@/i18n/locales/en";
 import { createHabit, deleteAllData, getAppState } from "@/lib/store";
 import type { HabitInput } from "@/lib/types";
 import { foregroundOnColor } from "@/theme/colors";
@@ -45,6 +47,12 @@ const HABIT_COLOR = "#FF9500";
 const OTHER_COLOR = "#FF3B30";
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
 const WEEKDAYS_ONLY = [1, 2, 3, 4, 5];
+
+/* The day dots are labelled from the catalog, so the labels to press are read
+from it rather than written out a second time. */
+const WEEKDAY_NAMES = WEEKDAY_KEYS.map(
+  (keys) => en.translations.schedule[keys.name],
+);
 
 function input(overrides: Partial<HabitInput> = {}): HabitInput {
   return {
@@ -94,6 +102,9 @@ async function settle(): Promise<void> {
 }
 
 beforeEach(async () => {
+  /* Pinned rather than inherited, so a change to how the device is resolved
+  cannot rewrite what these cases assert. */
+  await i18n.changeLanguage("en");
   freezeClock(`${TODAY}T12:00:00-03:00`);
   stableIds();
   await deleteAllData();

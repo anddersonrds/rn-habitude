@@ -12,6 +12,7 @@ import { Color, Link, router, Stack, useLocalSearchParams } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { PressableScale } from "pressto";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 
@@ -40,6 +41,7 @@ function SecondaryStat({
 }
 
 export default function HabitDetailScreen() {
+  const { t } = useTranslation("schedule");
   const { id } = useLocalSearchParams<{ id: string }>();
   const state = useAppState();
   const habit = state.habits.find((candidate) => candidate.id === id);
@@ -58,7 +60,7 @@ export default function HabitDetailScreen() {
   const doneToday = completed?.[today] === true;
 
   const subtitle = [
-    scheduleLabel(habit),
+    scheduleLabel(habit, t),
     habit.reminderTime ? formatTime(habit.reminderTime) : null,
   ]
     .filter(Boolean)

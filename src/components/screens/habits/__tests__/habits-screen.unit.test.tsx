@@ -1,4 +1,5 @@
 import { HabitsScreen } from "@/components/screens/habits/HabitsScreen";
+import i18n from "@/i18n/i18next";
 import { completeHabit, createHabit, deleteAllData, getAppState } from "@/lib/store";
 import type { Habit, HabitInput } from "@/lib/types";
 import { moveRow, pressButton, tapNative } from "@/test-utils/native-events";
@@ -119,6 +120,9 @@ async function settle(): Promise<void> {
 }
 
 beforeEach(async () => {
+  /* Pinned rather than inherited, so a change to how the device is resolved
+  cannot rewrite what these cases assert. */
+  await i18n.changeLanguage("en");
   freezeClock(`${TODAY}T12:00:00-03:00`);
   stableIds();
   await deleteAllData();

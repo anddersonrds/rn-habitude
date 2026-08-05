@@ -1,4 +1,5 @@
 import HabitDetailScreen from "@/app/habit/[id]";
+import i18n from "@/i18n/i18next";
 import {
   completeHabit,
   createHabit,
@@ -100,6 +101,9 @@ function seedHabit(
 }
 
 beforeEach(async () => {
+  /* Pinned rather than inherited, so a change to how the device is resolved
+  cannot rewrite what these cases assert. */
+  await i18n.changeLanguage("en");
   freezeClock(`${TODAY}T12:00:00-03:00`);
   stableIds();
   await deleteAllData();

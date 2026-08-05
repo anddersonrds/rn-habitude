@@ -3,8 +3,7 @@ import { appFontFamily, Text } from "@/components/ui/Text";
 import {
   HABIT_COLORS,
   HABIT_ICONS,
-  WEEKDAY_LABELS,
-  WEEKDAY_NAMES,
+  WEEKDAY_KEYS,
 } from "@/constants/habit-options";
 import { layout } from "@/constants/layout";
 import { foregroundOnColor } from "@/theme/colors";
@@ -28,6 +27,7 @@ import {
 import { Color, Stack } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { PressableScale } from "pressto";
+import { useTranslation } from "react-i18next";
 import {
   Keyboard,
   Pressable,
@@ -77,6 +77,7 @@ function colorGridMetrics(windowWidth: number) {
 }
 
 export function HabitFormScreen() {
+  const { t: tSchedule } = useTranslation("schedule");
   const { width: windowWidth } = useWindowDimensions();
   const {
     isEditing,
@@ -197,13 +198,13 @@ export function HabitFormScreen() {
               >
                 <View style={styles.separator} />
                 <View style={styles.weekdayRow}>
-                  {WEEKDAY_LABELS.map((label, day) => {
+                  {WEEKDAY_KEYS.map((keys, day) => {
                     const selected = weekdays.includes(day);
                     return (
                       <Pressable
                         key={day}
                         accessibilityRole="button"
-                        accessibilityLabel={WEEKDAY_NAMES[day]}
+                        accessibilityLabel={tSchedule(keys.name)}
                         accessibilityState={{ selected }}
                         onPress={() => toggleWeekday(day)}
                         style={[
@@ -224,7 +225,7 @@ export function HabitFormScreen() {
                             fontWeight: "600",
                           }}
                         >
-                          {label}
+                          {tSchedule(keys.initial)}
                         </Text>
                       </Pressable>
                     );

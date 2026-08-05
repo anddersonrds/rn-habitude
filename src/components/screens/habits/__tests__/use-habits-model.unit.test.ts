@@ -71,6 +71,10 @@ type Loaded = {
 function load(): Loaded {
   jest.resetModules();
   const { Alert } = require("react-native") as typeof import("react-native");
+  /* The hook translates, so the instance has to be the one in this registry,
+  and its language pinned rather than inherited from how the device resolves. */
+  const i18n = require("@/i18n/i18next") as typeof import("@/i18n/i18next");
+  void i18n.default.changeLanguage("en");
   return {
     store: require("@/lib/store"),
     useHabitsModel: require("@/components/screens/habits/useHabitsModel")
