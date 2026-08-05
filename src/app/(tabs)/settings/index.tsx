@@ -105,7 +105,9 @@ export default function SettingsScreen() {
         <Section
           title={t("notifications")}
           footer={
-            <Text modifiers={[font({ design: "rounded" })]}>
+            <Text
+              modifiers={[font({ design: "rounded", textStyle: "footnote" })]}
+            >
               {t("notificationsFooter")}
             </Text>
           }
@@ -148,7 +150,9 @@ export default function SettingsScreen() {
         <Section
           title={t("data")}
           footer={
-            <Text modifiers={[font({ design: "rounded" })]}>
+            <Text
+              modifiers={[font({ design: "rounded", textStyle: "footnote" })]}
+            >
               {t("dataFooter")}
             </Text>
           }

@@ -107,6 +107,7 @@ exports[`the settings screen should render the whole screen 1`] = `
                   {
                     "$type": "font",
                     "design": "rounded",
+                    "textStyle": "footnote",
                   },
                 ]
               }
@@ -256,6 +257,7 @@ exports[`the settings screen should render the whole screen 1`] = `
                   {
                     "$type": "font",
                     "design": "rounded",
+                    "textStyle": "footnote",
                   },
                 ]
               }
