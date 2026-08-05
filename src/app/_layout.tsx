@@ -1,3 +1,9 @@
+/*
+First, and before any screen module is evaluated: the language is resolved
+synchronously at import, which is what keeps English off the first frame of a
+Portuguese device without a loading state.
+*/
+import "@/i18n/i18next";
 import { haptic } from "@/lib/haptics";
 import { useNotificationActions } from "@/lib/notification-actions";
 import { useAppState } from "@/lib/store";
