@@ -1,0 +1,1744 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`a list with habits should render the list 1`] = `
+<View
+  style={
+    {
+      "flex": 1,
+    }
+  }
+>
+  <KeyboardProvider
+    preload={false}
+  >
+    <View
+      accessibilityLabel="Reorder"
+      accessibilityRole="button"
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": false,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+    />
+    <View
+      accessibilityLabel="Add habit"
+      accessibilityRole="button"
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": false,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+    />
+    <ViewManagerAdapter_ExpoUI
+      layoutDirection="leftToRight"
+      style={
+        {
+          "backgroundColor": {
+            "semantic": [
+              "systemGroupedBackground",
+            ],
+          },
+          "flex": 1,
+        }
+      }
+    >
+      <ViewManagerAdapter_ExpoUI
+        modifiers={
+          [
+            {
+              "$type": "listStyle",
+              "style": "insetGrouped",
+            },
+            {
+              "$type": "environment",
+              "key": "editMode",
+              "value": "inactive",
+            },
+            {
+              "$type": "animation",
+              "animatedValue": false,
+              "animation": {
+                "blendDuration": undefined,
+                "bounce": 0.06,
+                "dampingFraction": undefined,
+                "duration": 0.35,
+                "response": undefined,
+                "type": "spring",
+              },
+            },
+            {
+              "$type": "animation",
+              "animatedValue": 2,
+              "animation": {
+                "duration": 0.22,
+                "type": "easeInOut",
+              },
+            },
+          ]
+        }
+        onGlobalEvent={[Function]}
+        onSelectionChange={[Function]}
+      >
+        <ViewManagerAdapter_ExpoUI
+          title="2 habits"
+        >
+          <ViewManagerAdapter_ExpoUI
+            name="footer"
+          >
+            <ViewManagerAdapter_ExpoUI
+              modifiers={
+                [
+                  {
+                    "$type": "font",
+                    "design": "rounded",
+                    "textStyle": "footnote",
+                  },
+                  {
+                    "$type": "opacity",
+                    "value": 0.55,
+                  },
+                ]
+              }
+              onGlobalEvent={[Function]}
+              text="Tap Reorder to drag habits into a new order. Long press a habit for more actions."
+            />
+          </ViewManagerAdapter_ExpoUI>
+          <ViewManagerAdapter_ExpoUI
+            name="content"
+          >
+            <ViewManagerAdapter_ExpoUI
+              spacing={16}
+            >
+              <ViewManagerAdapter_ExpoUI
+                alignment="leading"
+                spacing={1}
+              >
+                <ViewManagerAdapter_ExpoUI
+                  modifiers={
+                    [
+                      {
+                        "$type": "font",
+                        "design": "rounded",
+                        "textStyle": "title2",
+                        "weight": "bold",
+                      },
+                    ]
+                  }
+                  onGlobalEvent={[Function]}
+                  text="0"
+                />
+                <ViewManagerAdapter_ExpoUI
+                  modifiers={
+                    [
+                      {
+                        "$type": "font",
+                        "design": "rounded",
+                        "textStyle": "footnote",
+                      },
+                      {
+                        "$type": "opacity",
+                        "value": 0.55,
+                      },
+                    ]
+                  }
+                  onGlobalEvent={[Function]}
+                  text="longest active streak"
+                />
+              </ViewManagerAdapter_ExpoUI>
+              <ViewManagerAdapter_ExpoUI />
+              <ViewManagerAdapter_ExpoUI
+                alignment="trailing"
+                spacing={1}
+              >
+                <ViewManagerAdapter_ExpoUI
+                  modifiers={
+                    [
+                      {
+                        "$type": "font",
+                        "design": "rounded",
+                        "textStyle": "headline",
+                      },
+                    ]
+                  }
+                  onGlobalEvent={[Function]}
+                  text="0"
+                />
+                <ViewManagerAdapter_ExpoUI
+                  modifiers={
+                    [
+                      {
+                        "$type": "font",
+                        "design": "rounded",
+                        "textStyle": "caption",
+                      },
+                      {
+                        "$type": "opacity",
+                        "value": 0.55,
+                      },
+                    ]
+                  }
+                  onGlobalEvent={[Function]}
+                  text="check-ins"
+                />
+              </ViewManagerAdapter_ExpoUI>
+            </ViewManagerAdapter_ExpoUI>
+          </ViewManagerAdapter_ExpoUI>
+        </ViewManagerAdapter_ExpoUI>
+        <ViewManagerAdapter_ExpoUI>
+          <ViewManagerAdapter_ExpoUI
+            name="content"
+          >
+            <ViewManagerAdapter_ExpoUI
+              onMove={[Function]}
+            >
+              <ViewManagerAdapter_ExpoUI
+                modifiers={
+                  [
+                    {
+                      "$type": "tag",
+                      "tag": "ms3csio0-m8yzrxra",
+                    },
+                    {
+                      "$type": "moveDisabled",
+                      "disabled": true,
+                    },
+                  ]
+                }
+              >
+                <ViewManagerAdapter_ExpoUI
+                  name="items"
+                >
+                  <ViewManagerAdapter_ExpoUI
+                    label="Open"
+                    onButtonPress={[Function]}
+                    systemImage="chart.bar.fill"
+                  />
+                  <ViewManagerAdapter_ExpoUI
+                    label="Edit"
+                    onButtonPress={[Function]}
+                    systemImage="pencil"
+                  />
+                  <ViewManagerAdapter_ExpoUI
+                    label="Delete"
+                    onButtonPress={[Function]}
+                    role="destructive"
+                    systemImage="trash"
+                  />
+                </ViewManagerAdapter_ExpoUI>
+                <ViewManagerAdapter_ExpoUI
+                  name="trigger"
+                >
+                  <ViewManagerAdapter_ExpoUI
+                    modifiers={
+                      [
+                        {
+                          "$type": "contentShape",
+                          "shape": "rectangle",
+                        },
+                        {
+                          "$type": "accessibilityLabel",
+                          "label": "Walk outside, Every day",
+                        },
+                        {
+                          "$type": "accessibilityHint",
+                          "hint": "Opens habit history. Long press for more actions.",
+                        },
+                        {
+                          "$type": "onTapGesture",
+                          "eventListener": [Function],
+                        },
+                      ]
+                    }
+                    onGlobalEvent={[Function]}
+                    spacing={12}
+                  >
+                    <ViewManagerAdapter_ExpoUI
+                      modifiers={
+                        [
+                          {
+                            "$type": "frame",
+                            "height": 40,
+                            "width": 40,
+                          },
+                          {
+                            "$type": "background",
+                            "color": "#FF950026",
+                            "cornerRadius": 11,
+                            "cornerSize": undefined,
+                            "roundedCornerStyle": undefined,
+                            "shape": "roundedRectangle",
+                          },
+                          {
+                            "$type": "font",
+                            "size": 19,
+                          },
+                          {
+                            "$type": "foregroundStyle",
+                            "color": "#FF9500",
+                            "styleType": "color",
+                          },
+                        ]
+                      }
+                      onGlobalEvent={[Function]}
+                      systemName="figure.walk"
+                    />
+                    <ViewManagerAdapter_ExpoUI
+                      alignment="leading"
+                      spacing={3}
+                    >
+                      <ViewManagerAdapter_ExpoUI
+                        modifiers={
+                          [
+                            {
+                              "$type": "font",
+                              "design": "rounded",
+                              "textStyle": "headline",
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                        text="Walk outside"
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        spacing={5}
+                      >
+                        <ViewManagerAdapter_ExpoUI
+                          modifiers={
+                            [
+                              {
+                                "$type": "font",
+                                "design": "rounded",
+                                "textStyle": "footnote",
+                              },
+                              {
+                                "$type": "opacity",
+                                "value": 0.55,
+                              },
+                            ]
+                          }
+                          onGlobalEvent={[Function]}
+                          text="Every day"
+                        />
+                      </ViewManagerAdapter_ExpoUI>
+                    </ViewManagerAdapter_ExpoUI>
+                    <ViewManagerAdapter_ExpoUI />
+                    <ViewManagerAdapter_ExpoUI
+                      modifiers={
+                        [
+                          {
+                            "$type": "frame",
+                            "width": 76,
+                          },
+                        ]
+                      }
+                      onGlobalEvent={[Function]}
+                      spacing={2}
+                    >
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.14,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.14,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#FF9500",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.3,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                    </ViewManagerAdapter_ExpoUI>
+                  </ViewManagerAdapter_ExpoUI>
+                </ViewManagerAdapter_ExpoUI>
+              </ViewManagerAdapter_ExpoUI>
+              <ViewManagerAdapter_ExpoUI
+                modifiers={
+                  [
+                    {
+                      "$type": "tag",
+                      "tag": "ms67o800-8hxzjvil",
+                    },
+                    {
+                      "$type": "moveDisabled",
+                      "disabled": true,
+                    },
+                  ]
+                }
+              >
+                <ViewManagerAdapter_ExpoUI
+                  name="items"
+                >
+                  <ViewManagerAdapter_ExpoUI
+                    label="Open"
+                    onButtonPress={[Function]}
+                    systemImage="chart.bar.fill"
+                  />
+                  <ViewManagerAdapter_ExpoUI
+                    label="Edit"
+                    onButtonPress={[Function]}
+                    systemImage="pencil"
+                  />
+                  <ViewManagerAdapter_ExpoUI
+                    label="Delete"
+                    onButtonPress={[Function]}
+                    role="destructive"
+                    systemImage="trash"
+                  />
+                </ViewManagerAdapter_ExpoUI>
+                <ViewManagerAdapter_ExpoUI
+                  name="trigger"
+                >
+                  <ViewManagerAdapter_ExpoUI
+                    modifiers={
+                      [
+                        {
+                          "$type": "contentShape",
+                          "shape": "rectangle",
+                        },
+                        {
+                          "$type": "accessibilityLabel",
+                          "label": "Read, Every day",
+                        },
+                        {
+                          "$type": "accessibilityHint",
+                          "hint": "Opens habit history. Long press for more actions.",
+                        },
+                        {
+                          "$type": "onTapGesture",
+                          "eventListener": [Function],
+                        },
+                      ]
+                    }
+                    onGlobalEvent={[Function]}
+                    spacing={12}
+                  >
+                    <ViewManagerAdapter_ExpoUI
+                      modifiers={
+                        [
+                          {
+                            "$type": "frame",
+                            "height": 40,
+                            "width": 40,
+                          },
+                          {
+                            "$type": "background",
+                            "color": "#FF3B3026",
+                            "cornerRadius": 11,
+                            "cornerSize": undefined,
+                            "roundedCornerStyle": undefined,
+                            "shape": "roundedRectangle",
+                          },
+                          {
+                            "$type": "font",
+                            "size": 19,
+                          },
+                          {
+                            "$type": "foregroundStyle",
+                            "color": "#FF3B30",
+                            "styleType": "color",
+                          },
+                        ]
+                      }
+                      onGlobalEvent={[Function]}
+                      systemName="figure.walk"
+                    />
+                    <ViewManagerAdapter_ExpoUI
+                      alignment="leading"
+                      spacing={3}
+                    >
+                      <ViewManagerAdapter_ExpoUI
+                        modifiers={
+                          [
+                            {
+                              "$type": "font",
+                              "design": "rounded",
+                              "textStyle": "headline",
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                        text="Read"
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        spacing={5}
+                      >
+                        <ViewManagerAdapter_ExpoUI
+                          modifiers={
+                            [
+                              {
+                                "$type": "font",
+                                "design": "rounded",
+                                "textStyle": "footnote",
+                              },
+                              {
+                                "$type": "opacity",
+                                "value": 0.55,
+                              },
+                            ]
+                          }
+                          onGlobalEvent={[Function]}
+                          text="Every day"
+                        />
+                      </ViewManagerAdapter_ExpoUI>
+                    </ViewManagerAdapter_ExpoUI>
+                    <ViewManagerAdapter_ExpoUI />
+                    <ViewManagerAdapter_ExpoUI
+                      modifiers={
+                        [
+                          {
+                            "$type": "frame",
+                            "width": 76,
+                          },
+                        ]
+                      }
+                      onGlobalEvent={[Function]}
+                      spacing={2}
+                    >
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#000000",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.06,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                      <ViewManagerAdapter_ExpoUI
+                        cornerRadius={1.5}
+                        modifiers={
+                          [
+                            {
+                              "$type": "frame",
+                              "height": 16,
+                            },
+                            {
+                              "$type": "foregroundStyle",
+                              "color": "#FF3B30",
+                              "styleType": "color",
+                            },
+                            {
+                              "$type": "opacity",
+                              "value": 0.3,
+                            },
+                          ]
+                        }
+                        onGlobalEvent={[Function]}
+                      />
+                    </ViewManagerAdapter_ExpoUI>
+                  </ViewManagerAdapter_ExpoUI>
+                </ViewManagerAdapter_ExpoUI>
+              </ViewManagerAdapter_ExpoUI>
+            </ViewManagerAdapter_ExpoUI>
+          </ViewManagerAdapter_ExpoUI>
+        </ViewManagerAdapter_ExpoUI>
+      </ViewManagerAdapter_ExpoUI>
+    </ViewManagerAdapter_ExpoUI>
+  </KeyboardProvider>
+</View>
+`;
+
+exports[`a list with no habits should render the empty state 1`] = `
+<View
+  style={
+    {
+      "flex": 1,
+    }
+  }
+>
+  <KeyboardProvider
+    preload={false}
+  >
+    <View
+      accessibilityLabel="Add habit"
+      accessibilityRole="button"
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": false,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+    />
+    <View
+      style={
+        {
+          "backgroundColor": {
+            "semantic": [
+              "systemGroupedBackground",
+            ],
+          },
+          "flex": 1,
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "alignItems": "center",
+            "flex": 1,
+            "gap": 8,
+            "justifyContent": "center",
+            "paddingHorizontal": 40,
+            "paddingVertical": 48,
+          }
+        }
+      >
+        <View
+          collapsable={false}
+          entering={
+            FadeIn {
+              "build": [Function],
+              "durationV": 320,
+              "randomizeDelay": false,
+              "reduceMotionV": "system",
+            }
+          }
+          jestAnimatedProps={
+            {
+              "value": {},
+            }
+          }
+          jestAnimatedStyle={
+            {
+              "value": {},
+            }
+          }
+          jestInlineStyle={
+            [
+              {
+                "alignItems": "center",
+                "borderCurve": "continuous",
+                "borderRadius": 24,
+                "height": 76,
+                "justifyContent": "center",
+                "width": 76,
+              },
+              {
+                "backgroundColor": "#32ADE61F",
+              },
+            ]
+          }
+          style={
+            [
+              {
+                "alignItems": "center",
+                "borderCurve": "continuous",
+                "borderRadius": 24,
+                "height": 76,
+                "justifyContent": "center",
+                "width": 76,
+              },
+              {
+                "backgroundColor": "#32ADE61F",
+              },
+            ]
+          }
+        >
+          <ViewManagerAdapter_SymbolModule
+            animated={false}
+            colors={[]}
+            name="square.grid.2x2"
+            size={34}
+            style={
+              {
+                "height": 34,
+                "width": 34,
+              }
+            }
+            tint={4281511398}
+            tintColor="#32ADE6"
+            type="monochrome"
+          />
+        </View>
+        <View
+          collapsable={false}
+          entering={
+            FadeInUp {
+              "build": [Function],
+              "delayV": 60,
+              "durationV": 300,
+              "randomizeDelay": false,
+              "reduceMotionV": "system",
+            }
+          }
+          jestAnimatedProps={
+            {
+              "value": {},
+            }
+          }
+          jestAnimatedStyle={
+            {
+              "value": {},
+            }
+          }
+          jestInlineStyle={
+            {
+              "alignItems": "center",
+              "gap": 6,
+              "marginTop": 8,
+            }
+          }
+          style={
+            [
+              {
+                "alignItems": "center",
+                "gap": 6,
+                "marginTop": 8,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              [
+                {
+                  "fontSize": 20,
+                  "fontWeight": "600",
+                  "letterSpacing": 0.38,
+                },
+                {
+                  "color": {
+                    "semantic": [
+                      "label",
+                    ],
+                  },
+                  "fontFamily": "ui-rounded",
+                },
+                undefined,
+                undefined,
+                {
+                  "textAlign": "center",
+                },
+              ]
+            }
+          >
+            No habits yet
+          </Text>
+          <Text
+            style={
+              [
+                {
+                  "fontSize": 15,
+                  "letterSpacing": -0.24,
+                },
+                {
+                  "color": {
+                    "semantic": [
+                      "label",
+                    ],
+                  },
+                  "fontFamily": "ui-rounded",
+                },
+                {
+                  "color": {
+                    "semantic": [
+                      "secondaryLabel",
+                    ],
+                  },
+                },
+                undefined,
+                {
+                  "lineHeight": 22,
+                  "maxWidth": 300,
+                  "textAlign": "center",
+                },
+              ]
+            }
+          >
+            Habits you create show up here with their streaks and history.
+          </Text>
+        </View>
+        <View
+          collapsable={false}
+          entering={
+            FadeInUp {
+              "build": [Function],
+              "delayV": 140,
+              "durationV": 300,
+              "randomizeDelay": false,
+              "reduceMotionV": "system",
+            }
+          }
+          jestAnimatedProps={
+            {
+              "value": {},
+            }
+          }
+          jestAnimatedStyle={
+            {
+              "value": {},
+            }
+          }
+        >
+          <View
+            accessibilityLabel="New habit"
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": undefined,
+                "checked": undefined,
+                "disabled": false,
+                "expanded": undefined,
+                "selected": undefined,
+              }
+            }
+            accessibilityValue={
+              {
+                "max": undefined,
+                "min": undefined,
+                "now": undefined,
+                "text": undefined,
+              }
+            }
+            accessible={true}
+            focusable={true}
+            onClick={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+          >
+            <Text
+              style={
+                [
+                  {
+                    "fontSize": 17,
+                    "fontWeight": "600",
+                    "letterSpacing": -0.41,
+                  },
+                  {
+                    "color": {
+                      "semantic": [
+                        "label",
+                      ],
+                    },
+                    "fontFamily": "ui-rounded",
+                  },
+                  undefined,
+                  undefined,
+                  {
+                    "color": "#000000",
+                  },
+                ]
+              }
+            >
+              New habit
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  </KeyboardProvider>
+</View>
+`;
