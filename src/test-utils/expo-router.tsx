@@ -13,6 +13,8 @@ import { Pressable } from "react-native";
 
 type ToolbarButtonProps = {
   accessibilityLabel?: string;
+  children?: ReactNode;
+  disabled?: boolean;
   onPress?: () => void;
 };
 
@@ -31,12 +33,27 @@ export function expoRouterMock() {
     setParams: jest.fn(),
   };
 
-  /* The button is a real pressable; only the bar around it is a stand-in. */
-  function ToolbarButton({ accessibilityLabel, onPress }: ToolbarButtonProps) {
+  /*
+  The button is a real pressable; only the bar around it is a stand-in. An icon
+  button is named by its label and a text button by its text, which is what the
+  real bar reads out, and a disabled button refuses the press the way SwiftUI's
+  own `disabled` does.
+  */
+  function ToolbarButton({
+    accessibilityLabel,
+    children,
+    disabled,
+    onPress,
+  }: ToolbarButtonProps) {
     return (
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={accessibilityLabel}
+        accessibilityLabel={
+          accessibilityLabel ??
+          (typeof children === "string" ? children : undefined)
+        }
+        accessibilityState={{ disabled: disabled === true }}
+        disabled={disabled}
         onPress={onPress}
       />
     );
