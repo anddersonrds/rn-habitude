@@ -1,4 +1,6 @@
 import SettingsScreen from "@/app/(tabs)/settings";
+import i18n from "@/i18n/i18next";
+import en from "@/i18n/locales/en";
 import { createHabit, deleteAllData, getAppState } from "@/lib/store";
 import type { HabitInput } from "@/lib/types";
 import { accent } from "@/theme/colors";
@@ -30,6 +32,9 @@ const notifications = jest.requireMock<{
   getNotificationPermission: jest.Mock;
   sendTestNotification: jest.Mock;
 }>("@/lib/notifications");
+
+/* Asserted against the catalog, so a case proves the key rather than the copy. */
+const copy = en.translations.settings;
 
 const TODAY = "2026-07-29";
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
@@ -82,6 +87,9 @@ async function renderSettings(permission: unknown = GRANTED) {
 }
 
 beforeEach(async () => {
+  /* Pinned rather than inherited: a change to how the device is resolved must
+  not rewrite what these cases assert. */
+  await i18n.changeLanguage("en");
   freezeClock(`${TODAY}T12:00:00-03:00`);
   stableIds();
   await deleteAllData();
@@ -112,27 +120,27 @@ describe("the settings screen", () => {
   it("should say where the permission stands", async () => {
     const { container } = await renderSettings(GRANTED);
 
-    expect(valueAfter(container, "Permission")).toBe("Allowed");
+    expect(valueAfter(container, copy.permission)).toBe(copy.permissionAllowed);
   });
 
   it("should offer to ask while the prompt can still be shown", async () => {
     const { container } = await renderSettings(NOT_ASKED);
 
-    expect(drawnText(container)).toContain("Allow notifications");
-    expect(drawnText(container)).not.toContain("Open iOS Settings");
+    expect(drawnText(container)).toContain(copy.allowNotifications);
+    expect(drawnText(container)).not.toContain(copy.openIosSettings);
   });
 
   it("should offer iOS Settings once the prompt cannot be shown again", async () => {
     const { container } = await renderSettings(DENIED);
 
-    expect(drawnText(container)).toContain("Open iOS Settings");
-    expect(drawnText(container)).not.toContain("Allow notifications");
+    expect(drawnText(container)).toContain(copy.openIosSettings);
+    expect(drawnText(container)).not.toContain(copy.allowNotifications);
   });
 
   it("should send a test notification when that row is pressed", async () => {
     const { container } = await renderSettings(GRANTED);
 
-    await pressButton(settingsButton(container, "Send test notification"));
+    await pressButton(settingsButton(container, copy.sendTestNotification));
     await act(async () => new Promise((resolve) => setImmediate(resolve)));
 
     expect(notifications.sendTestNotification).toHaveBeenCalledTimes(1);
@@ -142,14 +150,14 @@ describe("the settings screen", () => {
     createHabit(input());
     const { container } = await renderSettings();
 
-    expect(valueAfter(container, "Habits")).toBe("1");
-    expect(valueAfter(container, "Check-ins")).toBe("0");
+    expect(valueAfter(container, copy.habits)).toBe("1");
+    expect(valueAfter(container, copy.checkIns)).toBe("0");
   });
 
   it("should put the app back before onboarding when that row is pressed", async () => {
     const { container } = await renderSettings();
 
-    await pressButton(settingsButton(container, "View onboarding"));
+    await pressButton(settingsButton(container, copy.viewOnboarding));
 
     expect(getAppState().onboarded).toBe(false);
   });
@@ -157,7 +165,7 @@ describe("the settings screen", () => {
   it("should keep the way out of everything hidden while there is nothing to delete", async () => {
     const { container } = await renderSettings();
 
-    expect(() => nativeView(container, "label", "Delete all data")).toThrow(
+    expect(() => nativeView(container, "label", copy.deleteAllData)).toThrow(
       "none",
     );
   });
@@ -167,11 +175,11 @@ describe("the settings screen", () => {
     createHabit(input());
     const { container } = await renderSettings();
 
-    await pressButton(nativeView(container, "label", "Delete all data"));
+    await pressButton(nativeView(container, "label", copy.deleteAllData));
 
     expect(alert).toHaveBeenCalledWith(
-      "Delete all data?",
-      "This permanently deletes every habit and its history.",
+      copy.deleteAllTitle,
+      copy.deleteAllBody,
       expect.any(Array),
     );
     expect(getAppState().habits).toHaveLength(1);

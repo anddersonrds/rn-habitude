@@ -15,6 +15,7 @@ import Constants from "expo-constants";
 import type * as Notifications from "expo-notifications";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, AppState, Linking } from "react-native";
 
 /**
@@ -33,6 +34,9 @@ const version =
  * layer.
  */
 export function useSettingsModel() {
+  /* Subscribes the screen to the language, and gives the alerts their copy at
+  the moment they are raised rather than at import. */
+  const { t } = useTranslation(["settings", "common"]);
   const { habits, completions } = useAppState();
   const [permission, setPermission] =
     useState<Notifications.NotificationPermissionsStatus | null>(null);
@@ -51,12 +55,12 @@ export function useSettingsModel() {
   }, [refreshPermission]);
 
   const permissionLabel = !permission
-    ? "…"
+    ? t("permissionPending")
     : permission.granted
-      ? "Allowed"
+      ? t("permissionAllowed")
       : permission.canAskAgain
-        ? "Not requested"
-        : "Denied";
+        ? t("permissionNotRequested")
+        : t("permissionDenied");
 
   const permissionColor = !permission
     ? "secondary"
@@ -78,22 +82,15 @@ export function useSettingsModel() {
     const granted = await ensureNotificationPermission();
     refreshPermission();
     if (!granted) {
-      Alert.alert(
-        "Notifications are off",
-        "Allow notifications in iOS Settings to receive reminders.",
-        [
-          { text: "Cancel", style: "cancel" },
-          { text: "Open Settings", onPress: openSystemSettings },
-        ],
-      );
+      Alert.alert(t("notificationsOffTitle"), t("notificationsOffBody"), [
+        { text: t("common:cancel"), style: "cancel" },
+        { text: t("openSettings"), onPress: openSystemSettings },
+      ]);
       return;
     }
     await sendTestNotification();
     haptic.impact();
-    Alert.alert(
-      "Test notification sent",
-      "It arrives in a few seconds. Leave the app open or lock the screen to see the banner.",
-    );
+    Alert.alert(t("testSentTitle"), t("testSentBody"));
   };
 
   const loadSample = () => {
@@ -106,30 +103,22 @@ export function useSettingsModel() {
       run();
       return;
     }
-    Alert.alert(
-      "Load sample data?",
-      "This adds five example habits with twelve weeks of history. Your own habits are kept.",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Load", onPress: run },
-      ],
-    );
+    Alert.alert(t("loadSampleTitle"), t("loadSampleBody"), [
+      { text: t("common:cancel"), style: "cancel" },
+      { text: t("load"), onPress: run },
+    ]);
   };
 
   const deleteEverything = () => {
     haptic.warning();
-    Alert.alert(
-      "Delete all data?",
-      "This permanently deletes every habit and its history.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete Everything",
-          style: "destructive",
-          onPress: () => void deleteAllData(),
-        },
-      ],
-    );
+    Alert.alert(t("deleteAllTitle"), t("deleteAllBody"), [
+      { text: t("common:cancel"), style: "cancel" },
+      {
+        text: t("deleteEverything"),
+        style: "destructive",
+        onPress: () => void deleteAllData(),
+      },
+    ]);
   };
 
   const viewOnboarding = () => {

@@ -3,6 +3,7 @@ the store loads its state at import, so every case reloads it against its own
 database, and the hook, the permission boundary and the haptics have to come
 from that same registry to be the ones the hook actually calls.
 */
+import en from "@/i18n/locales/en";
 import type { HabitInput } from "@/lib/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
@@ -78,6 +79,9 @@ type Permission = {
   canAskAgain: boolean;
 };
 
+/* Asserted against the catalog, so a case proves the key rather than the copy. */
+const copy = en.translations.settings;
+
 const GRANTED: Permission = { granted: true, canAskAgain: false };
 const NOT_ASKED: Permission = { granted: false, canAskAgain: true };
 const DENIED: Permission = { granted: false, canAskAgain: false };
@@ -106,6 +110,13 @@ function load(): Loaded {
   const { Alert, Linking } =
     require("react-native") as typeof import("react-native");
   const notifications = require("@/lib/notifications");
+  /*
+  Pinned rather than inherited: the hook reads its copy through this registry,
+  and a change to how the device is resolved must not rewrite what these cases
+  assert.
+  */
+  const i18n = require("@/i18n/i18next") as typeof import("@/i18n/i18next");
+  void i18n.default.changeLanguage("en");
   return {
     store: require("@/lib/store"),
     useSettingsModel: require("@/components/screens/settings/useSettingsModel")
@@ -182,7 +193,7 @@ describe("what the screen says about notifications", () => {
     );
 
     expect(result.current).toMatchObject({
-      permissionLabel: "…",
+      permissionLabel: copy.permissionPending,
       permissionColor: "secondary",
       canRequestPermission: false,
       canOpenSettings: false,
@@ -194,7 +205,7 @@ describe("what the screen says about notifications", () => {
     const { result, unmount } = await renderModel(GRANTED);
 
     expect(result.current).toMatchObject({
-      permissionLabel: "Allowed",
+      permissionLabel: copy.permissionAllowed,
       permissionColor: "green",
       canRequestPermission: false,
       canOpenSettings: false,
@@ -206,7 +217,7 @@ describe("what the screen says about notifications", () => {
     const { result, unmount } = await renderModel(NOT_ASKED);
 
     expect(result.current).toMatchObject({
-      permissionLabel: "Not requested",
+      permissionLabel: copy.permissionNotRequested,
       permissionColor: "secondary",
       canRequestPermission: true,
       canOpenSettings: false,
@@ -218,7 +229,7 @@ describe("what the screen says about notifications", () => {
     const { result, unmount } = await renderModel(DENIED);
 
     expect(result.current).toMatchObject({
-      permissionLabel: "Denied",
+      permissionLabel: copy.permissionDenied,
       permissionColor: "red",
       canRequestPermission: false,
       canOpenSettings: true,
@@ -236,7 +247,7 @@ describe("asking for permission", () => {
 
     await act(async () => result.current.requestPermission());
 
-    expect(result.current.permissionLabel).toBe("Allowed");
+    expect(result.current.permissionLabel).toBe(copy.permissionAllowed);
     await unmount();
   });
 
@@ -260,7 +271,7 @@ describe("asking for permission", () => {
     await act(async () => result.current.requestPermission());
 
     expect(haptic.success).not.toHaveBeenCalled();
-    expect(result.current.permissionLabel).toBe("Denied");
+    expect(result.current.permissionLabel).toBe(copy.permissionDenied);
     await unmount();
   });
 
@@ -284,8 +295,8 @@ describe("sending a test notification", () => {
     expect(sendTestNotification).toHaveBeenCalledTimes(1);
     expect(haptic.impact).toHaveBeenCalledTimes(1);
     expect(alert).toHaveBeenCalledWith(
-      "Test notification sent",
-      expect.stringContaining("It arrives in a few seconds"),
+      copy.testSentTitle,
+      copy.testSentBody,
     );
     await unmount();
   });
@@ -299,8 +310,8 @@ describe("sending a test notification", () => {
 
     expect(sendTestNotification).not.toHaveBeenCalled();
     expect(alert).toHaveBeenCalledWith(
-      "Notifications are off",
-      "Allow notifications in iOS Settings to receive reminders.",
+      copy.notificationsOffTitle,
+      copy.notificationsOffBody,
       expect.any(Array),
     );
     await unmount();
@@ -313,7 +324,7 @@ describe("sending a test notification", () => {
     await act(async () => result.current.sendTest());
 
     const settings = buttonsOf(alert).find(
-      (button) => button.text === "Open Settings",
+      (button) => button.text === copy.openSettings,
     );
     await act(async () => settings?.onPress?.());
 
@@ -360,8 +371,8 @@ describe("loading the sample data", () => {
     await act(async () => result.current.loadSample());
 
     expect(alert).toHaveBeenCalledWith(
-      "Load sample data?",
-      expect.stringContaining("Your own habits are kept."),
+      copy.loadSampleTitle,
+      copy.loadSampleBody,
       expect.any(Array),
     );
     expect(store.getAppState().habits).toHaveLength(1);
@@ -396,7 +407,7 @@ describe("loading the sample data", () => {
     );
     await act(async () => result.current.loadSample());
 
-    const load = buttonsOf(alert).find((button) => button.text === "Load");
+    const load = buttonsOf(alert).find((button) => button.text === copy.load);
     await act(async () => load?.onPress?.());
     await settle();
 
@@ -419,8 +430,8 @@ describe("deleting everything", () => {
     await act(async () => result.current.deleteEverything());
 
     expect(alert).toHaveBeenCalledWith(
-      "Delete all data?",
-      "This permanently deletes every habit and its history.",
+      copy.deleteAllTitle,
+      copy.deleteAllBody,
       expect.any(Array),
     );
     expect(haptic.warning).toHaveBeenCalledTimes(1);
