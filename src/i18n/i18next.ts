@@ -7,6 +7,7 @@ import { getLocales } from "expo-localization";
 `react-i18next` reads, so both halves of this import drive the same object. */
 import i18next, { changeLanguage, init, use as registerPlugin } from "i18next";
 import { initReactI18next } from "react-i18next";
+import { AppState } from "react-native";
 
 /** The key the preference is stored under, beside the rest of the settings. */
 export const LANGUAGE_SETTING = "language";
@@ -76,6 +77,21 @@ void init({
   defaultNS: "common",
   /* React escapes what it renders, so escaping again would double it. */
   interpolation: { escapeValue: false },
+});
+
+/*
+This exists for Android, where the system language can change under a running
+process. iOS restarts the app instead, so there it is almost always a no-op and
+would read as dead code otherwise.
+
+It re-runs the whole resolution rather than only the device half, so a
+foreground can never disagree with a launch: with a language stored, that
+language is what comes back and nothing changes.
+*/
+AppState.addEventListener("change", (status) => {
+  if (status !== "active") return;
+  const next = resolveLanguage();
+  if (next !== i18next.language) void changeLanguage(next);
 });
 
 export default i18next;

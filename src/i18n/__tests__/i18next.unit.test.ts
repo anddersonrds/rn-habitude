@@ -4,6 +4,7 @@ has to reload it rather than close over one instance.
 */
 import { resetDatabase } from "@/test-utils/sqlite";
 import type { Locale as DeviceLocale } from "expo-localization";
+import type { AppStateStatus } from "react-native";
 
 /*
 Mocked at the package boundary: the device's preferences are the one input the
@@ -19,6 +20,10 @@ type Loaded = I18nModule & {
   i18next: I18nModule["default"];
   /** Read through the same registry the module under test wrote through. */
   storedLanguage: () => string | null;
+  /** Changes what the device reports from the next read on. */
+  setPreferences: (preferences: DeviceLocale[]) => void;
+  /** Drives the app state listener the module registered at import. */
+  appStateChanges: (status: AppStateStatus) => void;
 };
 
 /** The two fields the resolution reads; the rest is device metadata. */
@@ -49,12 +54,22 @@ function load({
   const db = require("@/lib/db") as Database;
   if (stored !== undefined) db.setSetting("language", stored);
 
+  /* Spied before the import, since the module subscribes while it loads. */
+  const { AppState } = require("react-native") as typeof import("react-native");
+  const subscribe = jest.spyOn(AppState, "addEventListener");
+
   const module = require("@/i18n/i18next") as I18nModule;
 
   return {
     ...module,
     i18next: module.default,
     storedLanguage: () => db.getSetting("language"),
+    setPreferences: (next) => localization.getLocales.mockReturnValue(next),
+    appStateChanges: (status) => {
+      const listener = subscribe.mock.calls.find(([event]) => event === "change");
+      if (!listener) throw new Error("The module subscribed to no app state.");
+      listener[1](status);
+    },
   };
 }
 
@@ -153,6 +168,58 @@ describe("changing the language", () => {
 
     expect(storedLanguage()).toBe("device");
     expect(i18next.language).toBe("pt-BR");
+  });
+});
+
+describe("coming back to the foreground", () => {
+  it("should follow the device's new language while it is the preference", () => {
+    const { i18next, setPreferences, appStateChanges } = load({
+      preferences: [device("en-US")],
+      stored: "device",
+    });
+
+    setPreferences([device("pt-BR")]);
+    appStateChanges("active");
+
+    expect(i18next.language).toBe("pt-BR");
+  });
+
+  it("should announce nothing when the device's language is unchanged", () => {
+    const { i18next, appStateChanges } = load({
+      preferences: [device("pt-BR")],
+      stored: "device",
+    });
+    const changed = jest.fn();
+    i18next.on("languageChanged", changed);
+
+    appStateChanges("active");
+
+    expect(changed).not.toHaveBeenCalled();
+    expect(i18next.language).toBe("pt-BR");
+  });
+
+  it("should keep the language a preference names, whatever the device says", () => {
+    const { i18next, setPreferences, appStateChanges } = load({
+      preferences: [device("en-US")],
+      stored: "en",
+    });
+
+    setPreferences([device("pt-BR")]);
+    appStateChanges("active");
+
+    expect(i18next.language).toBe("en");
+  });
+
+  it("should do nothing while the app is leaving the foreground", () => {
+    const { i18next, setPreferences, appStateChanges } = load({
+      preferences: [device("en-US")],
+      stored: "device",
+    });
+
+    setPreferences([device("pt-BR")]);
+    appStateChanges("background");
+
+    expect(i18next.language).toBe("en");
   });
 });
 
