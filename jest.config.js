@@ -42,15 +42,14 @@ module.exports = {
   ],
   /* Each threshold is switched on by the work that covers its scope. */
   coverageThreshold: {
+    global: { statements: 70 },
     "./src/lib/": { statements: 90, branches: 85 },
     "./src/components/screens/**/use*.ts": { statements: 90, branches: 85 },
     /*
-    Named one path at a time rather than by their roots: the SwiftUI-backed
-    screens live under `src/components/` and `src/app/` too, and are not
-    covered yet.
+    Now that every screen is covered, the two roots replace the paths that were
+    named one at a time while the SwiftUI screens were still uncovered.
     */
-    "./src/components/onboarding/": { statements: 60 },
-    "./src/app/habit/": { statements: 60 },
-    "./src/app/habit-history.tsx": { statements: 60 },
+    "./src/components/": { statements: 60 },
+    "./src/app/": { statements: 60 },
   },
 };

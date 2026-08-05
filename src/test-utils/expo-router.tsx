@@ -8,7 +8,7 @@
  * screen hands them, so the screen's own handlers are what a test presses, and
  * `router` is a spy the way any other boundary is.
  */
-import type { ReactNode } from "react";
+import { useEffect, type EffectCallback, type ReactNode } from "react";
 import { Pressable } from "react-native";
 
 type ToolbarButtonProps = {
@@ -84,6 +84,11 @@ export function expoRouterMock() {
     router,
     useLocalSearchParams: jest.fn(() => ({}) as Record<string, string>),
     useRouter: jest.fn(() => router),
+    /*
+    Focus belongs to the navigator, and the real hook reaches for one before it
+    does anything. A screen rendered on its own is focused once, on mount.
+    */
+    useFocusEffect: (effect: EffectCallback) => useEffect(effect, [effect]),
     Stack,
     Link,
   };
