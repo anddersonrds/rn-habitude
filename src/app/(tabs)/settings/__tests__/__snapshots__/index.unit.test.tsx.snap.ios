@@ -527,7 +527,7 @@ exports[`the settings screen should render the whole screen 1`] = `
                 [
                   {
                     "$type": "pickerStyle",
-                    "style": "navigationLink",
+                    "style": "menu",
                   },
                 ]
               }

@@ -237,11 +237,16 @@ describe("the language row", () => {
     ]);
   });
 
-  it("should push a list rather than open a menu", async () => {
+  /*
+  The style is named rather than left to `automatic`, and it is the one style
+  that cannot navigate: a pushed list would land on the navigation controller
+  react-native-screens owns and abort the app on the tap.
+  */
+  it("should open its list over the screen rather than navigate", async () => {
     const { container } = await renderSettings();
 
     expect(modifier(languagePicker(container), "pickerStyle")).toMatchObject({
-      style: "navigationLink",
+      style: "menu",
     });
   });
 

@@ -187,14 +187,19 @@ export default function SettingsScreen() {
         </Section>
 
         <Section title={t("language:title")}>
-          {/* SwiftUI draws the row, its current value, the push and the
-          checkmark. `automatic` inside a Form can resolve to a popup menu,
-          which has neither a row value nor a pushed list. */}
+          {/*
+          The list opens over this screen. `navigationLink` cannot be used
+          here: it pushes the list onto the navigation controller
+          react-native-screens owns, whose delegate does not implement the
+          transition method SwiftUI calls for that push, and the app aborts on
+          the tap. `automatic` inside a Form resolves to this same menu anyway,
+          and is named explicitly so it cannot drift.
+          */}
           <Picker
             label={t("language:title")}
             selection={language}
             onSelectionChange={chooseLanguage}
-            modifiers={[pickerStyle("navigationLink")]}
+            modifiers={[pickerStyle("menu")]}
           >
             {languages.map((entry) => (
               <Text
