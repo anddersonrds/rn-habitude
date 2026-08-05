@@ -1,4 +1,6 @@
 import { Celebration } from "@/components/Celebration";
+import i18n from "@/i18n/i18next";
+import en from "@/i18n/locales/en";
 import { symbolView } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
 import { accent, success } from "@/theme/colors";
@@ -33,6 +35,8 @@ const { default: useColorScheme } = jest.requireMock<{ default: jest.Mock }>(
 );
 
 const DURATION_MS = 2100;
+
+const copy = en.translations.today;
 
 const RED = "#FF3B30";
 const GREEN = "#34C759";
@@ -71,7 +75,10 @@ function scrimColor(container: TestInstance) {
   return StyleSheet.flatten(scrim.props.style).backgroundColor;
 }
 
-beforeEach(() => {
+beforeEach(async () => {
+  /* Pinned rather than inherited, so a change to how the device is resolved
+  cannot rewrite what these cases assert. */
+  await i18n.changeLanguage("en");
   useReducedMotion.mockReturnValue(false);
   useColorScheme.mockReturnValue("light");
 });
@@ -84,10 +91,8 @@ describe("Celebration", () => {
       <Celebration colors={[RED]} onFinished={jest.fn()} />,
     );
 
-    expect(getByText("Day complete")).toBeOnTheScreen();
-    expect(
-      getByText("Every habit checked in. See you tomorrow."),
-    ).toBeOnTheScreen();
+    expect(getByText(copy.celebrationTitle)).toBeOnTheScreen();
+    expect(getByText(copy.celebrationBody)).toBeOnTheScreen();
   });
 
   it("should seal it with the same green the day's progress uses", async () => {
@@ -164,7 +169,7 @@ describe("Celebration", () => {
 
     expect(sparkColors(container)).toEqual([]);
     expect(ringColors(container)).toEqual([]);
-    expect(getByText("Day complete")).toBeOnTheScreen();
+    expect(getByText(copy.celebrationTitle)).toBeOnTheScreen();
   });
 
   it("should still seal the day when motion is reduced", async () => {

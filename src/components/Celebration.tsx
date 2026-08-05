@@ -4,6 +4,7 @@ import { GlassView } from "expo-glass-effect";
 import { Color } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, useColorScheme, View } from "react-native";
 import Animated, {
   Easing,
@@ -87,6 +88,7 @@ function Ring({ color }: { color: string }) {
  * habits' own colors.
  */
 export function Celebration({ colors, onFinished }: Props) {
+  const { t } = useTranslation("today");
   const isDark = useColorScheme() === "dark";
   const reduceMotion = useReducedMotion();
   const badgeScale = useSharedValue(reduceMotion ? 1 : 0.4);
@@ -154,9 +156,9 @@ export function Celebration({ colors, onFinished }: Props) {
           {/* Solid system background so the label always has contrast; glass
               alone can't guarantee that over arbitrary content. */}
           <View style={styles.textCard}>
-            <Text variant="title3">Day complete</Text>
+            <Text variant="title3">{t("celebrationTitle")}</Text>
             <Text variant="subheadline" secondary>
-              Every habit checked in. See you tomorrow.
+              {t("celebrationBody")}
             </Text>
           </View>
         </Animated.View>

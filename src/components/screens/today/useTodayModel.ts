@@ -5,6 +5,7 @@ import { computeStreaks } from "@/lib/streaks";
 import { isScheduledOn, type Habit } from "@/lib/types";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
 
 export type TodayItem = {
@@ -20,6 +21,7 @@ export type TodayItem = {
  * the SwiftUI view stays a thin render layer.
  */
 export function useTodayModel() {
+  const { t } = useTranslation(["today", "common"]);
   const state = useAppState();
   const [celebrating, setCelebrating] = useState(false);
 
@@ -40,7 +42,7 @@ export function useTodayModel() {
     const streak = computeStreaks(habit, state.completions[habit.id], today)
       .current;
     const subtitle = [
-      streak > 0 ? `${streak}-day streak` : null,
+      streak > 0 ? t("streak", { count: streak }) : null,
       habit.reminderTime ? formatTime(habit.reminderTime) : null,
     ]
       .filter(Boolean)
@@ -85,12 +87,12 @@ export function useTodayModel() {
   const confirmDelete = (habit: Habit) => {
     haptic.warning();
     Alert.alert(
-      `Delete "${habit.name}"?`,
-      "This permanently deletes the habit and its history.",
+      t("common:deleteHabitTitle", { name: habit.name }),
+      t("common:deleteHabitBody"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("common:cancel"), style: "cancel" },
         {
-          text: "Delete",
+          text: t("common:delete"),
           style: "destructive",
           onPress: () => deleteHabit(habit.id),
         },
