@@ -84,6 +84,32 @@ export default function SettingsScreen() {
   return (
     <Host style={{ flex: 1 }}>
       <Form>
+        <Section title={t("language:title")}>
+          {/*
+          The list opens over this screen. `navigationLink` cannot be used
+          here: it pushes the list onto the navigation controller
+          react-native-screens owns, whose delegate does not implement the
+          transition method SwiftUI calls for that push, and the app aborts on
+          the tap. `automatic` inside a Form resolves to this same menu anyway,
+          and is named explicitly so it cannot drift.
+          */}
+          <Picker
+            label={t("language:title")}
+            selection={language}
+            onSelectionChange={chooseLanguage}
+            modifiers={[pickerStyle("menu")]}
+          >
+            {languages.map((entry) => (
+              <Text
+                key={entry.tag}
+                modifiers={[tag(entry.tag), font({ design: "rounded" })]}
+              >
+                {entry.label}
+              </Text>
+            ))}
+          </Picker>
+        </Section>
+
         <Section
           title={t("notifications")}
           footer={
@@ -184,32 +210,6 @@ export default function SettingsScreen() {
               {version}
             </Text>
           </LabeledContent>
-        </Section>
-
-        <Section title={t("language:title")}>
-          {/*
-          The list opens over this screen. `navigationLink` cannot be used
-          here: it pushes the list onto the navigation controller
-          react-native-screens owns, whose delegate does not implement the
-          transition method SwiftUI calls for that push, and the app aborts on
-          the tap. `automatic` inside a Form resolves to this same menu anyway,
-          and is named explicitly so it cannot drift.
-          */}
-          <Picker
-            label={t("language:title")}
-            selection={language}
-            onSelectionChange={chooseLanguage}
-            modifiers={[pickerStyle("menu")]}
-          >
-            {languages.map((entry) => (
-              <Text
-                key={entry.tag}
-                modifiers={[tag(entry.tag), font({ design: "rounded" })]}
-              >
-                {entry.label}
-              </Text>
-            ))}
-          </Picker>
         </Section>
       </Form>
     </Host>
