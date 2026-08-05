@@ -41,7 +41,8 @@ function SecondaryStat({
 }
 
 export default function HabitDetailScreen() {
-  const { t } = useTranslation("schedule");
+  const { t } = useTranslation("habitDetail");
+  const { t: tSchedule } = useTranslation("schedule");
   const { id } = useLocalSearchParams<{ id: string }>();
   const state = useAppState();
   const habit = state.habits.find((candidate) => candidate.id === id);
@@ -60,7 +61,7 @@ export default function HabitDetailScreen() {
   const doneToday = completed?.[today] === true;
 
   const subtitle = [
-    scheduleLabel(habit, t),
+    scheduleLabel(habit, tSchedule),
     habit.reminderTime ? formatTime(habit.reminderTime) : null,
   ]
     .filter(Boolean)
@@ -77,7 +78,7 @@ export default function HabitDetailScreen() {
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
           icon="pencil"
-          accessibilityLabel="Edit habit"
+          accessibilityLabel={t("editHabit")}
           onPress={() => router.push(`/habit-form?id=${habit.id}`)}
         />
       </Stack.Toolbar>
@@ -110,7 +111,7 @@ export default function HabitDetailScreen() {
             <PressableScale
               accessibilityRole="button"
               accessibilityLabel={
-                doneToday ? "Undo today's check-in" : "Check in today"
+                doneToday ? t("undoCheckInLabel") : t("checkInLabel")
               }
               onPress={toggleToday}
               style={[
@@ -135,7 +136,7 @@ export default function HabitDetailScreen() {
                   doneToday ? undefined : { color: foregroundOnColor(habit.color) }
                 }
               >
-                {doneToday ? "Undo check-in" : "Check in"}
+                {doneToday ? t("undoCheckIn") : t("checkIn")}
               </Text>
             </PressableScale>
           </Animated.View>
@@ -149,9 +150,9 @@ export default function HabitDetailScreen() {
               />
             </View>
             <View style={styles.restCopy}>
-              <Text variant="headline">Not scheduled today</Text>
+              <Text variant="headline">{t("notScheduled")}</Text>
               <Text variant="subheadline" secondary>
-                Your streak is safe on rest days.
+                {t("restDay")}
               </Text>
             </View>
           </View>
@@ -177,14 +178,14 @@ export default function HabitDetailScreen() {
               />
             </View>
             <Text variant="caption" secondary style={styles.metricEyebrow}>
-              CURRENT STREAK
+              {t("currentStreak")}
             </Text>
             <View style={styles.featuredValue}>
               <Text variant="title" style={styles.statNumber}>
                 {streaks.current}
               </Text>
               <Text variant="footnote" secondary>
-                {streaks.current === 1 ? "day" : "days"}
+                {t("day", { count: streaks.current })}
               </Text>
             </View>
           </View>
@@ -194,14 +195,14 @@ export default function HabitDetailScreen() {
               symbol="trophy.fill"
               color="#FFCC00"
               value={`${streaks.best}`}
-              label="Best streak"
+              label={t("bestStreak")}
             />
             <View style={styles.secondaryDivider} />
             <SecondaryStat
               symbol="chart.bar.fill"
               color="#007AFF"
               value={`${Math.round(rate * 100)}%`}
-              label="30-day rate"
+              label={t("monthRate")}
             />
           </View>
         </Animated.View>
@@ -213,15 +214,15 @@ export default function HabitDetailScreen() {
             <Link.Trigger withAppleZoom>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={`${habit.name} history`}
-                accessibilityHint="Opens the full consistency history"
+                accessibilityLabel={t("historyLabel", { name: habit.name })}
+                accessibilityHint={t("historyHint")}
                 style={styles.heatCard}
               >
                 <View style={styles.heatHeader}>
                   <View style={styles.heatTitle}>
-                    <Text variant="headline">History</Text>
+                    <Text variant="headline">{t("history")}</Text>
                     <Text variant="footnote" secondary>
-                      Last 18 weeks
+                      {t("historyRange")}
                     </Text>
                   </View>
                   <SymbolView

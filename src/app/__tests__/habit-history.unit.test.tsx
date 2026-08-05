@@ -1,4 +1,7 @@
 import HabitHistoryScreen from "@/app/habit-history";
+import i18n from "@/i18n/i18next";
+import en from "@/i18n/locales/en";
+import ptBR from "@/i18n/locales/pt-BR";
 import {
   completeHabit,
   createHabit,
@@ -34,6 +37,8 @@ const routing = jest.requireMock<{
 A Wednesday. The grid ends on the Saturday of its week and holds 52 columns of
 seven, so it runs from Sunday 2025-08-03 to Saturday 2026-08-01.
 */
+const copy = en.translations.history;
+
 const TODAY = "2026-07-29";
 const YESTERDAY = "2026-07-28";
 const WINDOW_OPENS = "2025-08-03";
@@ -112,6 +117,9 @@ function seedHabit(
 }
 
 beforeEach(async () => {
+  /* Pinned rather than inherited, so a change to how the device is resolved
+  cannot rewrite what these cases assert. */
+  await i18n.changeLanguage("en");
   freezeClock(`${TODAY}T12:00:00-03:00`);
   stableIds();
   await deleteAllData();
@@ -161,8 +169,20 @@ describe("the habit being shown", () => {
 
     const { getByText } = await renderHistory(habit.id);
 
-    expect(getByText("Consistency")).toBeOnTheScreen();
-    expect(getByText("Last 12 months")).toBeOnTheScreen();
+    expect(getByText(copy.consistency)).toBeOnTheScreen();
+    expect(getByText(copy.range)).toBeOnTheScreen();
+  });
+
+  it("should say it in the language the app is set to", async () => {
+    const habit = seedHabit();
+    await i18n.changeLanguage("pt-BR");
+
+    const { getByText } = await renderHistory(habit.id);
+
+    const inPortuguese = ptBR.translations.history;
+    expect(getByText(inPortuguese.consistency)).toBeOnTheScreen();
+    expect(getByText(inPortuguese.legendRest)).toBeOnTheScreen();
+    expect(getByText(inPortuguese.yearRate)).toBeOnTheScreen();
   });
 
   it("should key the legend to the habit's own color", async () => {
@@ -170,9 +190,9 @@ describe("the habit being shown", () => {
 
     const { container, getByText } = await renderHistory(habit.id);
 
-    expect(getByText("Done")).toBeOnTheScreen();
-    expect(getByText("Missed")).toBeOnTheScreen();
-    expect(getByText("Rest day")).toBeOnTheScreen();
+    expect(getByText(copy.legendDone)).toBeOnTheScreen();
+    expect(getByText(copy.legendMissed)).toBeOnTheScreen();
+    expect(getByText(copy.legendRest)).toBeOnTheScreen();
     expect(
       container
         .queryAll((node) => {
@@ -317,9 +337,9 @@ describe("the summary", () => {
 
     const { getByText } = await renderHistory(habit.id);
 
-    expect(statBlock(getByText("Total check-ins"))).toEqual([
+    expect(statBlock(getByText(copy.totalCheckIns))).toEqual([
       "3",
-      "Total check-ins",
+      copy.totalCheckIns,
     ]);
   });
 
@@ -334,7 +354,7 @@ describe("the summary", () => {
 
     const { getByText } = await renderHistory(habit.id);
 
-    expect(statBlock(getByText("Best streak"))).toEqual(["3", "Best streak"]);
+    expect(statBlock(getByText(copy.bestStreak))).toEqual(["3", copy.bestStreak]);
   });
 
   it("should rate the year against the days the habit has existed for", async () => {
@@ -346,7 +366,7 @@ describe("the summary", () => {
     const { getByText } = await renderHistory(habit.id);
 
     /* Two of the four days from the 26th to today. */
-    expect(statBlock(getByText("Year rate"))).toEqual(["50%", "Year rate"]);
+    expect(statBlock(getByText(copy.yearRate))).toEqual(["50%", copy.yearRate]);
   });
 
   it("should rate the whole year rather than the last month of it", async () => {
@@ -362,7 +382,7 @@ describe("the summary", () => {
 
     /* Three days out of the two hundred and ten since New Year. Over the last
     thirty alone it would read 3%. */
-    expect(statBlock(getByText("Year rate"))).toEqual(["1%", "Year rate"]);
+    expect(statBlock(getByText(copy.yearRate))).toEqual(["1%", copy.yearRate]);
   });
 
   it("should start a habit with no history at zero rather than blank", async () => {
@@ -370,11 +390,11 @@ describe("the summary", () => {
 
     const { getByText } = await renderHistory(habit.id);
 
-    expect(statBlock(getByText("Total check-ins"))).toEqual([
+    expect(statBlock(getByText(copy.totalCheckIns))).toEqual([
       "0",
-      "Total check-ins",
+      copy.totalCheckIns,
     ]);
-    expect(statBlock(getByText("Best streak"))).toEqual(["0", "Best streak"]);
-    expect(statBlock(getByText("Year rate"))).toEqual(["0%", "Year rate"]);
+    expect(statBlock(getByText(copy.bestStreak))).toEqual(["0", copy.bestStreak]);
+    expect(statBlock(getByText(copy.yearRate))).toEqual(["0%", copy.yearRate]);
   });
 });
