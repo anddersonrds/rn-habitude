@@ -44,6 +44,7 @@ module.exports = {
   coverageThreshold: {
     global: { statements: 70 },
     "./src/lib/": { statements: 90, branches: 85 },
+    "./src/i18n/": { statements: 90, branches: 85 },
     "./src/components/screens/**/use*.ts": { statements: 90, branches: 85 },
     /*
     Now that every screen is covered, the two roots replace the paths that were
