@@ -3,6 +3,7 @@ the store loads its state and pushes a widget snapshot at import, so each case
 has to reload it rather than close over one instance.
 */
 import type { HabitudeWidgetProps } from "@/../widgets/HabitudeWidget";
+import i18n from "@/i18n/i18next";
 import type { HabitInput } from "@/lib/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
@@ -25,6 +26,10 @@ jest.mock("@/lib/notifications", () => ({
 }));
 
 /* A Wednesday, so a habit scheduled only on Mondays is not due on it. */
+/* The seed writes the names it is given, so the cases pin the language rather
+than inheriting one. */
+const sampleNames = i18n.getFixedT("en", "sampleData");
+
 const TODAY = "2026-07-29";
 const MONDAY = 1;
 
@@ -430,7 +435,7 @@ describe("loadSampleData", () => {
   it("should seed habits with history the widget can already show", async () => {
     const { store } = freshStore();
 
-    store.loadSampleData();
+    store.loadSampleData(sampleNames);
     await settle();
 
     const { habits, completions } = store.getAppState();
@@ -441,11 +446,11 @@ describe("loadSampleData", () => {
 
   it("should replace a previous sample run rather than duplicating it", async () => {
     const { store } = freshStore();
-    store.loadSampleData();
+    store.loadSampleData(sampleNames);
     await settle();
     const first = store.getAppState().habits.map((habit) => habit.id);
 
-    store.loadSampleData();
+    store.loadSampleData(sampleNames);
     await settle();
 
     expect(store.getAppState().habits.map((habit) => habit.id)).toEqual(first);
@@ -455,11 +460,11 @@ describe("loadSampleData", () => {
     const { store } = freshStore();
     const notifications = require("@/lib/notifications");
     notifications.scheduleHabitReminders.mockResolvedValue(["reminder-1"]);
-    store.loadSampleData();
+    store.loadSampleData(sampleNames);
     await settle();
     notifications.cancelReminders.mockClear();
 
-    store.loadSampleData();
+    store.loadSampleData(sampleNames);
     await settle();
 
     expect(notifications.cancelReminders).toHaveBeenCalledWith(
@@ -472,7 +477,7 @@ describe("loadSampleData", () => {
     store.createHabit(input({ name: "Mine" }));
     await settle();
 
-    store.loadSampleData();
+    store.loadSampleData(sampleNames);
     await settle();
 
     expect(

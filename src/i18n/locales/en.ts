@@ -196,6 +196,13 @@ const en = {
       skipNotifications: "Skip notifications",
       skipCopy: "You can change this later in Settings.",
     },
+    sampleData: {
+      walk: "Walk outside",
+      medicine: "Take medicine",
+      water: "Drink water",
+      read: "Read 20 minutes",
+      workout: "Workout",
+    },
     schedule: {
       everyDay: "Every day",
       noDays: "No days",

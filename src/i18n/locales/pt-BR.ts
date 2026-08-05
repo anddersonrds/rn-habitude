@@ -201,6 +201,13 @@ const ptBR: Locale = {
       skipNotifications: "Pular as notificações",
       skipCopy: "Você pode mudar isso depois nos Ajustes.",
     },
+    sampleData: {
+      walk: "Caminhar ao ar livre",
+      medicine: "Tomar o remédio",
+      water: "Beber água",
+      read: "Ler 20 minutos",
+      workout: "Treinar",
+    },
     schedule: {
       everyDay: "Todo dia",
       noDays: "Nenhum dia",

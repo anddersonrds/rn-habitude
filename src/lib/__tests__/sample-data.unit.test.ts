@@ -2,8 +2,8 @@
 the database module applies its schema at import, so each case has to reload it
 rather than close over one instance.
 */
+import i18n from "@/i18n/i18next";
 import { addDays, weekdayOf } from "@/lib/dates";
-import type { Habit } from "@/lib/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock } from "@/test-utils/time";
 
@@ -13,8 +13,13 @@ const TODAY = "2026-07-29";
 /** Twelve weeks of history, ending today. */
 const HISTORY_STARTS = addDays(TODAY, -(12 * 7 - 1));
 
+/* Fixed rather than active: the seed takes the language it writes in, so each
+case says which one it means instead of inheriting one. */
+const inEnglish = i18n.getFixedT("en", "sampleData");
+const inPortuguese = i18n.getFixedT("pt-BR", "sampleData");
+
 type Loaded = {
-  seedSampleData: () => Habit[];
+  seedSampleData: typeof import("@/lib/sample-data").seedSampleData;
   db: typeof import("@/lib/db").db;
 };
 
@@ -33,6 +38,12 @@ function habitRows(db: Loaded["db"]) {
   );
 }
 
+function habitNames(db: Loaded["db"]): string[] {
+  return db
+    .getAllSync<{ name: string }>("SELECT name FROM habits ORDER BY sort_order")
+    .map((row) => row.name);
+}
+
 function completionDates(db: Loaded["db"], habitId: string): string[] {
   return db
     .getAllSync<{ date: string }>(
@@ -49,7 +60,7 @@ describe("seedSampleData", () => {
   it("should insert every sample habit with twelve weeks of history behind it", () => {
     const { seedSampleData, db } = freshSampleData();
 
-    seedSampleData();
+    seedSampleData(inEnglish);
 
     const rows = habitRows(db);
     expect(rows.length).toBeGreaterThan(0);
@@ -57,10 +68,35 @@ describe("seedSampleData", () => {
     expect(rows.every((row) => row.created_at === HISTORY_STARTS)).toBe(true);
   });
 
+  it("should name the habits in the language it was given", () => {
+    const { seedSampleData, db } = freshSampleData();
+
+    seedSampleData(inPortuguese);
+
+    expect(habitNames(db)).toEqual([
+      "Caminhar ao ar livre",
+      "Tomar o remédio",
+      "Beber água",
+      "Ler 20 minutos",
+      "Treinar",
+    ]);
+  });
+
+  it("should leave a seeded name in the language it was seeded in", () => {
+    const { seedSampleData, db } = freshSampleData();
+    seedSampleData(inPortuguese);
+
+    /* A later switch does not rewrite the rows: from the moment they are
+    written they are habits the user owns and may have renamed. */
+    void i18n.changeLanguage("en");
+
+    expect(habitNames(db)[0]).toBe("Caminhar ao ar livre");
+  });
+
   it("should give every sample habit completions to draw", () => {
     const { seedSampleData, db } = freshSampleData();
 
-    seedSampleData();
+    seedSampleData(inEnglish);
 
     for (const row of habitRows(db)) {
       expect(completionDates(db, row.id).length).toBeGreaterThan(0);
@@ -70,7 +106,7 @@ describe("seedSampleData", () => {
   it("should return the habits that carry a reminder, and only those", () => {
     const { seedSampleData } = freshSampleData();
 
-    const needingReminders = seedSampleData();
+    const needingReminders = seedSampleData(inEnglish);
 
     expect(needingReminders.length).toBeGreaterThan(0);
     expect(
@@ -81,7 +117,7 @@ describe("seedSampleData", () => {
   it("should never complete a day the habit is not scheduled on", () => {
     const { seedSampleData, db } = freshSampleData();
 
-    seedSampleData();
+    seedSampleData(inEnglish);
 
     for (const row of habitRows(db)) {
       const weekdays: number[] = JSON.parse(row.weekdays);
@@ -95,7 +131,7 @@ describe("seedSampleData", () => {
   it("should never complete a day before the history starts or after today", () => {
     const { seedSampleData, db } = freshSampleData();
 
-    seedSampleData();
+    seedSampleData(inEnglish);
 
     for (const row of habitRows(db)) {
       const dates = completionDates(db, row.id);
@@ -106,14 +142,14 @@ describe("seedSampleData", () => {
 
   it("should paint the same story every time it runs", () => {
     const first = freshSampleData();
-    first.seedSampleData();
+    first.seedSampleData(inEnglish);
     const painted = habitRows(first.db).map((row) => [
       row.id,
       completionDates(first.db, row.id),
     ]);
 
     const second = freshSampleData();
-    second.seedSampleData();
+    second.seedSampleData(inEnglish);
 
     expect(
       habitRows(second.db).map((row) => [
@@ -125,10 +161,10 @@ describe("seedSampleData", () => {
 
   it("should replace a previous run instead of stacking a second one on it", () => {
     const { seedSampleData, db } = freshSampleData();
-    seedSampleData();
+    seedSampleData(inEnglish);
     const first = habitRows(db).map((row) => row.id);
 
-    seedSampleData();
+    seedSampleData(inEnglish);
 
     expect(habitRows(db).map((row) => row.id)).toEqual(first);
   });
@@ -141,7 +177,7 @@ describe("seedSampleData", () => {
       [TODAY],
     );
 
-    seedSampleData();
+    seedSampleData(inEnglish);
 
     expect(habitRows(db).map((row) => row.id)).toContain("mine");
   });
@@ -149,7 +185,7 @@ describe("seedSampleData", () => {
   it("should leave one habit checked in today, so Today opens with work left", () => {
     const { seedSampleData, db } = freshSampleData();
 
-    seedSampleData();
+    seedSampleData(inEnglish);
 
     const doneToday = habitRows(db).filter((row) =>
       completionDates(db, row.id).includes(TODAY),

@@ -1,3 +1,4 @@
+import type { TFunction } from "i18next";
 import { addDays, todayKey } from "./dates";
 import { db } from "./db";
 import { isScheduledOn, type Habit } from "./types";
@@ -17,7 +18,8 @@ function mulberry32(seed: number): () => number {
 const WEEKS = 12;
 
 type SampleDef = {
-  name: string;
+  /** A key in the `sampleData` namespace, not the name itself. */
+  name: "walk" | "medicine" | "water" | "read" | "workout";
   icon: string;
   color: string;
   weekdays: number[];
@@ -30,7 +32,7 @@ type SampleDef = {
 
 const SAMPLES: SampleDef[] = [
   {
-    name: "Walk outside",
+    name: "walk",
     icon: "figure.walk",
     color: "#34C759",
     weekdays: [0, 1, 2, 3, 4, 5, 6],
@@ -39,7 +41,7 @@ const SAMPLES: SampleDef[] = [
     doneToday: true,
   },
   {
-    name: "Take medicine",
+    name: "medicine",
     icon: "pills.fill",
     color: "#FF3B30",
     weekdays: [0, 1, 2, 3, 4, 5, 6],
@@ -48,7 +50,7 @@ const SAMPLES: SampleDef[] = [
     doneToday: false,
   },
   {
-    name: "Drink water",
+    name: "water",
     icon: "drop.fill",
     color: "#007AFF",
     weekdays: [0, 1, 2, 3, 4, 5, 6],
@@ -57,7 +59,7 @@ const SAMPLES: SampleDef[] = [
     doneToday: false,
   },
   {
-    name: "Read 20 minutes",
+    name: "read",
     icon: "book.fill",
     color: "#5856D6",
     weekdays: [0, 1, 2, 3, 4, 5, 6],
@@ -66,7 +68,7 @@ const SAMPLES: SampleDef[] = [
     doneToday: false,
   },
   {
-    name: "Workout",
+    name: "workout",
     icon: "dumbbell.fill",
     color: "#FF9500",
     weekdays: [1, 3, 5],
@@ -80,8 +82,12 @@ const SAMPLES: SampleDef[] = [
  * Seeds sample habits with twelve weeks of realistic history. Idempotent: a
  * previous sample run is replaced. Returns the habits that carry a reminder so
  * the caller can schedule notifications for them.
+ *
+ * Takes `t` rather than reaching for the active language, so this module stays
+ * pure. The names are written into the database, so they keep whichever
+ * language was active here: from this point on they are rows the user owns.
  */
-export function seedSampleData(): Habit[] {
+export function seedSampleData(t: TFunction<"sampleData">): Habit[] {
   const random = mulberry32(20260728);
   const today = todayKey();
   const start = addDays(today, -(WEEKS * 7 - 1));
@@ -97,7 +103,7 @@ export function seedSampleData(): Habit[] {
     SAMPLES.forEach((def, index) => {
       const habit: Habit = {
         id: `sample-${index}`,
-        name: def.name,
+        name: t(def.name),
         icon: def.icon,
         color: def.color,
         weekdays: def.weekdays,

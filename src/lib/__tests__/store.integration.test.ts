@@ -2,6 +2,7 @@
 the store loads its state at import, so each case has to reload it rather than
 close over one instance.
 */
+import i18n from "@/i18n/i18next";
 import type { HabitInput } from "@/lib/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
@@ -27,6 +28,10 @@ const mockNotifications = {
 };
 
 jest.mock("expo-notifications", () => mockNotifications);
+
+/* The seed writes the names it is given, so the cases pin the language rather
+than inheriting one. */
+const sampleNames = i18n.getFixedT("en", "sampleData");
 
 const TODAY = "2026-07-29";
 
@@ -211,7 +216,7 @@ describe("loadSampleData", () => {
   it("should schedule reminders only for the sample habits that carry one", async () => {
     const store = freshStore();
 
-    store.loadSampleData();
+    store.loadSampleData(sampleNames);
     await settle();
 
     const withReminders = store
