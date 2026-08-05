@@ -32,7 +32,8 @@
       ],
       "expo-sqlite",
       "./plugins/withoutPushEntitlement",
-      "expo-notifications"
+      "expo-notifications",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true,

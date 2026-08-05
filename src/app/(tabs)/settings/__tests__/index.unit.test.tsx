@@ -1,8 +1,12 @@
 import SettingsScreen from "@/app/(tabs)/settings";
+import i18n, { DEVICE, setLanguage } from "@/i18n/i18next";
+import en from "@/i18n/locales/en";
+import ptBR from "@/i18n/locales/pt-BR";
+import { getSetting } from "@/lib/db";
 import { createHabit, deleteAllData, getAppState } from "@/lib/store";
 import type { HabitInput } from "@/lib/types";
 import { accent } from "@/theme/colors";
-import { pressButton } from "@/test-utils/native-events";
+import { chooseOption, pressButton } from "@/test-utils/native-events";
 import { modifier, nativeView, nativeViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
@@ -20,6 +24,13 @@ jest.mock("@/lib/notifications", () => ({
   sendTestNotification: jest.fn(async () => {}),
 }));
 
+/* Motion is reduced throughout, so a picked language lands on the press instead
+of waiting on a fade the runner never plays. */
+jest.mock("react-native-reanimated", () => {
+  const actual = jest.requireActual("react-native-reanimated");
+  return { __esModule: true, ...actual, useReducedMotion: jest.fn(() => true) };
+});
+
 jest.mock("expo-router", () =>
   /* eslint-disable-next-line @typescript-eslint/no-require-imports --
   a mock factory is hoisted above the imports and cannot close over one. */
@@ -30,6 +41,9 @@ const notifications = jest.requireMock<{
   getNotificationPermission: jest.Mock;
   sendTestNotification: jest.Mock;
 }>("@/lib/notifications");
+
+const copy = en.translations.settings;
+const language = en.translations.language;
 
 const TODAY = "2026-07-29";
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
@@ -67,6 +81,25 @@ function settingsButton(container: TestInstance, label: string): TestInstance {
   return found;
 }
 
+/**
+ * Found by the handler rather than by its label, since the label is itself
+ * translated and moves as soon as a language is picked.
+ */
+function languagePicker(container: TestInstance): TestInstance {
+  const found = nativeViews(container).find(
+    (node) => typeof node.props.onSelectionChange === "function",
+  );
+  if (!found) throw new Error("No row offers a language to pick.");
+  return found;
+}
+
+/** The languages a picker offers, in the order it draws them. */
+function optionsOf(picker: TestInstance): string[] {
+  return picker
+    .queryAll((node) => typeof node.props.text === "string")
+    .map((node) => node.props.text as string);
+}
+
 /** The line drawn right after a labelled row, which is that row's value. */
 function valueAfter(container: TestInstance, label: string): string {
   const drawn = drawnText(container);
@@ -82,6 +115,11 @@ async function renderSettings(permission: unknown = GRANTED) {
 }
 
 beforeEach(async () => {
+  /* Pinned rather than inherited: a change to how the device is resolved must
+  not rewrite what these cases assert. The preference is a stored row, so it
+  outlives the case that wrote it unless it is cleared here. */
+  setLanguage(DEVICE);
+  await i18n.changeLanguage("en");
   freezeClock(`${TODAY}T12:00:00-03:00`);
   stableIds();
   await deleteAllData();
@@ -112,27 +150,27 @@ describe("the settings screen", () => {
   it("should say where the permission stands", async () => {
     const { container } = await renderSettings(GRANTED);
 
-    expect(valueAfter(container, "Permission")).toBe("Allowed");
+    expect(valueAfter(container, copy.permission)).toBe(copy.permissionAllowed);
   });
 
   it("should offer to ask while the prompt can still be shown", async () => {
     const { container } = await renderSettings(NOT_ASKED);
 
-    expect(drawnText(container)).toContain("Allow notifications");
-    expect(drawnText(container)).not.toContain("Open iOS Settings");
+    expect(drawnText(container)).toContain(copy.allowNotifications);
+    expect(drawnText(container)).not.toContain(copy.openIosSettings);
   });
 
   it("should offer iOS Settings once the prompt cannot be shown again", async () => {
     const { container } = await renderSettings(DENIED);
 
-    expect(drawnText(container)).toContain("Open iOS Settings");
-    expect(drawnText(container)).not.toContain("Allow notifications");
+    expect(drawnText(container)).toContain(copy.openIosSettings);
+    expect(drawnText(container)).not.toContain(copy.allowNotifications);
   });
 
   it("should send a test notification when that row is pressed", async () => {
     const { container } = await renderSettings(GRANTED);
 
-    await pressButton(settingsButton(container, "Send test notification"));
+    await pressButton(settingsButton(container, copy.sendTestNotification));
     await act(async () => new Promise((resolve) => setImmediate(resolve)));
 
     expect(notifications.sendTestNotification).toHaveBeenCalledTimes(1);
@@ -142,14 +180,14 @@ describe("the settings screen", () => {
     createHabit(input());
     const { container } = await renderSettings();
 
-    expect(valueAfter(container, "Habits")).toBe("1");
-    expect(valueAfter(container, "Check-ins")).toBe("0");
+    expect(valueAfter(container, copy.habits)).toBe("1");
+    expect(valueAfter(container, copy.checkIns)).toBe("0");
   });
 
   it("should put the app back before onboarding when that row is pressed", async () => {
     const { container } = await renderSettings();
 
-    await pressButton(settingsButton(container, "View onboarding"));
+    await pressButton(settingsButton(container, copy.viewOnboarding));
 
     expect(getAppState().onboarded).toBe(false);
   });
@@ -157,8 +195,8 @@ describe("the settings screen", () => {
   it("should keep the way out of everything hidden while there is nothing to delete", async () => {
     const { container } = await renderSettings();
 
-    expect(() => nativeView(container, "label", "Delete all data")).toThrow(
-      "none",
+    expect(() => nativeView(container, "label", copy.deleteAllData)).toThrow(
+      copy.deleteAllData,
     );
   });
 
@@ -167,13 +205,75 @@ describe("the settings screen", () => {
     createHabit(input());
     const { container } = await renderSettings();
 
-    await pressButton(nativeView(container, "label", "Delete all data"));
+    await pressButton(nativeView(container, "label", copy.deleteAllData));
 
     expect(alert).toHaveBeenCalledWith(
-      "Delete all data?",
-      "This permanently deletes every habit and its history.",
+      copy.deleteAllTitle,
+      copy.deleteAllBody,
       expect.any(Array),
     );
     expect(getAppState().habits).toHaveLength(1);
+  });
+});
+
+describe("the language row", () => {
+  it("should carry the section's own title as its label", async () => {
+    const { container } = await renderSettings();
+
+    expect(languagePicker(container).props.label).toBe(language.title);
+  });
+
+  it("should offer the system default first, then the languages by name", async () => {
+    const { container } = await renderSettings();
+
+    expect(optionsOf(languagePicker(container))).toEqual([
+      language.systemDefault,
+      "English",
+      "Português (Brasil)",
+    ]);
+  });
+
+  /*
+  The style is named rather than left to `automatic`, and it is the one style
+  that cannot navigate: a pushed list would land on the navigation controller
+  react-native-screens owns and abort the app on the tap.
+  */
+  it("should open its list over the screen rather than navigate", async () => {
+    const { container } = await renderSettings();
+
+    expect(modifier(languagePicker(container), "pickerStyle")).toMatchObject({
+      style: "menu",
+    });
+  });
+
+  it("should show the device as the selection until one is chosen", async () => {
+    const { container } = await renderSettings();
+
+    expect(languagePicker(container).props.selection).toBe(DEVICE);
+  });
+
+  it("should store the language it is given and switch to it", async () => {
+    const { container } = await renderSettings();
+
+    await chooseOption(languagePicker(container), "pt-BR");
+
+    expect(getSetting("language")).toBe("pt-BR");
+    expect(i18n.language).toBe("pt-BR");
+    expect(languagePicker(container).props.selection).toBe("pt-BR");
+    /* The screen redraws in the new language without being remounted. */
+    expect(languagePicker(container).props.label).toBe(
+      ptBR.translations.language.title,
+    );
+  });
+
+  it("should follow the device again when the system default is chosen", async () => {
+    const { container } = await renderSettings();
+    await chooseOption(languagePicker(container), "pt-BR");
+
+    await chooseOption(languagePicker(container), DEVICE);
+
+    expect(getSetting("language")).toBe(DEVICE);
+    /* The runner's device reports en-US. */
+    expect(i18n.language).toBe("en");
   });
 });

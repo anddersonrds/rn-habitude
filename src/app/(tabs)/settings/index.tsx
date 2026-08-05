@@ -7,11 +7,18 @@ import {
   Image,
   Label,
   LabeledContent,
+  Picker,
   Section,
   Text,
 } from "@expo/ui/swift-ui";
-import { font, foregroundStyle } from "@expo/ui/swift-ui/modifiers";
+import {
+  font,
+  foregroundStyle,
+  pickerStyle,
+  tag,
+} from "@expo/ui/swift-ui/modifiers";
 import type { ComponentProps } from "react";
+import { useTranslation } from "react-i18next";
 
 type SettingsIcon = NonNullable<ComponentProps<typeof Image>["systemName"]>;
 
@@ -53,6 +60,7 @@ function SettingsButton({
 }
 
 export default function SettingsScreen() {
+  const { t } = useTranslation(["settings", "language"]);
   const {
     permissionLabel,
     permissionColor,
@@ -62,6 +70,9 @@ export default function SettingsScreen() {
     totalCheckIns,
     hasHabits,
     version,
+    languages,
+    language,
+    chooseLanguage,
     requestPermission,
     openSystemSettings,
     sendTest,
@@ -73,17 +84,36 @@ export default function SettingsScreen() {
   return (
     <Host style={{ flex: 1 }}>
       <Form>
+        <Section title={t("language:title")}>
+          <Picker
+            label={t("language:title")}
+            selection={language}
+            onSelectionChange={chooseLanguage}
+            modifiers={[pickerStyle("menu")]}
+          >
+            {languages.map((entry) => (
+              <Text
+                key={entry.tag}
+                modifiers={[tag(entry.tag), font({ design: "rounded" })]}
+              >
+                {entry.label}
+              </Text>
+            ))}
+          </Picker>
+        </Section>
+
         <Section
-          title="Notifications"
+          title={t("notifications")}
           footer={
             <Text modifiers={[font({ design: "rounded" })]}>
-              Reminders are scheduled on this device only. habitude never sends
-              anything to a server.
+              {t("notificationsFooter")}
             </Text>
           }
         >
           <LabeledContent
-            label={<SettingsLabel label="Permission" systemImage="bell.fill" />}
+            label={
+              <SettingsLabel label={t("permission")} systemImage="bell.fill" />
+            }
           >
             <Text
               modifiers={[
@@ -96,68 +126,77 @@ export default function SettingsScreen() {
           </LabeledContent>
           {canRequestPermission && (
             <SettingsButton
-              label="Allow notifications"
+              label={t("allowNotifications")}
               systemImage="bell.badge"
               onPress={() => void requestPermission()}
             />
           )}
           {canOpenSettings && (
             <SettingsButton
-              label="Open iOS Settings"
+              label={t("openIosSettings")}
               systemImage="gear"
               onPress={openSystemSettings}
             />
           )}
           <SettingsButton
-            label="Send test notification"
+            label={t("sendTestNotification")}
             systemImage="paperplane"
             onPress={() => void sendTest()}
           />
         </Section>
 
         <Section
-          title="Data"
+          title={t("data")}
           footer={
             <Text modifiers={[font({ design: "rounded" })]}>
-              Sample data seeds five habits with twelve weeks of history, so the
-              heat graph and the widget have something to show.
+              {t("dataFooter")}
             </Text>
           }
         >
           <SettingsButton
-            label="Load sample data"
+            label={t("loadSampleData")}
             systemImage="wand.and.stars"
             onPress={loadSample}
           />
           {hasHabits && (
             <Button
-              label="Delete all data"
+              label={t("deleteAllData")}
               role="destructive"
               onPress={deleteEverything}
             />
           )}
         </Section>
 
-        <Section title="About">
+        <Section title={t("about")}>
           <SettingsButton
-            label="View onboarding"
+            label={t("viewOnboarding")}
             systemImage="sparkles"
             onPress={viewOnboarding}
           />
           <LabeledContent
-            label={<SettingsLabel label="Habits" systemImage="list.bullet" />}
+            label={
+              <SettingsLabel label={t("habits")} systemImage="list.bullet" />
+            }
           >
             <Text modifiers={[font({ design: "rounded" })]}>{`${habitCount}`}</Text>
           </LabeledContent>
           <LabeledContent
             label={
-              <SettingsLabel label="Check-ins" systemImage="checkmark.seal.fill" />
+              <SettingsLabel
+                label={t("checkIns")}
+                systemImage="checkmark.seal.fill"
+              />
             }
           >
             <Text modifiers={[font({ design: "rounded" })]}>{`${totalCheckIns}`}</Text>
           </LabeledContent>
           <LabeledContent
-            label={<SettingsLabel label="Version" systemImage="info.circle.fill" />}
+            label={
+              <SettingsLabel
+                label={t("version")}
+                systemImage="info.circle.fill"
+              />
+            }
           >
             <Text modifiers={[font({ design: "rounded" })]}>
               {version}

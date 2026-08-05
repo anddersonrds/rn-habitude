@@ -3,6 +3,7 @@ the store loads its state at import, so every case reloads it against its own
 database, and the hook, the permission boundary and the haptics have to come
 from that same registry to be the ones the hook actually calls.
 */
+import en from "@/i18n/locales/en";
 import type { HabitInput } from "@/lib/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
@@ -62,6 +63,25 @@ jest.mock("expo-application", () => ({
   },
 }));
 
+/*
+Reduced motion decides whether the change rides on the fade, and it is a hook
+rather than a prop. Reanimated is spread so everything else stays real, and
+`__esModule` has to be declared or its default export goes missing.
+*/
+jest.mock("react-native-reanimated", () => {
+  const actual = jest.requireActual("react-native-reanimated");
+  return {
+    __esModule: true,
+    ...actual,
+    /*
+    On throughout, except where a case says otherwise: `EaseView` never reports
+    a transition end under the runner, so a change that waited on one would
+    never land.
+    */
+    useReducedMotion: jest.fn(() => true),
+  };
+});
+
 jest.mock("expo-router", () => ({
   /* The screen refreshes its permission on focus; here it runs once, on mount. */
   useFocusEffect: (effect: () => void) => {
@@ -78,6 +98,8 @@ type Permission = {
   canAskAgain: boolean;
 };
 
+const copy = en.translations.settings;
+
 const GRANTED: Permission = { granted: true, canAskAgain: false };
 const NOT_ASKED: Permission = { granted: false, canAskAgain: true };
 const DENIED: Permission = { granted: false, canAskAgain: false };
@@ -90,6 +112,9 @@ type AlertButtons = { text: string; style?: string; onPress?: () => void }[];
 
 type Loaded = {
   store: StoreModule;
+  i18n: typeof import("@/i18n/i18next");
+  switching: typeof import("@/i18n/switching");
+  reanimated: { useReducedMotion: jest.Mock };
   useSettingsModel: ModelModule["useSettingsModel"];
   haptic: { [K in keyof HapticsModule["haptic"]]: jest.Mock };
   getPermission: jest.Mock;
@@ -106,7 +131,17 @@ function load(): Loaded {
   const { Alert, Linking } =
     require("react-native") as typeof import("react-native");
   const notifications = require("@/lib/notifications");
+  /*
+  Pinned rather than inherited: the hook reads its copy through this registry,
+  and a change to how the device is resolved must not rewrite what these cases
+  assert.
+  */
+  const i18n = require("@/i18n/i18next") as typeof import("@/i18n/i18next");
+  void i18n.default.changeLanguage("en");
   return {
+    i18n,
+    switching: require("@/i18n/switching"),
+    reanimated: require("react-native-reanimated"),
     store: require("@/lib/store"),
     useSettingsModel: require("@/components/screens/settings/useSettingsModel")
       .useSettingsModel,
@@ -182,7 +217,7 @@ describe("what the screen says about notifications", () => {
     );
 
     expect(result.current).toMatchObject({
-      permissionLabel: "…",
+      permissionLabel: copy.permissionPending,
       permissionColor: "secondary",
       canRequestPermission: false,
       canOpenSettings: false,
@@ -194,7 +229,7 @@ describe("what the screen says about notifications", () => {
     const { result, unmount } = await renderModel(GRANTED);
 
     expect(result.current).toMatchObject({
-      permissionLabel: "Allowed",
+      permissionLabel: copy.permissionAllowed,
       permissionColor: "green",
       canRequestPermission: false,
       canOpenSettings: false,
@@ -206,7 +241,7 @@ describe("what the screen says about notifications", () => {
     const { result, unmount } = await renderModel(NOT_ASKED);
 
     expect(result.current).toMatchObject({
-      permissionLabel: "Not requested",
+      permissionLabel: copy.permissionNotRequested,
       permissionColor: "secondary",
       canRequestPermission: true,
       canOpenSettings: false,
@@ -218,7 +253,7 @@ describe("what the screen says about notifications", () => {
     const { result, unmount } = await renderModel(DENIED);
 
     expect(result.current).toMatchObject({
-      permissionLabel: "Denied",
+      permissionLabel: copy.permissionDenied,
       permissionColor: "red",
       canRequestPermission: false,
       canOpenSettings: true,
@@ -236,7 +271,7 @@ describe("asking for permission", () => {
 
     await act(async () => result.current.requestPermission());
 
-    expect(result.current.permissionLabel).toBe("Allowed");
+    expect(result.current.permissionLabel).toBe(copy.permissionAllowed);
     await unmount();
   });
 
@@ -260,7 +295,7 @@ describe("asking for permission", () => {
     await act(async () => result.current.requestPermission());
 
     expect(haptic.success).not.toHaveBeenCalled();
-    expect(result.current.permissionLabel).toBe("Denied");
+    expect(result.current.permissionLabel).toBe(copy.permissionDenied);
     await unmount();
   });
 
@@ -284,8 +319,8 @@ describe("sending a test notification", () => {
     expect(sendTestNotification).toHaveBeenCalledTimes(1);
     expect(haptic.impact).toHaveBeenCalledTimes(1);
     expect(alert).toHaveBeenCalledWith(
-      "Test notification sent",
-      expect.stringContaining("It arrives in a few seconds"),
+      copy.testSentTitle,
+      copy.testSentBody,
     );
     await unmount();
   });
@@ -299,8 +334,8 @@ describe("sending a test notification", () => {
 
     expect(sendTestNotification).not.toHaveBeenCalled();
     expect(alert).toHaveBeenCalledWith(
-      "Notifications are off",
-      "Allow notifications in iOS Settings to receive reminders.",
+      copy.notificationsOffTitle,
+      copy.notificationsOffBody,
       expect.any(Array),
     );
     await unmount();
@@ -313,7 +348,7 @@ describe("sending a test notification", () => {
     await act(async () => result.current.sendTest());
 
     const settings = buttonsOf(alert).find(
-      (button) => button.text === "Open Settings",
+      (button) => button.text === copy.openSettings,
     );
     await act(async () => settings?.onPress?.());
 
@@ -360,8 +395,8 @@ describe("loading the sample data", () => {
     await act(async () => result.current.loadSample());
 
     expect(alert).toHaveBeenCalledWith(
-      "Load sample data?",
-      expect.stringContaining("Your own habits are kept."),
+      copy.loadSampleTitle,
+      copy.loadSampleBody,
       expect.any(Array),
     );
     expect(store.getAppState().habits).toHaveLength(1);
@@ -396,7 +431,7 @@ describe("loading the sample data", () => {
     );
     await act(async () => result.current.loadSample());
 
-    const load = buttonsOf(alert).find((button) => button.text === "Load");
+    const load = buttonsOf(alert).find((button) => button.text === copy.load);
     await act(async () => load?.onPress?.());
     await settle();
 
@@ -419,8 +454,8 @@ describe("deleting everything", () => {
     await act(async () => result.current.deleteEverything());
 
     expect(alert).toHaveBeenCalledWith(
-      "Delete all data?",
-      "This permanently deletes every habit and its history.",
+      copy.deleteAllTitle,
+      copy.deleteAllBody,
       expect.any(Array),
     );
     expect(haptic.warning).toHaveBeenCalledTimes(1);
@@ -540,6 +575,121 @@ describe("seeing the onboarding again", () => {
 
     expect(store.getAppState().onboarded).toBe(false);
     expect(haptic.impact).toHaveBeenCalledTimes(1);
+    await unmount();
+  });
+});
+
+describe("choosing a language", () => {
+  it("should offer the system default first, then the languages by name", async () => {
+    const { result, unmount } = await renderModel(GRANTED);
+
+    expect(result.current.languages).toEqual([
+      { tag: "device", label: en.translations.language.systemDefault },
+      { tag: "en", label: "English" },
+      { tag: "pt-BR", label: "Português (Brasil)" },
+    ]);
+    await unmount();
+  });
+
+  it("should start on the device while nothing has been chosen", async () => {
+    const { result, unmount } = await renderModel(GRANTED);
+
+    expect(result.current.language).toBe("device");
+    await unmount();
+  });
+
+  it("should start on the language already stored", async () => {
+    resetDatabase();
+    const loaded = load();
+    loaded.getPermission.mockResolvedValue(GRANTED);
+    loaded.i18n.setLanguage("pt-BR");
+
+    const { result, unmount } = await loaded.testingLibrary.renderHook(() =>
+      loaded.useSettingsModel(),
+    );
+
+    expect(result.current.language).toBe("pt-BR");
+    await unmount();
+  });
+
+  it("should store and apply the language it is given", async () => {
+    const { act, i18n, result, unmount } = await renderModel(GRANTED);
+
+    await act(async () => result.current.chooseLanguage("pt-BR"));
+
+    expect(result.current.language).toBe("pt-BR");
+    expect(i18n.getLanguagePreference()).toBe("pt-BR");
+    expect(i18n.default.language).toBe("pt-BR");
+    await unmount();
+  });
+
+  it("should go back to the device when the system default is chosen", async () => {
+    const { act, i18n, result, unmount } = await renderModel(GRANTED);
+    await act(async () => result.current.chooseLanguage("pt-BR"));
+
+    await act(async () => result.current.chooseLanguage("device"));
+
+    expect(result.current.language).toBe("device");
+    expect(i18n.getLanguagePreference()).toBe("device");
+    /* The runner's device reports en-US. */
+    expect(i18n.default.language).toBe("en");
+    await unmount();
+  });
+});
+
+describe("the fade a language change rides on", () => {
+  async function renderSwitch({ reduceMotion }: { reduceMotion: boolean }) {
+    resetDatabase();
+    const loaded = load();
+    loaded.getPermission.mockResolvedValue(GRANTED);
+    loaded.reanimated.useReducedMotion.mockReturnValue(reduceMotion);
+
+    const { act, renderHook } = loaded.testingLibrary;
+    const rendered = await renderHook(() => ({
+      model: loaded.useSettingsModel(),
+      fade: loaded.switching.useLanguageSwitch(),
+    }));
+    return { ...loaded, act, ...rendered };
+  }
+
+  it("should hold the change until the fade reports back", async () => {
+    const { act, i18n, result, unmount } = await renderSwitch({
+      reduceMotion: false,
+    });
+
+    await act(async () => result.current.model.chooseLanguage("pt-BR"));
+
+    expect(result.current.fade.visible).toBe(false);
+    expect(i18n.getLanguagePreference()).toBe("device");
+    expect(i18n.default.language).toBe("en");
+    await unmount();
+  });
+
+  it("should apply the change and come back once the fade reports", async () => {
+    const { act, i18n, result, unmount } = await renderSwitch({
+      reduceMotion: false,
+    });
+    await act(async () => result.current.model.chooseLanguage("pt-BR"));
+
+    await act(async () => result.current.fade.onTransitionEnd());
+
+    expect(result.current.fade.visible).toBe(true);
+    expect(i18n.getLanguagePreference()).toBe("pt-BR");
+    expect(i18n.default.language).toBe("pt-BR");
+    expect(result.current.model.language).toBe("pt-BR");
+    await unmount();
+  });
+
+  it("should apply the change at once with reduced motion, and play no fade", async () => {
+    const { act, i18n, result, unmount } = await renderSwitch({
+      reduceMotion: true,
+    });
+
+    await act(async () => result.current.model.chooseLanguage("pt-BR"));
+
+    expect(result.current.fade.visible).toBe(true);
+    expect(i18n.getLanguagePreference()).toBe("pt-BR");
+    expect(i18n.default.language).toBe("pt-BR");
     await unmount();
   });
 });

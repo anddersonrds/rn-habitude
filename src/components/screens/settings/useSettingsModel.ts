@@ -1,3 +1,10 @@
+import {
+  DEVICE,
+  LOCALES,
+  getLanguagePreference,
+  setLanguage,
+} from "@/i18n/i18next";
+import { switchLanguage } from "@/i18n/switching";
 import { haptic } from "@/lib/haptics";
 import {
   ensureNotificationPermission,
@@ -14,8 +21,10 @@ import * as Application from "expo-application";
 import Constants from "expo-constants";
 import type * as Notifications from "expo-notifications";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, AppState, Linking } from "react-native";
+import { useReducedMotion } from "react-native-reanimated";
 
 /**
  * `expoConfig` is embedded at bundle time and derives from `package.json`, so
@@ -33,9 +42,36 @@ const version =
  * layer.
  */
 export function useSettingsModel() {
+  const { t } = useTranslation(["settings", "common", "language"]);
+  const reduceMotion = !!useReducedMotion();
   const { habits, completions } = useAppState();
   const [permission, setPermission] =
     useState<Notifications.NotificationPermissionsStatus | null>(null);
+  const [language, setActiveLanguage] = useState(getLanguagePreference);
+
+  const languages = useMemo(
+    () => [
+      { tag: DEVICE, label: t("language:systemDefault") },
+      ...LOCALES.map(({ tag, label }) => ({ tag, label })).sort((one, other) =>
+        one.label.localeCompare(other.label),
+      ),
+    ],
+    [t],
+  );
+
+  const chooseLanguage = (tag: string) => {
+    const apply = () => {
+      setLanguage(tag);
+      setActiveLanguage(tag);
+    };
+    /* With Reduce Motion the root renders no fade, so nothing would ever call
+    back and the change would never be applied. */
+    if (reduceMotion) {
+      apply();
+      return;
+    }
+    switchLanguage(apply);
+  };
 
   const refreshPermission = useCallback(() => {
     void getNotificationPermission().then(setPermission);
@@ -51,12 +87,12 @@ export function useSettingsModel() {
   }, [refreshPermission]);
 
   const permissionLabel = !permission
-    ? "…"
+    ? t("permissionPending")
     : permission.granted
-      ? "Allowed"
+      ? t("permissionAllowed")
       : permission.canAskAgain
-        ? "Not requested"
-        : "Denied";
+        ? t("permissionNotRequested")
+        : t("permissionDenied");
 
   const permissionColor = !permission
     ? "secondary"
@@ -78,22 +114,15 @@ export function useSettingsModel() {
     const granted = await ensureNotificationPermission();
     refreshPermission();
     if (!granted) {
-      Alert.alert(
-        "Notifications are off",
-        "Allow notifications in iOS Settings to receive reminders.",
-        [
-          { text: "Cancel", style: "cancel" },
-          { text: "Open Settings", onPress: openSystemSettings },
-        ],
-      );
+      Alert.alert(t("notificationsOffTitle"), t("notificationsOffBody"), [
+        { text: t("common:cancel"), style: "cancel" },
+        { text: t("openSettings"), onPress: openSystemSettings },
+      ]);
       return;
     }
     await sendTestNotification();
     haptic.impact();
-    Alert.alert(
-      "Test notification sent",
-      "It arrives in a few seconds. Leave the app open or lock the screen to see the banner.",
-    );
+    Alert.alert(t("testSentTitle"), t("testSentBody"));
   };
 
   const loadSample = () => {
@@ -106,30 +135,22 @@ export function useSettingsModel() {
       run();
       return;
     }
-    Alert.alert(
-      "Load sample data?",
-      "This adds five example habits with twelve weeks of history. Your own habits are kept.",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Load", onPress: run },
-      ],
-    );
+    Alert.alert(t("loadSampleTitle"), t("loadSampleBody"), [
+      { text: t("common:cancel"), style: "cancel" },
+      { text: t("load"), onPress: run },
+    ]);
   };
 
   const deleteEverything = () => {
     haptic.warning();
-    Alert.alert(
-      "Delete all data?",
-      "This permanently deletes every habit and its history.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete Everything",
-          style: "destructive",
-          onPress: () => void deleteAllData(),
-        },
-      ],
-    );
+    Alert.alert(t("deleteAllTitle"), t("deleteAllBody"), [
+      { text: t("common:cancel"), style: "cancel" },
+      {
+        text: t("deleteEverything"),
+        style: "destructive",
+        onPress: () => void deleteAllData(),
+      },
+    ]);
   };
 
   const viewOnboarding = () => {
@@ -152,6 +173,9 @@ export function useSettingsModel() {
     ),
     hasHabits: habits.length > 0,
     version,
+    languages,
+    language,
+    chooseLanguage,
     requestPermission,
     openSystemSettings,
     sendTest,
