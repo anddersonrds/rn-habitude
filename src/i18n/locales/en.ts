@@ -8,6 +8,13 @@ const en = {
   translations: {
     common: {
       cancel: "Cancel",
+      delete: "Delete",
+      edit: "Edit",
+      addHabit: "Add habit",
+      newHabit: "New habit",
+      noHabitsYet: "No habits yet",
+      deleteHabitTitle: 'Delete "{{name}}"?',
+      deleteHabitBody: "This permanently deletes the habit and its history.",
     },
     tabs: {
       today: "Today",

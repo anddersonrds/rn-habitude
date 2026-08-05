@@ -7,6 +7,13 @@ const ptBR: Locale = {
   translations: {
     common: {
       cancel: "Cancelar",
+      delete: "Apagar",
+      edit: "Editar",
+      addHabit: "Adicionar hábito",
+      newHabit: "Novo hábito",
+      noHabitsYet: "Nenhum hábito ainda",
+      deleteHabitTitle: 'Apagar "{{name}}"?',
+      deleteHabitBody: "Isso apaga permanentemente o hábito e o histórico dele.",
     },
     tabs: {
       today: "Hoje",
