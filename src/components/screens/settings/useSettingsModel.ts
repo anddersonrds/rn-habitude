@@ -4,6 +4,7 @@ import {
   getLanguagePreference,
   setLanguage,
 } from "@/i18n/i18next";
+import { switchLanguage } from "@/i18n/switching";
 import { haptic } from "@/lib/haptics";
 import {
   ensureNotificationPermission,
@@ -23,6 +24,7 @@ import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, AppState, Linking } from "react-native";
+import { useReducedMotion } from "react-native-reanimated";
 
 /**
  * `expoConfig` is embedded at bundle time and derives from `package.json`, so
@@ -43,6 +45,7 @@ export function useSettingsModel() {
   /* Subscribes the screen to the language, and gives the alerts their copy at
   the moment they are raised rather than at import. */
   const { t } = useTranslation(["settings", "common", "language"]);
+  const reduceMotion = !!useReducedMotion();
   const { habits, completions } = useAppState();
   const [permission, setPermission] =
     useState<Notifications.NotificationPermissionsStatus | null>(null);
@@ -60,8 +63,18 @@ export function useSettingsModel() {
   );
 
   const chooseLanguage = (tag: string) => {
-    setLanguage(tag);
-    setActiveLanguage(tag);
+    const apply = () => {
+      setLanguage(tag);
+      setActiveLanguage(tag);
+    };
+    /* Applied straight away with Reduce Motion on: there is no fade to wait
+    for, and waiting on one that is never played would leave the old language
+    on screen for good. */
+    if (reduceMotion) {
+      apply();
+      return;
+    }
+    switchLanguage(apply);
   };
 
   const refreshPermission = useCallback(() => {

@@ -4,6 +4,7 @@ synchronously at import, which is what keeps English off the first frame of a
 Portuguese device without a loading state.
 */
 import "@/i18n/i18next";
+import { useLanguageSwitch } from "@/i18n/switching";
 import { haptic } from "@/lib/haptics";
 import { useNotificationActions } from "@/lib/notification-actions";
 import { useAppState } from "@/lib/store";
@@ -12,10 +13,12 @@ import { Color, router, Stack } from "expo-router";
 import { ThemeProvider } from "expo-router/react-navigation";
 import { StatusBar } from "expo-status-bar";
 import { PressablesConfig } from "pressto";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { useColorScheme } from "react-native";
+import { EaseView } from "react-native-ease";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
+import { useReducedMotion } from "react-native-reanimated";
 
 // A cold-start deep link (tapping the home screen widget) needs the tab
 // navigator mounted beneath it. Expo Router uses this anchor to build that
@@ -23,6 +26,31 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 export const unstable_settings = {
   initialRouteName: "(tabs)",
 };
+
+const LANGUAGE_TRANSITION = { type: "timing" as const, duration: 170 };
+
+/**
+ * Cross-fades the app while the language changes, opacity only. With Reduce
+ * Motion on it steps aside entirely: the change is applied synchronously
+ * instead, and nothing waits on a transition that will never be played.
+ */
+function LanguageFade({ children }: { children: ReactNode }) {
+  const reduceMotion = useReducedMotion();
+  const { visible, onTransitionEnd } = useLanguageSwitch();
+
+  if (reduceMotion) return children;
+
+  return (
+    <EaseView
+      style={{ flex: 1 }}
+      animate={{ opacity: visible ? 1 : 0 }}
+      transition={LANGUAGE_TRANSITION}
+      onTransitionEnd={onTransitionEnd}
+    >
+      {children}
+    </EaseView>
+  );
+}
 
 function AppStack() {
   const { habits, onboarded } = useAppState();
@@ -91,7 +119,9 @@ export default function RootLayout() {
             globalHandlers={{ onPress: () => haptic.selection() }}
             config={{ minScale: 0.97 }}
           >
-            <AppStack />
+            <LanguageFade>
+              <AppStack />
+            </LanguageFade>
             <StatusBar style="auto" />
           </PressablesConfig>
         </ThemeProvider>

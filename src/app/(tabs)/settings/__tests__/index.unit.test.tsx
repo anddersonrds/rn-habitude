@@ -24,6 +24,16 @@ jest.mock("@/lib/notifications", () => ({
   sendTestNotification: jest.fn(async () => {}),
 }));
 
+/*
+Motion is reduced throughout: the picked language then lands on the press
+rather than waiting on a fade the runner never plays. The sequencing itself is
+the view model's, and its own suite covers both paths.
+*/
+jest.mock("react-native-reanimated", () => {
+  const actual = jest.requireActual("react-native-reanimated");
+  return { __esModule: true, ...actual, useReducedMotion: jest.fn(() => true) };
+});
+
 jest.mock("expo-router", () =>
   /* eslint-disable-next-line @typescript-eslint/no-require-imports --
   a mock factory is hoisted above the imports and cannot close over one. */

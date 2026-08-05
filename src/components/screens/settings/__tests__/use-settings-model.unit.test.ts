@@ -63,6 +63,25 @@ jest.mock("expo-application", () => ({
   },
 }));
 
+/*
+Reduced motion decides whether the change rides on the fade, and it is a hook
+rather than a prop. Reanimated is spread so everything else stays real, and
+`__esModule` has to be declared or its default export goes missing.
+*/
+jest.mock("react-native-reanimated", () => {
+  const actual = jest.requireActual("react-native-reanimated");
+  return {
+    __esModule: true,
+    ...actual,
+    /*
+    On throughout, except where a case says otherwise: `EaseView` never reports
+    a transition end under the runner, so a change that waited on one would
+    never land.
+    */
+    useReducedMotion: jest.fn(() => true),
+  };
+});
+
 jest.mock("expo-router", () => ({
   /* The screen refreshes its permission on focus; here it runs once, on mount. */
   useFocusEffect: (effect: () => void) => {
@@ -95,6 +114,8 @@ type AlertButtons = { text: string; style?: string; onPress?: () => void }[];
 type Loaded = {
   store: StoreModule;
   i18n: typeof import("@/i18n/i18next");
+  switching: typeof import("@/i18n/switching");
+  reanimated: { useReducedMotion: jest.Mock };
   useSettingsModel: ModelModule["useSettingsModel"];
   haptic: { [K in keyof HapticsModule["haptic"]]: jest.Mock };
   getPermission: jest.Mock;
@@ -120,6 +141,8 @@ function load(): Loaded {
   void i18n.default.changeLanguage("en");
   return {
     i18n,
+    switching: require("@/i18n/switching"),
+    reanimated: require("react-native-reanimated"),
     store: require("@/lib/store"),
     useSettingsModel: require("@/components/screens/settings/useSettingsModel")
       .useSettingsModel,
@@ -611,6 +634,64 @@ describe("choosing a language", () => {
     expect(i18n.getLanguagePreference()).toBe("device");
     /* The runner's device reports en-US. */
     expect(i18n.default.language).toBe("en");
+    await unmount();
+  });
+});
+
+describe("the fade a language change rides on", () => {
+  /** Renders the model beside the fade the root layout plays. */
+  async function renderSwitch({ reduceMotion }: { reduceMotion: boolean }) {
+    resetDatabase();
+    const loaded = load();
+    loaded.getPermission.mockResolvedValue(GRANTED);
+    loaded.reanimated.useReducedMotion.mockReturnValue(reduceMotion);
+
+    const { act, renderHook } = loaded.testingLibrary;
+    const rendered = await renderHook(() => ({
+      model: loaded.useSettingsModel(),
+      fade: loaded.switching.useLanguageSwitch(),
+    }));
+    return { ...loaded, act, ...rendered };
+  }
+
+  it("should hold the change until the fade reports back", async () => {
+    const { act, i18n, result, unmount } = await renderSwitch({
+      reduceMotion: false,
+    });
+
+    await act(async () => result.current.model.chooseLanguage("pt-BR"));
+
+    expect(result.current.fade.visible).toBe(false);
+    expect(i18n.getLanguagePreference()).toBe("device");
+    expect(i18n.default.language).toBe("en");
+    await unmount();
+  });
+
+  it("should apply the change and come back once the fade reports", async () => {
+    const { act, i18n, result, unmount } = await renderSwitch({
+      reduceMotion: false,
+    });
+    await act(async () => result.current.model.chooseLanguage("pt-BR"));
+
+    await act(async () => result.current.fade.onTransitionEnd());
+
+    expect(result.current.fade.visible).toBe(true);
+    expect(i18n.getLanguagePreference()).toBe("pt-BR");
+    expect(i18n.default.language).toBe("pt-BR");
+    expect(result.current.model.language).toBe("pt-BR");
+    await unmount();
+  });
+
+  it("should apply the change at once with reduced motion, and play no fade", async () => {
+    const { act, i18n, result, unmount } = await renderSwitch({
+      reduceMotion: true,
+    });
+
+    await act(async () => result.current.model.chooseLanguage("pt-BR"));
+
+    expect(result.current.fade.visible).toBe(true);
+    expect(i18n.getLanguagePreference()).toBe("pt-BR");
+    expect(i18n.default.language).toBe("pt-BR");
     await unmount();
   });
 });
