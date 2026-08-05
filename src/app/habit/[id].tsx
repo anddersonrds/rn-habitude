@@ -1,8 +1,8 @@
 import { HeatMap } from "@/components/HeatMap";
-import { scheduleLabel } from "@/components/screens/habits/HabitsScreen";
 import { Text } from "@/components/ui/Text";
 import { layout } from "@/constants/layout";
 import { formatTime, todayKey, weekdayOf } from "@/lib/dates";
+import { scheduleLabel } from "@/lib/habits";
 import { haptic } from "@/lib/haptics";
 import { toggleCompletion, useAppState } from "@/lib/store";
 import { completionRate, computeStreaks } from "@/lib/streaks";
