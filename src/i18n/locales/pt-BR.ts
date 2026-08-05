@@ -85,6 +85,31 @@ const ptBR: Locale = {
       celebrationTitle: "Dia completo",
       celebrationBody: "Todos os hábitos registrados. Até amanhã.",
     },
+    habits: {
+      emptyDescription:
+        "Os hábitos que você criar aparecem aqui com suas sequências e histórico.",
+      count_one: "{{count}} hábito",
+      count_other: "{{count}} hábitos",
+      longestStreak: "maior sequência ativa",
+      checkIns: "registros",
+      reorder: "Reordenar",
+      reorderDone: "Pronto",
+      reorderingFooter:
+        "Arraste as alças para definir a ordem usada em todo o app.",
+      idleFooter:
+        "Toque em Reordenar para arrastar os hábitos. Pressione e segure um hábito para mais ações.",
+      reorderingHint: "Arraste a alça para reordenar.",
+      idleHint:
+        "Abre o histórico do hábito. Pressione e segure para mais ações.",
+      rowLabel: "{{name}}, {{schedule}}",
+      rowLabelWithStreak_one:
+        "{{name}}, {{schedule}}, sequência de {{count}} dia",
+      rowLabelWithStreak_other:
+        "{{name}}, {{schedule}}, sequência de {{count}} dias",
+      streakAndSchedule_one: "{{count}} dia  ·  {{schedule}}",
+      streakAndSchedule_other: "{{count}} dias  ·  {{schedule}}",
+      open: "Abrir",
+    },
     schedule: {
       everyDay: "Todo dia",
       noDays: "Nenhum dia",

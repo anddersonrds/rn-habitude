@@ -84,6 +84,27 @@ const en = {
       celebrationTitle: "Day complete",
       celebrationBody: "Every habit checked in. See you tomorrow.",
     },
+    habits: {
+      emptyDescription:
+        "Habits you create show up here with their streaks and history.",
+      count_one: "{{count}} habit",
+      count_other: "{{count}} habits",
+      longestStreak: "longest active streak",
+      checkIns: "check-ins",
+      reorder: "Reorder",
+      reorderDone: "Done",
+      reorderingFooter: "Drag the handles to set the order used across the app.",
+      idleFooter:
+        "Tap Reorder to drag habits into a new order. Long press a habit for more actions.",
+      reorderingHint: "Drag the handle to reorder.",
+      idleHint: "Opens habit history. Long press for more actions.",
+      rowLabel: "{{name}}, {{schedule}}",
+      rowLabelWithStreak_one: "{{name}}, {{schedule}}, {{count}}-day streak",
+      rowLabelWithStreak_other: "{{name}}, {{schedule}}, {{count}}-day streak",
+      streakAndSchedule_one: "{{count}} day  ·  {{schedule}}",
+      streakAndSchedule_other: "{{count}} days  ·  {{schedule}}",
+      open: "Open",
+    },
     schedule: {
       everyDay: "Every day",
       noDays: "No days",

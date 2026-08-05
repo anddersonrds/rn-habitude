@@ -33,6 +33,7 @@ import {
   tag,
 } from "@expo/ui/swift-ui/modifiers";
 import { Color, Stack } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, useColorScheme, View } from "react-native";
 
 const EDIT_ANIMATION = Animation.spring({ duration: 0.35, bounce: 0.06 });
@@ -86,6 +87,8 @@ function HabitRow({
   onEdit: () => void;
   onDelete: () => void;
 }) {
+  const { t } = useTranslation(["habits", "common"]);
+
   const content = (
     <HStack
       spacing={12}
@@ -95,13 +98,15 @@ function HabitRow({
         ...(reordering ? [tag(habit.id)] : []),
         contentShape(shapes.rectangle()),
         accessibilityLabel(
-          `${habit.name}, ${schedule}${streak > 0 ? `, ${streak}-day streak` : ""}`,
+          streak > 0
+            ? t("rowLabelWithStreak", {
+                name: habit.name,
+                schedule,
+                count: streak,
+              })
+            : t("rowLabel", { name: habit.name, schedule }),
         ),
-        accessibilityHint(
-          reordering
-            ? "Drag the handle to reorder."
-            : "Opens habit history. Long press for more actions.",
-        ),
+        accessibilityHint(t(reordering ? "reorderingHint" : "idleHint")),
         ...(reordering ? [] : [onTapGesture(onOpen)]),
       ]}
     >
@@ -131,7 +136,9 @@ function HabitRow({
               opacity(0.55),
             ]}
           >
-            {streak > 0 ? `${streak} days  ·  ${schedule}` : schedule}
+            {streak > 0
+              ? t("streakAndSchedule", { count: streak, schedule })
+              : schedule}
           </Text>
         </HStack>
       </VStack>
@@ -153,10 +160,18 @@ function HabitRow({
   return (
     <ContextMenu modifiers={[tag(habit.id), moveDisabled()]}>
       <ContextMenu.Items>
-        <Button label="Open" systemImage="chart.bar.fill" onPress={onOpen} />
-        <Button label="Edit" systemImage="pencil" onPress={onEdit} />
         <Button
-          label="Delete"
+          label={t("open")}
+          systemImage="chart.bar.fill"
+          onPress={onOpen}
+        />
+        <Button
+          label={t("common:edit")}
+          systemImage="pencil"
+          onPress={onEdit}
+        />
+        <Button
+          label={t("common:delete")}
           systemImage="trash"
           role="destructive"
           onPress={onDelete}
@@ -179,6 +194,7 @@ function HabitRow({
  * offers a drag it cannot finish.
  */
 export function HabitsScreen() {
+  const { t } = useTranslation(["habits", "common"]);
   const {
     rows,
     hasHabits,
@@ -202,16 +218,16 @@ export function HabitsScreen() {
         <Stack.Toolbar placement="right">
           <Stack.Toolbar.Button
             icon="plus"
-            accessibilityLabel="Add habit"
+            accessibilityLabel={t("common:addHabit")}
             onPress={addHabit}
           />
         </Stack.Toolbar>
         <View style={styles.empty}>
           <EmptyState
             symbol="square.grid.2x2"
-            title="No habits yet"
-            description="Habits you create show up here with their streaks and history."
-            actionLabel="New habit"
+            title={t("common:noHabitsYet")}
+            description={t("emptyDescription")}
+            actionLabel={t("common:newHabit")}
             onAction={addHabit}
           />
         </View>
@@ -224,12 +240,12 @@ export function HabitsScreen() {
       <Stack.Toolbar placement="right">
         {canReorder && (
           <Stack.Toolbar.Button onPress={toggleReordering}>
-            {reordering ? "Done" : "Reorder"}
+            {reordering ? t("reorderDone") : t("reorder")}
           </Stack.Toolbar.Button>
         )}
         <Stack.Toolbar.Button
           icon="plus"
-          accessibilityLabel="Add habit"
+          accessibilityLabel={t("common:addHabit")}
           onPress={addHabit}
         />
       </Stack.Toolbar>
@@ -256,9 +272,7 @@ export function HabitsScreen() {
                   opacity(0.55),
                 ]}
               >
-                {reordering
-                  ? "Drag the handles to set the order used across the app."
-                  : "Tap Reorder to drag habits into a new order. Long press a habit for more actions."}
+                {t(reordering ? "reorderingFooter" : "idleFooter")}
               </Text>
             }
           >
@@ -281,7 +295,7 @@ export function HabitsScreen() {
                     opacity(0.55),
                   ]}
                 >
-                  longest active streak
+                  {t("longestStreak")}
                 </Text>
               </VStack>
               <Spacer />
@@ -299,7 +313,7 @@ export function HabitsScreen() {
                     opacity(0.55),
                   ]}
                 >
-                  check-ins
+                  {t("checkIns")}
                 </Text>
               </VStack>
             </HStack>

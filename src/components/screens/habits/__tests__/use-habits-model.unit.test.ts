@@ -3,6 +3,7 @@ the store loads its state at import, so every case reloads it against its own
 database, and the hook, the router and the haptics have to come from that same
 registry to be the ones the hook actually calls.
 */
+import en from "@/i18n/locales/en";
 import type { HabitInput } from "@/lib/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
@@ -34,6 +35,21 @@ jest.mock("@/lib/haptics", () => ({
 }));
 
 jest.mock("expo-router", () => ({ router: { push: jest.fn() } }));
+
+const copy = en.translations.habits;
+const shared = en.translations.common;
+const scheduled = en.translations.schedule;
+
+/**
+ * Fills a catalog template here rather than calling the same `t` the hook
+ * calls, so a case still fails when the hook interpolates the wrong value.
+ */
+function fill(template: string, values: Record<string, string | number>) {
+  return Object.entries(values).reduce(
+    (text, [name, value]) => text.replace(`{{${name}}}`, `${value}`),
+    template,
+  );
+}
 
 /* A Wednesday. Every fixture below is dated against it. */
 const TODAY = "2026-07-29";
@@ -147,7 +163,7 @@ describe("the list as it stands", () => {
       rows: [],
       hasHabits: false,
       canReorder: false,
-      countLabel: "0 habits",
+      countLabel: fill(copy.count_other, { count: 0 }),
     });
     await unmount();
   });
@@ -157,14 +173,14 @@ describe("the list as it stands", () => {
       store.createHabit(input());
     });
 
-    expect(result.current.countLabel).toBe("1 habit");
+    expect(result.current.countLabel).toBe(fill(copy.count_one, { count: 1 }));
     await unmount();
   });
 
   it("should count more than one habit in the plural", async () => {
     const { result, unmount } = await renderModel(seedThree);
 
-    expect(result.current.countLabel).toBe("3 habits");
+    expect(result.current.countLabel).toBe(fill(copy.count_other, { count: 3 }));
     await unmount();
   });
 
@@ -202,7 +218,7 @@ describe("what a row says about its habit", () => {
       store.createHabit(input({ weekdays: EVERY_DAY }));
     });
 
-    expect(result.current.rows[0].schedule).toBe("Every day");
+    expect(result.current.rows[0].schedule).toBe(scheduled.everyDay);
     await unmount();
   });
 
@@ -211,7 +227,11 @@ describe("what a row says about its habit", () => {
       store.createHabit(input({ weekdays: [1, 3, 5] }));
     });
 
-    expect(result.current.rows[0].schedule).toBe("Mon, Wed, Fri");
+    expect(result.current.rows[0].schedule).toBe(
+      [scheduled.mondayShort, scheduled.wednesdayShort, scheduled.fridayShort].join(
+        ", ",
+      ),
+    );
     await unmount();
   });
 
@@ -456,8 +476,8 @@ describe("deleting a habit", () => {
     await act(async () => result.current.confirmDelete(result.current.rows[0].habit));
 
     expect(alert).toHaveBeenCalledWith(
-      'Delete "Walk outside"?',
-      "This permanently deletes the habit and its history.",
+      fill(shared.deleteHabitTitle, { name: "Walk outside" }),
+      shared.deleteHabitBody,
       expect.any(Array),
     );
     expect(haptic.warning).toHaveBeenCalledTimes(1);
