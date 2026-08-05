@@ -1,15 +1,4 @@
-import { haptic } from "@/lib/haptics";
-import {
-  ensureNotificationPermission,
-  getNotificationPermission,
-  sendTestNotification,
-} from "@/lib/notifications";
-import {
-  deleteAllData,
-  loadSampleData,
-  resetOnboarding,
-  useAppState,
-} from "@/lib/store";
+import { useSettingsModel } from "@/components/screens/settings/useSettingsModel";
 import { accent, colors } from "@/theme/colors";
 import {
   Button,
@@ -22,24 +11,9 @@ import {
   Text,
 } from "@expo/ui/swift-ui";
 import { font, foregroundStyle } from "@expo/ui/swift-ui/modifiers";
-import * as Application from "expo-application";
-import Constants from "expo-constants";
-import type * as Notifications from "expo-notifications";
-import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState, type ComponentProps } from "react";
-import { Alert, AppState, Linking } from "react-native";
+import type { ComponentProps } from "react";
 
 type SettingsIcon = NonNullable<ComponentProps<typeof Image>["systemName"]>;
-
-/**
- * `expoConfig` is embedded at bundle time and derives from `package.json`, so
- * it follows a JavaScript reload. `nativeApplicationVersion` reads the
- * installed binary's `Info.plist`, which only changes on a native rebuild, and
- * is the secondary source for that reason. The em dash is the last resort: a
- * placeholder is honest, a hardcoded version is a number that never shipped.
- */
-const version =
-  Constants.expoConfig?.version ?? Application.nativeApplicationVersion ?? "—";
 
 function SettingsLabel({
   label,
@@ -79,109 +53,22 @@ function SettingsButton({
 }
 
 export default function SettingsScreen() {
-  const { habits, completions } = useAppState();
-  const [permission, setPermission] =
-    useState<Notifications.NotificationPermissionsStatus | null>(null);
-
-  const refreshPermission = useCallback(() => {
-    void getNotificationPermission().then(setPermission);
-  }, []);
-
-  // Refresh when the tab gains focus and when returning from iOS Settings.
-  useFocusEffect(refreshPermission);
-  useEffect(() => {
-    const subscription = AppState.addEventListener("change", (status) => {
-      if (status === "active") refreshPermission();
-    });
-    return () => subscription.remove();
-  }, [refreshPermission]);
-
-  const permissionLabel = !permission
-    ? "…"
-    : permission.granted
-      ? "Allowed"
-      : permission.canAskAgain
-        ? "Not requested"
-        : "Denied";
-
-  const permissionColor = !permission
-    ? "secondary"
-    : permission.granted
-      ? "green"
-      : permission.canAskAgain
-        ? "secondary"
-        : "red";
-
-  const requestPermission = async () => {
-    const granted = await ensureNotificationPermission();
-    if (granted) haptic.success();
-    refreshPermission();
-  };
-
-  const handleTestNotification = async () => {
-    const granted = await ensureNotificationPermission();
-    refreshPermission();
-    if (!granted) {
-      Alert.alert(
-        "Notifications are off",
-        "Allow notifications in iOS Settings to receive reminders.",
-        [
-          { text: "Cancel", style: "cancel" },
-          {
-            text: "Open Settings",
-            onPress: () => void Linking.openURL("app-settings:"),
-          },
-        ],
-      );
-      return;
-    }
-    await sendTestNotification();
-    haptic.impact();
-    Alert.alert(
-      "Test notification sent",
-      "It arrives in a few seconds. Leave the app open or lock the screen to see the banner.",
-    );
-  };
-
-  const handleLoadSample = () => {
-    const run = () => {
-      loadSampleData();
-      haptic.success();
-    };
-    if (habits.length === 0) {
-      run();
-      return;
-    }
-    Alert.alert(
-      "Load sample data?",
-      "This adds five example habits with twelve weeks of history. Your own habits are kept.",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Load", onPress: run },
-      ],
-    );
-  };
-
-  const handleDeleteAll = () => {
-    haptic.warning();
-    Alert.alert(
-      "Delete all data?",
-      "This permanently deletes every habit and its history.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete Everything",
-          style: "destructive",
-          onPress: () => void deleteAllData(),
-        },
-      ],
-    );
-  };
-
-  const totalCheckIns = Object.values(completions).reduce(
-    (total, days) => total + Object.keys(days).length,
-    0,
-  );
+  const {
+    permissionLabel,
+    permissionColor,
+    canRequestPermission,
+    canOpenSettings,
+    habitCount,
+    totalCheckIns,
+    hasHabits,
+    version,
+    requestPermission,
+    openSystemSettings,
+    sendTest,
+    loadSample,
+    deleteEverything,
+    viewOnboarding,
+  } = useSettingsModel();
 
   return (
     <Host style={{ flex: 1 }}>
@@ -207,24 +94,24 @@ export default function SettingsScreen() {
               {permissionLabel}
             </Text>
           </LabeledContent>
-          {permission != null && !permission.granted && permission.canAskAgain && (
+          {canRequestPermission && (
             <SettingsButton
               label="Allow notifications"
               systemImage="bell.badge"
               onPress={() => void requestPermission()}
             />
           )}
-          {permission != null && !permission.granted && !permission.canAskAgain && (
+          {canOpenSettings && (
             <SettingsButton
               label="Open iOS Settings"
               systemImage="gear"
-              onPress={() => void Linking.openURL("app-settings:")}
+              onPress={openSystemSettings}
             />
           )}
           <SettingsButton
             label="Send test notification"
             systemImage="paperplane"
-            onPress={() => void handleTestNotification()}
+            onPress={() => void sendTest()}
           />
         </Section>
 
@@ -240,13 +127,13 @@ export default function SettingsScreen() {
           <SettingsButton
             label="Load sample data"
             systemImage="wand.and.stars"
-            onPress={handleLoadSample}
+            onPress={loadSample}
           />
-          {habits.length > 0 && (
+          {hasHabits && (
             <Button
               label="Delete all data"
               role="destructive"
-              onPress={handleDeleteAll}
+              onPress={deleteEverything}
             />
           )}
         </Section>
@@ -255,15 +142,12 @@ export default function SettingsScreen() {
           <SettingsButton
             label="View onboarding"
             systemImage="sparkles"
-            onPress={() => {
-              haptic.impact();
-              resetOnboarding();
-            }}
+            onPress={viewOnboarding}
           />
           <LabeledContent
             label={<SettingsLabel label="Habits" systemImage="list.bullet" />}
           >
-            <Text modifiers={[font({ design: "rounded" })]}>{`${habits.length}`}</Text>
+            <Text modifiers={[font({ design: "rounded" })]}>{`${habitCount}`}</Text>
           </LabeledContent>
           <LabeledContent
             label={

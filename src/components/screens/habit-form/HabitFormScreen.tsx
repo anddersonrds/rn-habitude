@@ -1,17 +1,12 @@
+import { useHabitFormModel } from "@/components/screens/habit-form/useHabitFormModel";
 import { appFontFamily, Text } from "@/components/ui/Text";
 import {
-  ALL_WEEKDAYS,
-  DEFAULT_HABIT_COLOR,
-  DEFAULT_HABIT_ICON,
   HABIT_COLORS,
   HABIT_ICONS,
   WEEKDAY_LABELS,
   WEEKDAY_NAMES,
 } from "@/constants/habit-options";
 import { layout } from "@/constants/layout";
-import { haptic } from "@/lib/haptics";
-import { ensureNotificationPermission } from "@/lib/notifications";
-import { createHabit, deleteHabit, updateHabit, useAppState } from "@/lib/store";
 import { foregroundOnColor } from "@/theme/colors";
 import {
   DatePicker,
@@ -30,14 +25,11 @@ import {
   tag,
   tint,
 } from "@expo/ui/swift-ui/modifiers";
-import { Color, router, Stack, useLocalSearchParams } from "expo-router";
+import { Color, Stack } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { PressableScale } from "pressto";
-import { useState } from "react";
 import {
-  Alert,
   Keyboard,
-  Linking,
   Pressable,
   StyleSheet,
   Switch,
@@ -84,44 +76,30 @@ function colorGridMetrics(windowWidth: number) {
   return { columns, gap };
 }
 
-function timeToDate(hhmm: string): Date {
-  const [hours, minutes] = hhmm.split(":").map(Number);
-  const date = new Date();
-  date.setHours(hours, minutes, 0, 0);
-  return date;
-}
-
-function dateToTime(date: Date): string {
-  const hours = `${date.getHours()}`.padStart(2, "0");
-  const minutes = `${date.getMinutes()}`.padStart(2, "0");
-  return `${hours}:${minutes}`;
-}
-
 export function HabitFormScreen() {
-  const { id } = useLocalSearchParams<{ id?: string }>();
-  const { habits } = useAppState();
-  const editing = id ? habits.find((habit) => habit.id === id) : undefined;
   const { width: windowWidth } = useWindowDimensions();
-
-  const [name, setName] = useState(editing?.name ?? "");
-  const [icon, setIcon] = useState<string>(editing?.icon ?? DEFAULT_HABIT_ICON);
-  const [color, setColor] = useState(editing?.color ?? DEFAULT_HABIT_COLOR);
-  const [daily, setDaily] = useState(
-    editing ? editing.weekdays.length === 7 : true,
-  );
-  const [weekdays, setWeekdays] = useState<number[]>(
-    editing && editing.weekdays.length < 7 ? editing.weekdays : [1, 2, 3, 4, 5],
-  );
-  const [reminderOn, setReminderOn] = useState(editing?.reminderTime != null);
-  const [reminderTime, setReminderTime] = useState(
-    editing?.reminderTime ?? "09:00",
-  );
-
-  const trimmedName = name.trim();
-  const effectiveWeekdays = daily
-    ? ALL_WEEKDAYS
-    : [...weekdays].sort((a, b) => a - b);
-  const canSave = trimmedName.length > 0 && effectiveWeekdays.length > 0;
+  const {
+    isEditing,
+    name,
+    setName,
+    icon,
+    color,
+    daily,
+    frequency,
+    weekdays,
+    reminderOn,
+    reminderDate,
+    canSave,
+    toggleWeekday,
+    chooseFrequency,
+    selectIcon,
+    selectColor,
+    toggleReminder,
+    pickReminderTime,
+    save,
+    cancel,
+    confirmDelete,
+  } = useHabitFormModel();
 
   // Explicit rows rather than `flexWrap`: the derived gap makes a full row
   // exactly the container width, and whether flexbox wraps at exact equality
@@ -132,97 +110,16 @@ export function HabitFormScreen() {
     (_, row) => HABIT_COLORS.slice(row * colorColumns, (row + 1) * colorColumns),
   );
 
-  const toggleWeekday = (day: number) => {
-    Keyboard.dismiss();
-    haptic.selection();
-    setWeekdays((current) =>
-      current.includes(day)
-        ? current.filter((weekday) => weekday !== day)
-        : [...current, day],
-    );
-  };
-
-  const leaveForm = () => {
-    if (router.canGoBack()) router.back();
-    else router.replace("/");
-  };
-
-  const save = () => {
-    Keyboard.dismiss();
-    if (!canSave) return;
-    const input = {
-      name: trimmedName,
-      icon,
-      color,
-      weekdays: effectiveWeekdays,
-      reminderTime: reminderOn ? reminderTime : null,
-    };
-    if (editing) updateHabit(editing.id, input);
-    else createHabit(input);
-    haptic.success();
-    leaveForm();
-  };
-
-  const toggleReminder = async (enabled: boolean) => {
-    Keyboard.dismiss();
-    if (!enabled) {
-      setReminderOn(false);
-      return;
-    }
-
-    const granted = await ensureNotificationPermission();
-    if (granted) {
-      setReminderOn(true);
-      haptic.selection();
-      return;
-    }
-
-    Alert.alert(
-      "Notifications are off",
-      "Allow notifications in iOS Settings to add a reminder.",
-      [
-        { text: "Not Now", style: "cancel" },
-        {
-          text: "Open Settings",
-          onPress: () => void Linking.openURL("app-settings:"),
-        },
-      ],
-    );
-  };
-
-  const confirmDelete = () => {
-    if (!editing) return;
-    haptic.warning();
-    Alert.alert(
-      `Delete "${editing.name}"?`,
-      "This permanently deletes the habit and its history.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => {
-            deleteHabit(editing.id);
-            leaveForm();
-          },
-        },
-      ],
-    );
-  };
-
   return (
     <>
       <Stack.Screen
-        options={{ title: editing ? "Edit Habit" : "New Habit", headerShown: true }}
+        options={{
+          title: isEditing ? "Edit Habit" : "New Habit",
+          headerShown: true,
+        }}
       />
       <Stack.Toolbar placement="left">
-        <Stack.Toolbar.Button
-          variant="plain"
-          onPress={() => {
-            Keyboard.dismiss();
-            leaveForm();
-          }}
-        >
+        <Stack.Toolbar.Button variant="plain" onPress={cancel}>
           Cancel
         </Stack.Toolbar.Button>
       </Stack.Toolbar>
@@ -233,7 +130,7 @@ export function HabitFormScreen() {
           disabled={!canSave}
           onPress={save}
         >
-          {editing ? "Save" : "Add"}
+          {isEditing ? "Save" : "Add"}
         </Stack.Toolbar.Button>
       </Stack.Toolbar>
 
@@ -256,7 +153,7 @@ export function HabitFormScreen() {
               placeholder="What do you want to do?"
               placeholderTextColor={Color.ios.tertiaryLabel as never}
               accessibilityLabel="Habit name"
-              autoFocus={!editing}
+              autoFocus={!isEditing}
               clearButtonMode="while-editing"
               enablesReturnKeyAutomatically
               returnKeyType="done"
@@ -277,13 +174,8 @@ export function HabitFormScreen() {
               <Host style={styles.pickerHost}>
                 <Picker
                   label="Frequency"
-                  selection={daily ? "daily" : "specific"}
-                  onSelectionChange={(selection) => {
-                    Keyboard.dismiss();
-                    if ((selection === "daily") === daily) return;
-                    haptic.selection();
-                    setDaily(selection === "daily");
-                  }}
+                  selection={frequency}
+                  onSelectionChange={chooseFrequency}
                   modifiers={[pickerStyle("segmented"), tint(color)]}
                 >
                   <SwiftUIText modifiers={[font({ design: "rounded" }), tag("daily")]}>
@@ -369,9 +261,9 @@ export function HabitFormScreen() {
                   <Text variant="body">Time</Text>
                   <Host matchContents>
                     <DatePicker
-                      selection={timeToDate(reminderTime)}
+                      selection={reminderDate}
                       displayedComponents={["hourAndMinute"]}
-                      onDateChange={(date) => setReminderTime(dateToTime(date))}
+                      onDateChange={pickReminderTime}
                       modifiers={[tint(color)]}
                     />
                   </Host>
@@ -393,11 +285,7 @@ export function HabitFormScreen() {
                     accessibilityRole="button"
                     accessibilityLabel={`Icon ${symbol}`}
                     accessibilityState={{ selected }}
-                    onPress={() => {
-                      Keyboard.dismiss();
-                      haptic.selection();
-                      setIcon(symbol);
-                    }}
+                    onPress={() => selectIcon(symbol)}
                     style={[
                       styles.iconCell,
                       {
@@ -435,11 +323,7 @@ export function HabitFormScreen() {
                         accessibilityRole="button"
                         accessibilityLabel={`Color ${optionColor}`}
                         accessibilityState={{ selected }}
-                        onPress={() => {
-                          Keyboard.dismiss();
-                          haptic.selection();
-                          setColor(optionColor);
-                        }}
+                        onPress={() => selectColor(optionColor)}
                         style={[
                           styles.colorRing,
                           selected && { borderColor: optionColor },
@@ -468,7 +352,7 @@ export function HabitFormScreen() {
             </View>
           </View>
 
-          {editing && (
+          {isEditing && (
             <PressableScale onPress={confirmDelete} style={styles.deleteButton}>
               <Text variant="headline" style={{ color: Color.ios.systemRed }}>
                 Delete habit
@@ -499,7 +383,7 @@ export function HabitFormScreen() {
             {canSave && (
               <Host matchContents>
                 <SwiftUIButton
-                  label={editing ? "Save habit" : "Create habit"}
+                  label={isEditing ? "Save habit" : "Create habit"}
                   systemImage="checkmark"
                   modifiers={[
                     buttonStyle("glassProminent"),

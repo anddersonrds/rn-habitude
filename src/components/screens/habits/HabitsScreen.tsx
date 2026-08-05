@@ -1,10 +1,6 @@
 import { EmptyState } from "@/components/EmptyState";
-import { WEEKDAY_NAMES } from "@/constants/habit-options";
-import { todayKey } from "@/lib/dates";
-import { haptic } from "@/lib/haptics";
-import { deleteHabit, reorderHabits, useAppState } from "@/lib/store";
-import { computeStreaks, trailingDayStates } from "@/lib/streaks";
-import { isDaily, type Habit } from "@/lib/types";
+import { useHabitsModel } from "@/components/screens/habits/useHabitsModel";
+import type { Habit } from "@/lib/types";
 import {
   Button,
   ContextMenu,
@@ -36,20 +32,11 @@ import {
   shapes,
   tag,
 } from "@expo/ui/swift-ui/modifiers";
-import { Color, router, Stack } from "expo-router";
-import { useState } from "react";
-import { Alert, StyleSheet, useColorScheme, View } from "react-native";
+import { Color, Stack } from "expo-router";
+import { StyleSheet, useColorScheme, View } from "react-native";
 
-/** Days of history shown in each row's inline heat strip. */
-const STRIP_DAYS = 21;
 const EDIT_ANIMATION = Animation.spring({ duration: 0.35, bounce: 0.06 });
 const LIST_CHANGE_ANIMATION = Animation.easeInOut({ duration: 0.22 });
-
-export function scheduleLabel(habit: Habit): string {
-  if (isDaily(habit)) return "Every day";
-  if (habit.weekdays.length === 0) return "No days";
-  return habit.weekdays.map((day) => WEEKDAY_NAMES[day].slice(0, 3)).join(", ");
-}
 
 /** The habit's recent consistency, drawn natively so the row stays SwiftUI. */
 function HeatStrip({
@@ -82,6 +69,7 @@ function HabitRow({
   habit,
   states,
   streak,
+  schedule,
   neutral,
   reordering,
   onOpen,
@@ -91,14 +79,13 @@ function HabitRow({
   habit: Habit;
   states: number[];
   streak: number;
+  schedule: string;
   neutral: string;
   reordering: boolean;
   onOpen: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
-  const schedule = scheduleLabel(habit);
-
   const content = (
     <HStack
       spacing={12}
@@ -192,60 +179,24 @@ function HabitRow({
  * offers a drag it cannot finish.
  */
 export function HabitsScreen() {
-  const state = useAppState();
-  const [reordering, setReordering] = useState(false);
-  const today = todayKey();
+  const {
+    rows,
+    hasHabits,
+    canReorder,
+    countLabel,
+    bestStreak,
+    totalCheckIns,
+    reordering,
+    toggleReordering,
+    addHabit,
+    openHabit,
+    editHabit,
+    confirmDelete,
+    move,
+  } = useHabitsModel();
   const neutral = useColorScheme() === "dark" ? "#FFFFFF" : "#000000";
 
-  const rows = state.habits.map((habit) => ({
-    habit,
-    states: trailingDayStates(habit, state.completions[habit.id], STRIP_DAYS, today),
-    streak: computeStreaks(habit, state.completions[habit.id], today).current,
-  }));
-
-  const bestStreak = rows.reduce((best, row) => Math.max(best, row.streak), 0);
-  const totalCheckIns = Object.values(state.completions).reduce(
-    (total, days) => total + Object.keys(days).length,
-    0,
-  );
-
-  const addHabit = () => {
-    haptic.tap();
-    router.push("/habit-form");
-  };
-
-  const confirmDelete = (habit: Habit) => {
-    haptic.warning();
-    Alert.alert(
-      `Delete "${habit.name}"?`,
-      "This permanently deletes the habit and its history.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => deleteHabit(habit.id),
-        },
-      ],
-    );
-  };
-
-  /**
-   * SwiftUI reports `destination` as an index in the pre-removal array, so the
-   * moved ids are pulled out first and the target is shifted back by however
-   * many of them sat before it.
-   */
-  const move = (from: number[], to: number) => {
-    const ids = state.habits.map((habit) => habit.id);
-    const moving = from.map((index) => ids[index]);
-    const remaining = ids.filter((_, index) => !from.includes(index));
-    const destination = to - from.filter((index) => index < to).length;
-    remaining.splice(destination, 0, ...moving);
-    reorderHabits(remaining);
-    haptic.rigid();
-  };
-
-  if (state.habits.length === 0) {
+  if (!hasHabits) {
     return (
       <>
         <Stack.Toolbar placement="right">
@@ -271,13 +222,8 @@ export function HabitsScreen() {
   return (
     <>
       <Stack.Toolbar placement="right">
-        {state.habits.length > 1 && (
-          <Stack.Toolbar.Button
-            onPress={() => {
-              haptic.tap();
-              setReordering((current) => !current);
-            }}
-          >
+        {canReorder && (
+          <Stack.Toolbar.Button onPress={toggleReordering}>
             {reordering ? "Done" : "Reorder"}
           </Stack.Toolbar.Button>
         )}
@@ -298,15 +244,11 @@ export function HabitsScreen() {
             // competing for the same gesture.
             environment("editMode", reordering ? "active" : "inactive"),
             animation(EDIT_ANIMATION, reordering),
-            animation(LIST_CHANGE_ANIMATION, state.habits.length),
+            animation(LIST_CHANGE_ANIMATION, rows.length),
           ]}
         >
           <Section
-            title={
-              state.habits.length === 1
-                ? "1 habit"
-                : `${state.habits.length} habits`
-            }
+            title={countLabel}
             footer={
               <Text
                 modifiers={[
@@ -368,16 +310,17 @@ export function HabitsScreen() {
               whether a drop sticks is the row's shape, in `HabitRow`. */}
           <Section>
             <List.ForEach onMove={move}>
-              {rows.map(({ habit, states, streak }) => (
+              {rows.map(({ habit, states, streak, schedule }) => (
                 <HabitRow
                   key={habit.id}
                   habit={habit}
                   states={states}
                   streak={streak}
+                  schedule={schedule}
                   neutral={neutral}
                   reordering={reordering}
-                  onOpen={() => router.push(`/habit/${habit.id}`)}
-                  onEdit={() => router.push(`/habit-form?id=${habit.id}`)}
+                  onOpen={() => openHabit(habit)}
+                  onEdit={() => editHabit(habit)}
                   onDelete={() => confirmDelete(habit)}
                 />
               ))}
