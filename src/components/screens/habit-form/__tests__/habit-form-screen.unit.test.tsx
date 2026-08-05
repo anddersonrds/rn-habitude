@@ -7,6 +7,7 @@ import {
 } from "@/constants/habit-options";
 import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
+import ptBR from "@/i18n/locales/pt-BR";
 import { createHabit, deleteAllData, getAppState } from "@/lib/store";
 import type { HabitInput } from "@/lib/types";
 import { foregroundOnColor } from "@/theme/colors";
@@ -48,6 +49,20 @@ const OTHER_COLOR = "#FF3B30";
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
 const WEEKDAYS_ONLY = [1, 2, 3, 4, 5];
 
+const copy = en.translations.habitForm;
+const shared = en.translations.common;
+
+/**
+ * Fills a catalog template here rather than calling the same `t` the screen
+ * calls, so a case still fails when the screen interpolates the wrong value.
+ */
+function fill(template: string, values: Record<string, string | number>) {
+  return Object.entries(values).reduce(
+    (text, [name, value]) => text.replace(`{{${name}}}`, `${value}`),
+    template,
+  );
+}
+
 /* The day dots are labelled from the catalog, so the labels to press are read
 from it rather than written out a second time. */
 const WEEKDAY_NAMES = WEEKDAY_KEYS.map(
@@ -65,9 +80,16 @@ function input(overrides: Partial<HabitInput> = {}): HabitInput {
   };
 }
 
-/* The one native view the frequency control is; its label names it. */
+/**
+ * Found by its handler rather than by its label, since the label is itself
+ * translated and moves as soon as a language is picked.
+ */
 function frequencyPicker(container: TestInstance): TestInstance {
-  return nativeView(container, "label", "Frequency");
+  const [found] = container.queryAll(
+    (node) => typeof node.props.onSelectionChange === "function",
+  );
+  if (!found) throw new Error("The form draws no frequency control.");
+  return found;
 }
 
 function reminderSwitch(container: TestInstance): TestInstance {
@@ -127,9 +149,9 @@ describe("the form a new habit opens on", () => {
   it("should name every control it offers", async () => {
     const { getByLabelText } = await renderForm();
 
-    expect(getByLabelText("Habit name")).toBeTruthy();
-    expect(getByLabelText("Add")).toBeTruthy();
-    expect(getByLabelText("Cancel")).toBeTruthy();
+    expect(getByLabelText(copy.nameLabel)).toBeTruthy();
+    expect(getByLabelText(copy.add)).toBeTruthy();
+    expect(getByLabelText(shared.cancel)).toBeTruthy();
   });
 
   it("should preview the default icon in the default colour", async () => {
@@ -141,18 +163,38 @@ describe("the form a new habit opens on", () => {
   });
 
   it("should offer every icon by name", async () => {
-    const { getAllByLabelText, getByLabelText } = await renderForm();
+    const { getByLabelText } = await renderForm();
 
-    expect(getAllByLabelText(/^Icon /)).toHaveLength(HABIT_ICONS.length);
+    for (const symbol of HABIT_ICONS) {
+      expect(getByLabelText(fill(copy.iconLabel, { symbol }))).toBeTruthy();
+    }
     expect(
-      getByLabelText(`Icon ${DEFAULT_HABIT_ICON}`).props.accessibilityState,
+      getByLabelText(fill(copy.iconLabel, { symbol: DEFAULT_HABIT_ICON })).props
+        .accessibilityState,
     ).toMatchObject({ selected: true });
   });
 
   it("should not offer to delete a habit that does not exist yet", async () => {
     const { queryByText } = await renderForm();
 
-    expect(queryByText("Delete habit")).toBeNull();
+    expect(queryByText(copy.deleteHabit)).toBeNull();
+  });
+
+  it("should draw itself in the language the app is set to", async () => {
+    await i18n.changeLanguage("pt-BR");
+
+    const { container, getByLabelText, getByText } = await renderForm();
+
+    const inPortuguese = ptBR.translations.habitForm;
+    expect(getByLabelText(inPortuguese.nameLabel)).toBeTruthy();
+    expect(getByText(inPortuguese.scheduleSection)).toBeTruthy();
+    expect(nativeView(container, "text", inPortuguese.daily)).toBeTruthy();
+
+    /* The day dots only exist once the habit is not daily, and they are the
+    one place a weekday name reaches the screen. */
+    await chooseOption(frequencyPicker(container), "specific");
+
+    expect(getByLabelText(ptBR.translations.schedule.monday)).toBeTruthy();
   });
 });
 
@@ -172,8 +214,8 @@ describe("the form an existing habit opens on", () => {
 
     const { getByLabelText, queryByLabelText } = await renderForm(habit.id);
 
-    expect(getByLabelText("Save")).toBeTruthy();
-    expect(queryByLabelText("Add")).toBeNull();
+    expect(getByLabelText(copy.save)).toBeTruthy();
+    expect(queryByLabelText(copy.add)).toBeNull();
   });
 
   it("should offer to delete the habit", async () => {
@@ -181,7 +223,7 @@ describe("the form an existing habit opens on", () => {
 
     const { getByText } = await renderForm(habit.id);
 
-    expect(getByText("Delete habit")).toBeTruthy();
+    expect(getByText(copy.deleteHabit)).toBeTruthy();
   });
 });
 
@@ -197,20 +239,20 @@ describe("the colour the form is set to", () => {
   it("should mark the chosen colour and unmark the one before it", async () => {
     const { getByLabelText } = await renderForm();
 
-    await fireEvent.press(getByLabelText(`Color ${OTHER_COLOR}`));
+    await fireEvent.press(getByLabelText(fill(copy.colorLabel, { color: OTHER_COLOR })));
 
     expect(
-      getByLabelText(`Color ${OTHER_COLOR}`).props.accessibilityState,
+      getByLabelText(fill(copy.colorLabel, { color: OTHER_COLOR })).props.accessibilityState,
     ).toMatchObject({ selected: true });
     expect(
-      getByLabelText(`Color ${DEFAULT_HABIT_COLOR}`).props.accessibilityState,
+      getByLabelText(fill(copy.colorLabel, { color: DEFAULT_HABIT_COLOR })).props.accessibilityState,
     ).toMatchObject({ selected: false });
   });
 
   it("should check off the chosen colour in a foreground that reads on it", async () => {
     const { container, getByLabelText } = await renderForm();
 
-    await fireEvent.press(getByLabelText(`Color ${OTHER_COLOR}`));
+    await fireEvent.press(getByLabelText(fill(copy.colorLabel, { color: OTHER_COLOR })));
 
     expect(symbolView(container, "checkmark").props.tintColor).toBe(
       foregroundOnColor(OTHER_COLOR),
@@ -220,7 +262,7 @@ describe("the colour the form is set to", () => {
   it("should follow the chosen colour everywhere it is used", async () => {
     const { container, getByLabelText } = await renderForm();
 
-    await fireEvent.press(getByLabelText(`Color ${OTHER_COLOR}`));
+    await fireEvent.press(getByLabelText(fill(copy.colorLabel, { color: OTHER_COLOR })));
 
     expect(symbolView(container, DEFAULT_HABIT_ICON).props.tintColor).toBe(
       OTHER_COLOR,
@@ -251,7 +293,7 @@ describe("the icon the form is set to", () => {
       getByLabelText("Icon book.fill").props.accessibilityState,
     ).toMatchObject({ selected: true });
     expect(
-      getByLabelText(`Icon ${DEFAULT_HABIT_ICON}`).props.accessibilityState,
+      getByLabelText(fill(copy.iconLabel, { symbol: DEFAULT_HABIT_ICON })).props.accessibilityState,
     ).toMatchObject({ selected: false });
   });
 });
@@ -265,10 +307,10 @@ describe("how often the habit runs", () => {
       style: "segmented",
     });
     expect(picker.props.selection).toBe("daily");
-    expect(modifier(nativeView(container, "text", "Daily"), "tag")).toMatchObject(
+    expect(modifier(nativeView(container, "text", copy.daily), "tag")).toMatchObject(
       { tag: "daily" },
     );
-    expect(modifier(nativeView(container, "text", "Days"), "tag")).toMatchObject(
+    expect(modifier(nativeView(container, "text", copy.specificDays), "tag")).toMatchObject(
       { tag: "specific" },
     );
   });
@@ -316,7 +358,7 @@ describe("the reminder", () => {
   it("should keep the time out of the way while the reminder is off", async () => {
     const { container, queryByText } = await renderForm();
 
-    expect(queryByText("Time")).toBeNull();
+    expect(queryByText(copy.time)).toBeNull();
     expect(() => timePicker(container)).toThrow("draws no date picker");
   });
 
@@ -325,7 +367,7 @@ describe("the reminder", () => {
 
     await toggleSwitch(reminderSwitch(container), true);
 
-    expect(getByText("Time")).toBeTruthy();
+    expect(getByText(copy.time)).toBeTruthy();
     expect(new Date(timePicker(container).props.selection).getHours()).toBe(9);
   });
 
@@ -345,7 +387,7 @@ describe("the reminder", () => {
 
     await toggleSwitch(reminderSwitch(container), false);
 
-    expect(queryByText("Time")).toBeNull();
+    expect(queryByText(copy.time)).toBeNull();
   });
 });
 
@@ -353,7 +395,7 @@ describe("saving what the form shows", () => {
   it("should refuse the toolbar button while there is nothing to save", async () => {
     const { getByLabelText } = await renderForm();
 
-    const add = getByLabelText("Add");
+    const add = getByLabelText(copy.add);
     expect(add.props.accessibilityState).toMatchObject({ disabled: true });
     await fireEvent.press(add);
 
@@ -363,19 +405,19 @@ describe("saving what the form shows", () => {
   it("should keep the prominent button out of the way until there is something to save", async () => {
     const { container, getByLabelText } = await renderForm();
 
-    expect(() => nativeView(container, "label", "Create habit")).toThrow(
-      "Dismiss keyboard",
+    expect(() => nativeView(container, "label", copy.createHabit)).toThrow(
+      copy.dismissKeyboard,
     );
 
-    await fireEvent.changeText(getByLabelText("Habit name"), "Read");
-    expect(nativeView(container, "label", "Create habit")).toBeTruthy();
+    await fireEvent.changeText(getByLabelText(copy.nameLabel), "Read");
+    expect(nativeView(container, "label", copy.createHabit)).toBeTruthy();
   });
 
   it("should show the prominent button as prominent, tinted, and icon only", async () => {
     const { container, getByLabelText } = await renderForm();
-    await fireEvent.changeText(getByLabelText("Habit name"), "Read");
+    await fireEvent.changeText(getByLabelText(copy.nameLabel), "Read");
 
-    const save = nativeView(container, "label", "Create habit");
+    const save = nativeView(container, "label", copy.createHabit);
     expect(modifier(save, "buttonStyle")).toMatchObject({
       style: "glassProminent",
     });
@@ -387,11 +429,11 @@ describe("saving what the form shows", () => {
 
   it("should save the habit the form shows when the prominent button is pressed", async () => {
     const { container, getByLabelText } = await renderForm();
-    await fireEvent.changeText(getByLabelText("Habit name"), "Read");
+    await fireEvent.changeText(getByLabelText(copy.nameLabel), "Read");
     await fireEvent.press(getByLabelText("Icon book.fill"));
-    await fireEvent.press(getByLabelText(`Color ${OTHER_COLOR}`));
+    await fireEvent.press(getByLabelText(fill(copy.colorLabel, { color: OTHER_COLOR })));
 
-    await pressButton(nativeView(container, "label", "Create habit"));
+    await pressButton(nativeView(container, "label", copy.createHabit));
     await settle();
 
     expect(getAppState().habits).toMatchObject([
@@ -401,9 +443,9 @@ describe("saving what the form shows", () => {
 
   it("should save the habit the form shows when the toolbar button is pressed", async () => {
     const { getByLabelText } = await renderForm();
-    await fireEvent.changeText(getByLabelText("Habit name"), "Read");
+    await fireEvent.changeText(getByLabelText(copy.nameLabel), "Read");
 
-    await fireEvent.press(getByLabelText("Add"));
+    await fireEvent.press(getByLabelText(copy.add));
     await settle();
 
     expect(getAppState().habits).toMatchObject([{ name: "Read" }]);
@@ -412,9 +454,9 @@ describe("saving what the form shows", () => {
 
   it("should leave the form alone when the cancel button is pressed", async () => {
     const { getByLabelText } = await renderForm();
-    await fireEvent.changeText(getByLabelText("Habit name"), "Read");
+    await fireEvent.changeText(getByLabelText(copy.nameLabel), "Read");
 
-    await fireEvent.press(getByLabelText("Cancel"));
+    await fireEvent.press(getByLabelText(shared.cancel));
     await settle();
 
     expect(getAppState().habits).toEqual([]);

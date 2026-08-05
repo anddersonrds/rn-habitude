@@ -77,6 +77,7 @@ function colorGridMetrics(windowWidth: number) {
 }
 
 export function HabitFormScreen() {
+  const { t } = useTranslation(["habitForm", "common"]);
   const { t: tSchedule } = useTranslation("schedule");
   const { width: windowWidth } = useWindowDimensions();
   const {
@@ -115,13 +116,13 @@ export function HabitFormScreen() {
     <>
       <Stack.Screen
         options={{
-          title: isEditing ? "Edit Habit" : "New Habit",
+          title: isEditing ? t("editTitle") : t("newTitle"),
           headerShown: true,
         }}
       />
       <Stack.Toolbar placement="left">
         <Stack.Toolbar.Button variant="plain" onPress={cancel}>
-          Cancel
+          {t("common:cancel")}
         </Stack.Toolbar.Button>
       </Stack.Toolbar>
       <Stack.Toolbar placement="right">
@@ -131,7 +132,7 @@ export function HabitFormScreen() {
           disabled={!canSave}
           onPress={save}
         >
-          {isEditing ? "Save" : "Add"}
+          {isEditing ? t("save") : t("add")}
         </Stack.Toolbar.Button>
       </Stack.Toolbar>
 
@@ -151,9 +152,9 @@ export function HabitFormScreen() {
             <TextInput
               value={name}
               onChangeText={setName}
-              placeholder="What do you want to do?"
+              placeholder={t("namePlaceholder")}
               placeholderTextColor={Color.ios.tertiaryLabel as never}
-              accessibilityLabel="Habit name"
+              accessibilityLabel={t("nameLabel")}
               autoFocus={!isEditing}
               clearButtonMode="while-editing"
               enablesReturnKeyAutomatically
@@ -165,27 +166,27 @@ export function HabitFormScreen() {
           </View>
 
           <Text variant="footnote" secondary style={styles.sectionLabel}>
-            SCHEDULE
+            {t("scheduleSection")}
           </Text>
           <Animated.View layout={CONDITIONAL_LAYOUT} style={styles.card}>
             <View style={styles.schedulePicker}>
               <Text variant="subheadline" secondary>
-                Frequency
+                {t("frequency")}
               </Text>
               <Host style={styles.pickerHost}>
                 <Picker
-                  label="Frequency"
+                  label={t("frequency")}
                   selection={frequency}
                   onSelectionChange={chooseFrequency}
                   modifiers={[pickerStyle("segmented"), tint(color)]}
                 >
                   <SwiftUIText modifiers={[font({ design: "rounded" }), tag("daily")]}>
-                    Daily
+                    {t("daily")}
                   </SwiftUIText>
                   <SwiftUIText
                     modifiers={[font({ design: "rounded" }), tag("specific")]}
                   >
-                    Days
+                    {t("specificDays")}
                   </SwiftUIText>
                 </Picker>
               </Host>
@@ -233,7 +234,7 @@ export function HabitFormScreen() {
                 </View>
                 {weekdays.length === 0 && (
                   <Text variant="caption" style={styles.validationText}>
-                    Choose at least one day.
+                    {t("chooseADay")}
                   </Text>
                 )}
               </Animated.View>
@@ -241,13 +242,13 @@ export function HabitFormScreen() {
           </Animated.View>
 
           <Text variant="footnote" secondary style={styles.sectionLabel}>
-            REMINDER
+            {t("reminderSection")}
           </Text>
           <Animated.View layout={CONDITIONAL_LAYOUT} style={styles.card}>
             <View style={styles.cardRow}>
               <View style={styles.rowLabel}>
                 <SymbolView name="bell.fill" size={18} tintColor={color} />
-                <Text variant="body">Remind me</Text>
+                <Text variant="body">{t("remindMe")}</Text>
               </View>
               <Switch
                 value={reminderOn}
@@ -259,7 +260,7 @@ export function HabitFormScreen() {
               <Animated.View entering={CONDITIONAL_ENTER} exiting={CONDITIONAL_EXIT}>
                 <View style={styles.separator} />
                 <View style={styles.cardRow}>
-                  <Text variant="body">Time</Text>
+                  <Text variant="body">{t("time")}</Text>
                   <Host matchContents>
                     <DatePicker
                       selection={reminderDate}
@@ -274,7 +275,7 @@ export function HabitFormScreen() {
           </Animated.View>
 
           <Text variant="footnote" secondary style={styles.sectionLabel}>
-            ICON
+            {t("iconSection")}
           </Text>
           <View style={styles.iconCard}>
             <View style={styles.iconGrid}>
@@ -284,7 +285,7 @@ export function HabitFormScreen() {
                   <Pressable
                     key={symbol}
                     accessibilityRole="button"
-                    accessibilityLabel={`Icon ${symbol}`}
+                    accessibilityLabel={t("iconLabel", { symbol })}
                     accessibilityState={{ selected }}
                     onPress={() => selectIcon(symbol)}
                     style={[
@@ -310,7 +311,7 @@ export function HabitFormScreen() {
           </View>
 
           <Text variant="footnote" secondary style={styles.sectionLabel}>
-            COLOR
+            {t("colorSection")}
           </Text>
           <View style={styles.colorCard}>
             <View style={styles.colorGrid}>
@@ -322,7 +323,7 @@ export function HabitFormScreen() {
                       <Pressable
                         key={optionColor}
                         accessibilityRole="button"
-                        accessibilityLabel={`Color ${optionColor}`}
+                        accessibilityLabel={t("colorLabel", { color: optionColor })}
                         accessibilityState={{ selected }}
                         onPress={() => selectColor(optionColor)}
                         style={[
@@ -356,7 +357,7 @@ export function HabitFormScreen() {
           {isEditing && (
             <PressableScale onPress={confirmDelete} style={styles.deleteButton}>
               <Text variant="headline" style={{ color: Color.ios.systemRed }}>
-                Delete habit
+                {t("deleteHabit")}
               </Text>
             </PressableScale>
           )}
@@ -370,7 +371,7 @@ export function HabitFormScreen() {
           <View pointerEvents="box-none" style={styles.keyboardAccessoryRow}>
             <Host matchContents>
               <SwiftUIButton
-                label="Dismiss keyboard"
+                label={t("dismissKeyboard")}
                 systemImage="keyboard.chevron.compact.down"
                 modifiers={[
                   buttonStyle("glass"),
@@ -384,7 +385,7 @@ export function HabitFormScreen() {
             {canSave && (
               <Host matchContents>
                 <SwiftUIButton
-                  label={isEditing ? "Save habit" : "Create habit"}
+                  label={isEditing ? t("saveHabit") : t("createHabit")}
                   systemImage="checkmark"
                   modifiers={[
                     buttonStyle("glassProminent"),
