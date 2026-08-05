@@ -162,6 +162,40 @@ const en = {
       bestStreak: "Best streak",
       yearRate: "Year rate",
     },
+    onboarding: {
+      welcomeTitle: "habitude",
+      welcomeDescription:
+        "A habit is a small thing done often. Track a few, and watch them add up.",
+      welcomeCta: "Continue",
+      consistencyTitle: "See your consistency",
+      consistencyDescription:
+        "Every check-in fills a square. Streaks and history make the pattern obvious.",
+      consistencyCta: "Continue",
+      remindersTitle: "A nudge at the right time",
+      remindersDescription:
+        "Give a habit a reminder time and habitude will tap you on the shoulder.",
+      remindersCta: "Allow notifications",
+      startTracking: "Start tracking",
+      maybeLater: "Maybe later",
+      requesting: "Requesting…",
+      squareTitle: "A square per day",
+      squareDescription: "Filled in your habit's own color when you check in.",
+      streakTitle: "Streaks that are fair",
+      streakDescription:
+        "Rest days never break a streak, only scheduled days count.",
+      widgetTitle: "On your home screen",
+      widgetDescription:
+        "Add the widget to see the same grid without opening the app.",
+      notificationHeader: "HABITUDE · NOW",
+      notificationHabit: "Walk outside",
+      notificationBody: "Ready for a small step?",
+      pointReminders: "Reminders are optional and set per habit.",
+      pointCheckIn: "Check in straight from the notification.",
+      permissionAllowed: "Notifications are allowed",
+      previousStep: "Previous step",
+      skipNotifications: "Skip notifications",
+      skipCopy: "You can change this later in Settings.",
+    },
     schedule: {
       everyDay: "Every day",
       noDays: "No days",

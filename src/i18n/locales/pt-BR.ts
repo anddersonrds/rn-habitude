@@ -167,6 +167,40 @@ const ptBR: Locale = {
       bestStreak: "Maior sequência",
       yearRate: "Taxa do ano",
     },
+    onboarding: {
+      welcomeTitle: "habitude",
+      welcomeDescription:
+        "Um hábito é algo pequeno feito com frequência. Acompanhe alguns e veja o quanto somam.",
+      welcomeCta: "Continuar",
+      consistencyTitle: "Veja a sua constância",
+      consistencyDescription:
+        "Cada registro preenche um quadradinho. As sequências e o histórico deixam o padrão claro.",
+      consistencyCta: "Continuar",
+      remindersTitle: "Um empurrão na hora certa",
+      remindersDescription:
+        "Dê um horário de lembrete a um hábito e o habitude vai te chamar.",
+      remindersCta: "Permitir notificações",
+      startTracking: "Começar",
+      maybeLater: "Talvez depois",
+      requesting: "Solicitando…",
+      squareTitle: "Um quadradinho por dia",
+      squareDescription: "Preenchido na cor do próprio hábito quando você registra.",
+      streakTitle: "Sequências justas",
+      streakDescription:
+        "Dias de descanso nunca quebram uma sequência, só contam os dias programados.",
+      widgetTitle: "Na sua tela de início",
+      widgetDescription:
+        "Adicione o widget para ver o mesmo quadro sem abrir o app.",
+      notificationHeader: "HABITUDE · AGORA",
+      notificationHabit: "Caminhar ao ar livre",
+      notificationBody: "Pronto para um passo pequeno?",
+      pointReminders: "Os lembretes são opcionais e definidos por hábito.",
+      pointCheckIn: "Registre direto pela notificação.",
+      permissionAllowed: "As notificações estão permitidas",
+      previousStep: "Passo anterior",
+      skipNotifications: "Pular as notificações",
+      skipCopy: "Você pode mudar isso depois nos Ajustes.",
+    },
     schedule: {
       everyDay: "Todo dia",
       noDays: "Nenhum dia",

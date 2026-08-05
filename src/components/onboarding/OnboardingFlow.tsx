@@ -1,4 +1,4 @@
-import { STEPS, useOnboardingModel } from "@/components/onboarding/useOnboardingModel";
+import { STEP_COUNT, useOnboardingModel } from "@/components/onboarding/useOnboardingModel";
 import { appFontFamily, Text } from "@/components/ui/Text";
 import { layout } from "@/constants/layout";
 import { accent, foregroundOnColor } from "@/theme/colors";
@@ -7,6 +7,7 @@ import { Color } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { PressableScale } from "pressto";
 import { type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { EaseView } from "react-native-ease";
 import Animated, {
@@ -130,31 +131,34 @@ function WelcomeStep() {
 }
 
 function ConsistencyStep() {
+  const { t } = useTranslation("onboarding");
+
   return (
     <View style={styles.featureList}>
       <FeatureRow
         index={0}
         symbol="square.grid.3x3.fill"
-        title="A square per day"
-        description="Filled in your habit's own color when you check in."
+        title={t("squareTitle")}
+        description={t("squareDescription")}
       />
       <FeatureRow
         index={1}
         symbol="flame.fill"
-        title="Streaks that are fair"
-        description="Rest days never break a streak, only scheduled days count."
+        title={t("streakTitle")}
+        description={t("streakDescription")}
       />
       <FeatureRow
         index={2}
         symbol="rectangle.3.group.fill"
-        title="On your home screen"
-        description="Add the widget to see the same grid without opening the app."
+        title={t("widgetTitle")}
+        description={t("widgetDescription")}
       />
     </View>
   );
 }
 
 function RemindersStep({ allowed }: { allowed: boolean }) {
+  const { t } = useTranslation("onboarding");
   const reduceMotion = useReducedMotion();
 
   return (
@@ -183,12 +187,12 @@ function RemindersStep({ allowed }: { allowed: boolean }) {
               />
             </View>
             <Text variant="caption" secondary>
-              HABITUDE · NOW
+              {t("notificationHeader")}
             </Text>
           </View>
-          <Text variant="headline">Walk outside</Text>
+          <Text variant="headline">{t("notificationHabit")}</Text>
           <Text variant="subheadline" secondary>
-            Ready for a small step?
+            {t("notificationBody")}
           </Text>
         </View>
       </Animated.View>
@@ -197,13 +201,13 @@ function RemindersStep({ allowed }: { allowed: boolean }) {
         <View style={styles.point}>
           <SymbolView name="slider.horizontal.3" size={18} tintColor={accent} />
           <Text variant="subheadline" secondary style={styles.pointCopy}>
-            Reminders are optional and set per habit.
+            {t("pointReminders")}
           </Text>
         </View>
         <View style={styles.point}>
           <SymbolView name="hand.tap.fill" size={18} tintColor={accent} />
           <Text variant="subheadline" secondary style={styles.pointCopy}>
-            Check in straight from the notification.
+            {t("pointCheckIn")}
           </Text>
         </View>
       </View>
@@ -214,7 +218,7 @@ function RemindersStep({ allowed }: { allowed: boolean }) {
           style={styles.allowedBadge}
         >
           <SymbolView name="checkmark.circle.fill" size={20} tintColor="#34C759" />
-          <Text variant="subheadline">Notifications are allowed</Text>
+          <Text variant="subheadline">{t("permissionAllowed")}</Text>
         </Animated.View>
       )}
     </View>
@@ -226,9 +230,9 @@ function ProgressDots({ currentIndex }: { currentIndex: number }) {
 
   return (
     <View style={styles.progressDots}>
-      {STEPS.map((step, index) => (
+      {Array.from({ length: STEP_COUNT }, (_, index) => (
         <Animated.View
-          key={step.id}
+          key={index}
           layout={reduceMotion ? undefined : LinearTransition.duration(DOT_LAYOUT_MS)}
           style={[
             styles.progressDot,
@@ -270,6 +274,7 @@ function StepTransition({
 
 /** Three screens: what the app is, how consistency reads, and reminders. */
 export function OnboardingFlow() {
+  const { t } = useTranslation("onboarding");
   const { top, bottom } = useSafeAreaInsets();
   const model = useOnboardingModel();
 
@@ -280,7 +285,7 @@ export function OnboardingFlow() {
           {model.canGoBack && (
             <PressableScale
               accessibilityRole="button"
-              accessibilityLabel="Previous step"
+              accessibilityLabel={t("previousStep")}
               onPress={model.goBack}
               style={styles.backButton}
             >
@@ -369,12 +374,12 @@ export function OnboardingFlow() {
           {model.canSkip && (
             <PressableScale
               accessibilityRole="button"
-              accessibilityLabel="Skip notifications"
+              accessibilityLabel={t("skipNotifications")}
               onPress={model.skip}
               style={styles.skip}
             >
               <Text variant="footnote" tertiary>
-                You can change this later in Settings.
+                {t("skipCopy")}
               </Text>
             </PressableScale>
           )}
