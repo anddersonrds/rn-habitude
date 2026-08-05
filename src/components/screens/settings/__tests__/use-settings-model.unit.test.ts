@@ -98,7 +98,6 @@ type Permission = {
   canAskAgain: boolean;
 };
 
-/* Asserted against the catalog, so a case proves the key rather than the copy. */
 const copy = en.translations.settings;
 
 const GRANTED: Permission = { granted: true, canAskAgain: false };
@@ -639,7 +638,6 @@ describe("choosing a language", () => {
 });
 
 describe("the fade a language change rides on", () => {
-  /** Renders the model beside the fade the root layout plays. */
   async function renderSwitch({ reduceMotion }: { reduceMotion: boolean }) {
     resetDatabase();
     const loaded = load();

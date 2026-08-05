@@ -1,6 +1,5 @@
 import type { Locale } from "@/i18n/types";
 
-/* `matches` claims the bare `pt` code, which is what a Brazilian device reports. */
 const ptBR: Locale = {
   tag: "pt-BR",
   label: "Português (Brasil)",

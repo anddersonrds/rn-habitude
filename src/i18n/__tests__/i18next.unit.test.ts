@@ -1,32 +1,22 @@
 /* eslint-disable @typescript-eslint/no-require-imports --
-the module resolves the language and initialises i18next at import, so each case
-has to reload it rather than close over one instance.
-*/
+the module initialises at import, so each case has to reload it. */
 import { resetDatabase } from "@/test-utils/sqlite";
 import type { Locale as DeviceLocale } from "expo-localization";
 import type { AppStateStatus } from "react-native";
 
-/*
-Mocked at the package boundary: the device's preferences are the one input the
-resolution has that the runner cannot produce.
-*/
 jest.mock("expo-localization", () => ({ getLocales: jest.fn(() => []) }));
 
 type I18nModule = typeof import("@/i18n/i18next");
 type Database = typeof import("@/lib/db");
 
 type Loaded = I18nModule & {
-  /** The instance the module initialised, out of the same registry. */
   i18next: I18nModule["default"];
-  /** Read through the same registry the module under test wrote through. */
   storedLanguage: () => string | null;
-  /** Changes what the device reports from the next read on. */
   setPreferences: (preferences: DeviceLocale[]) => void;
-  /** Drives the app state listener the module registered at import. */
   appStateChanges: (status: AppStateStatus) => void;
 };
 
-/** The two fields the resolution reads; the rest is device metadata. */
+/* The two fields the resolution reads; the rest is device metadata. */
 function device(
   languageTag: string,
   languageCode: string | null = languageTag.split("-")[0],
@@ -34,10 +24,7 @@ function device(
   return { languageTag, languageCode } as DeviceLocale;
 }
 
-/**
- * Loads the module against a device and a stored preference. The database is
- * rebuilt first, so `db.ts` recreates the schema as it is required again.
- */
+/* Loads the module against a device and a stored preference. */
 function load({
   preferences = [],
   stored,

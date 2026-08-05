@@ -1,8 +1,4 @@
-/*
-First, and before any screen module is evaluated: the language is resolved
-synchronously at import, which is what keeps English off the first frame of a
-Portuguese device without a loading state.
-*/
+/* First: the language is resolved at import, before any screen is evaluated. */
 import "@/i18n/i18next";
 import { useLanguageSwitch } from "@/i18n/switching";
 import { haptic } from "@/lib/haptics";
@@ -29,11 +25,6 @@ export const unstable_settings = {
 
 const LANGUAGE_TRANSITION = { type: "timing" as const, duration: 170 };
 
-/**
- * Cross-fades the app while the language changes, opacity only. With Reduce
- * Motion on it steps aside entirely: the change is applied synchronously
- * instead, and nothing waits on a transition that will never be played.
- */
 function LanguageFade({ children }: { children: ReactNode }) {
   const reduceMotion = useReducedMotion();
   const { visible, onTransitionEnd } = useLanguageSwitch();

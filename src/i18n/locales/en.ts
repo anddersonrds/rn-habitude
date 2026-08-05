@@ -1,10 +1,6 @@
 import type { SourceLocale } from "@/i18n/types";
 
-/**
- * The source catalog. Every other locale is declared as `Locale`, whose
- * `translations` is this object's shape, so a key added here without being
- * translated everywhere fails the type check.
- */
+/* The source catalog: every other locale is typed against these keys. */
 const en = {
   tag: "en",
   label: "English",

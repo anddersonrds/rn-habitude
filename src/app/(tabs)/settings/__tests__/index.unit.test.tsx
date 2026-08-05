@@ -24,11 +24,8 @@ jest.mock("@/lib/notifications", () => ({
   sendTestNotification: jest.fn(async () => {}),
 }));
 
-/*
-Motion is reduced throughout: the picked language then lands on the press
-rather than waiting on a fade the runner never plays. The sequencing itself is
-the view model's, and its own suite covers both paths.
-*/
+/* Motion is reduced throughout, so a picked language lands on the press instead
+of waiting on a fade the runner never plays. */
 jest.mock("react-native-reanimated", () => {
   const actual = jest.requireActual("react-native-reanimated");
   return { __esModule: true, ...actual, useReducedMotion: jest.fn(() => true) };
@@ -45,7 +42,6 @@ const notifications = jest.requireMock<{
   sendTestNotification: jest.Mock;
 }>("@/lib/notifications");
 
-/* Asserted against the catalog, so a case proves the key rather than the copy. */
 const copy = en.translations.settings;
 const language = en.translations.language;
 

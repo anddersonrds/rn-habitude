@@ -42,8 +42,6 @@ const version =
  * layer.
  */
 export function useSettingsModel() {
-  /* Subscribes the screen to the language, and gives the alerts their copy at
-  the moment they are raised rather than at import. */
   const { t } = useTranslation(["settings", "common", "language"]);
   const reduceMotion = !!useReducedMotion();
   const { habits, completions } = useAppState();
@@ -51,7 +49,6 @@ export function useSettingsModel() {
     useState<Notifications.NotificationPermissionsStatus | null>(null);
   const [language, setActiveLanguage] = useState(getLanguagePreference);
 
-  /* Sorted by label at runtime, so the order cannot drift from the names. */
   const languages = useMemo(
     () => [
       { tag: DEVICE, label: t("language:systemDefault") },
@@ -67,9 +64,8 @@ export function useSettingsModel() {
       setLanguage(tag);
       setActiveLanguage(tag);
     };
-    /* Applied straight away with Reduce Motion on: there is no fade to wait
-    for, and waiting on one that is never played would leave the old language
-    on screen for good. */
+    /* With Reduce Motion the root renders no fade, so nothing would ever call
+    back and the change would never be applied. */
     if (reduceMotion) {
       apply();
       return;
