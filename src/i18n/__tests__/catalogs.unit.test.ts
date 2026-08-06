@@ -33,6 +33,11 @@ function pathsIn(translations: Record<string, Namespace>): string[] {
     .sort();
 }
 
+/** The plural categories a language selects between, e.g. `["other"]`. */
+function categoriesOf(tag: string): string[] {
+  return new Intl.PluralRules(tag).resolvedOptions().pluralCategories;
+}
+
 /** The base of a plural key, or null when the key is not a plural form. */
 function pluralBase(key: string): string | null {
   const match = /^(.*)_(zero|one|two|few|many|other)$/.exec(key);
@@ -92,6 +97,23 @@ describe.each(TRANSLATIONS)("the %s catalog", (_tag, translations) => {
       for (const [key, value] of Object.entries(keys)) {
         expect(`${namespace}.${key}: ${placeholdersIn(value).join()}`).toBe(
           `${namespace}.${key}: ${placeholdersIn(SOURCE[namespace][key]).join()}`,
+        );
+      }
+    }
+  });
+
+  it("should say the same thing in every plural form the language never selects", () => {
+    /* Japanese, Korean and Chinese have `other` and nothing else, so a count
+    of one lands there too. The source's keys are the contract, so the unused
+    forms exist anyway, and only identical text makes them harmless. */
+    if (categoriesOf(_tag).length > 1) return;
+
+    for (const [namespace, keys] of Object.entries(translations)) {
+      for (const [key, value] of Object.entries(keys)) {
+        const base = pluralBase(key);
+        if (base === null) continue;
+        expect(`${namespace}.${key}: "${value}"`).toBe(
+          `${namespace}.${key}: "${keys[`${base}_other`]}"`,
         );
       }
     }

@@ -233,6 +233,9 @@ describe("the language row", () => {
       "Español",
       "Français",
       "Português (Brasil)",
+      "한국어",
+      "中文（简体）",
+      "日本語",
     ]);
   });
 

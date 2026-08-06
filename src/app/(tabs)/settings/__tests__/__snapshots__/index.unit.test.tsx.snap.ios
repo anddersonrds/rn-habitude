@@ -139,6 +139,54 @@ exports[`the settings screen should render the whole screen 1`] = `
                   onGlobalEvent={[Function]}
                   text="Português (Brasil)"
                 />
+                <ViewManagerAdapter_ExpoUI
+                  modifiers={
+                    [
+                      {
+                        "$type": "tag",
+                        "tag": "ko",
+                      },
+                      {
+                        "$type": "font",
+                        "design": "rounded",
+                      },
+                    ]
+                  }
+                  onGlobalEvent={[Function]}
+                  text="한국어"
+                />
+                <ViewManagerAdapter_ExpoUI
+                  modifiers={
+                    [
+                      {
+                        "$type": "tag",
+                        "tag": "zh-Hans",
+                      },
+                      {
+                        "$type": "font",
+                        "design": "rounded",
+                      },
+                    ]
+                  }
+                  onGlobalEvent={[Function]}
+                  text="中文（简体）"
+                />
+                <ViewManagerAdapter_ExpoUI
+                  modifiers={
+                    [
+                      {
+                        "$type": "tag",
+                        "tag": "ja",
+                      },
+                      {
+                        "$type": "font",
+                        "design": "rounded",
+                      },
+                    ]
+                  }
+                  onGlobalEvent={[Function]}
+                  text="日本語"
+                />
               </ViewManagerAdapter_ExpoUI>
             </ViewManagerAdapter_ExpoUI>
           </ViewManagerAdapter_ExpoUI>

@@ -590,6 +590,9 @@ describe("choosing a language", () => {
       { tag: "es", label: "Español" },
       { tag: "fr", label: "Français" },
       { tag: "pt-BR", label: "Português (Brasil)" },
+      { tag: "ko", label: "한국어" },
+      { tag: "zh-Hans", label: "中文（简体）" },
+      { tag: "ja", label: "日本語" },
     ]);
     await unmount();
   });
