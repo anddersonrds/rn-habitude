@@ -65,7 +65,7 @@ const MONDAY = 1;
 const TUESDAY = 2;
 
 type StoreModule = typeof import("@/lib/store");
-type ModelModule = typeof import("@/components/screens/habit-form/hooks/use-habit-form-model");
+type ModelModule = typeof import("@/features/habit-form/hooks/use-habit-form-model");
 type HapticsModule = typeof import("@/lib/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 type AlertButtons = { text: string; style?: string; onPress?: () => void }[];
@@ -94,7 +94,7 @@ function load(): Loaded {
   void i18n.default.changeLanguage("en");
   return {
     store: require("@/lib/store"),
-    useHabitFormModel: require("@/components/screens/habit-form/hooks/use-habit-form-model")
+    useHabitFormModel: require("@/features/habit-form/hooks/use-habit-form-model")
       .useHabitFormModel,
     haptic: require("@/lib/haptics").haptic,
     router: require("expo-router").router,

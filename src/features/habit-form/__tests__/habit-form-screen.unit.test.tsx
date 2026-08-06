@@ -1,4 +1,4 @@
-import { HabitFormScreen } from "@/components/screens/habit-form";
+import { HabitFormScreen } from "@/features/habit-form";
 import {
   DEFAULT_HABIT_COLOR,
   DEFAULT_HABIT_ICON,
