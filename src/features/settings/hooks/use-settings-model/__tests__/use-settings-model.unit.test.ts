@@ -105,7 +105,7 @@ const NOT_ASKED: Permission = { granted: false, canAskAgain: true };
 const DENIED: Permission = { granted: false, canAskAgain: false };
 
 type StoreModule = typeof import("@/lib/store");
-type ModelModule = typeof import("@/components/screens/settings/hooks/use-settings-model");
+type ModelModule = typeof import("@/features/settings/hooks/use-settings-model");
 type HapticsModule = typeof import("@/lib/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 type AlertButtons = { text: string; style?: string; onPress?: () => void }[];
@@ -143,7 +143,7 @@ function load(): Loaded {
     switching: require("@/i18n/switching"),
     reanimated: require("react-native-reanimated"),
     store: require("@/lib/store"),
-    useSettingsModel: require("@/components/screens/settings/hooks/use-settings-model")
+    useSettingsModel: require("@/features/settings/hooks/use-settings-model")
       .useSettingsModel,
     haptic: require("@/lib/haptics").haptic,
     getPermission: notifications.getNotificationPermission,

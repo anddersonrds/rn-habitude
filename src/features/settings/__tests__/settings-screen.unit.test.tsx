@@ -1,4 +1,4 @@
-import SettingsScreen from "@/app/(tabs)/settings";
+import { SettingsScreen } from "@/features/settings";
 import i18n, { DEVICE, setLanguage } from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
 import ptBR from "@/i18n/locales/pt-br";
