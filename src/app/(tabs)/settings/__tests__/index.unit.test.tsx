@@ -228,8 +228,14 @@ describe("the language row", () => {
 
     expect(optionsOf(languagePicker(container))).toEqual([
       language.systemDefault,
+      "Deutsch",
       "English",
+      "Español",
+      "Français",
       "Português (Brasil)",
+      "한국어",
+      "中文（简体）",
+      "日本語",
     ]);
   });
 

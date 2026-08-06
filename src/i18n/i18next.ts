@@ -1,5 +1,11 @@
+import de from "@/i18n/locales/de";
 import en from "@/i18n/locales/en";
+import es from "@/i18n/locales/es";
+import fr from "@/i18n/locales/fr";
+import ja from "@/i18n/locales/ja";
+import ko from "@/i18n/locales/ko";
 import ptBR from "@/i18n/locales/pt-BR";
+import zhHans from "@/i18n/locales/zh-Hans";
 import type { Locale } from "@/i18n/types";
 import { getSetting, setSetting } from "@/lib/db";
 import { getLocales } from "expo-localization";
@@ -11,7 +17,7 @@ export const LANGUAGE_SETTING = "language";
 
 export const DEVICE = "device";
 
-export const LOCALES: Locale[] = [ptBR, en];
+export const LOCALES: Locale[] = [ptBR, en, es, fr, de, ko, ja, zhHans];
 
 const FALLBACK = en.tag;
 
