@@ -1,4 +1,6 @@
 import en from "@/i18n/locales/en";
+import es from "@/i18n/locales/es";
+import fr from "@/i18n/locales/fr";
 import ptBR from "@/i18n/locales/pt-BR";
 import type { Locale } from "@/i18n/types";
 import { getSetting, setSetting } from "@/lib/db";
@@ -11,7 +13,7 @@ export const LANGUAGE_SETTING = "language";
 
 export const DEVICE = "device";
 
-export const LOCALES: Locale[] = [ptBR, en];
+export const LOCALES: Locale[] = [ptBR, en, es, fr];
 
 const FALLBACK = en.tag;
 

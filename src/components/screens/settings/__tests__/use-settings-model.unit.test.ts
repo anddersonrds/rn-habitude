@@ -586,6 +586,8 @@ describe("choosing a language", () => {
     expect(result.current.languages).toEqual([
       { tag: "device", label: en.translations.language.systemDefault },
       { tag: "en", label: "English" },
+      { tag: "es", label: "Español" },
+      { tag: "fr", label: "Français" },
       { tag: "pt-BR", label: "Português (Brasil)" },
     ]);
     await unmount();
