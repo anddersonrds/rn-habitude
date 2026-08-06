@@ -29,8 +29,6 @@ const mockNotifications = {
 
 jest.mock("expo-notifications", () => mockNotifications);
 
-/* The seed writes the names it is given, so the cases pin the language rather
-than inheriting one. */
 const sampleNames = i18n.getFixedT("en", "sampleData");
 
 const TODAY = "2026-07-29";

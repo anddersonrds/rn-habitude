@@ -42,7 +42,7 @@ const notifications = jest.requireMock<{
   sendTestNotification: jest.Mock;
 }>("@/lib/notifications");
 
-const copy = en.translations.settings;
+const settings = en.translations.settings;
 const language = en.translations.language;
 
 const TODAY = "2026-07-29";
@@ -150,27 +150,27 @@ describe("the settings screen", () => {
   it("should say where the permission stands", async () => {
     const { container } = await renderSettings(GRANTED);
 
-    expect(valueAfter(container, copy.permission)).toBe(copy.permissionAllowed);
+    expect(valueAfter(container, settings.permission)).toBe(settings.permissionAllowed);
   });
 
   it("should offer to ask while the prompt can still be shown", async () => {
     const { container } = await renderSettings(NOT_ASKED);
 
-    expect(drawnText(container)).toContain(copy.allowNotifications);
-    expect(drawnText(container)).not.toContain(copy.openIosSettings);
+    expect(drawnText(container)).toContain(settings.allowNotifications);
+    expect(drawnText(container)).not.toContain(settings.openIosSettings);
   });
 
   it("should offer iOS Settings once the prompt cannot be shown again", async () => {
     const { container } = await renderSettings(DENIED);
 
-    expect(drawnText(container)).toContain(copy.openIosSettings);
-    expect(drawnText(container)).not.toContain(copy.allowNotifications);
+    expect(drawnText(container)).toContain(settings.openIosSettings);
+    expect(drawnText(container)).not.toContain(settings.allowNotifications);
   });
 
   it("should send a test notification when that row is pressed", async () => {
     const { container } = await renderSettings(GRANTED);
 
-    await pressButton(settingsButton(container, copy.sendTestNotification));
+    await pressButton(settingsButton(container, settings.sendTestNotification));
     await act(async () => new Promise((resolve) => setImmediate(resolve)));
 
     expect(notifications.sendTestNotification).toHaveBeenCalledTimes(1);
@@ -180,14 +180,14 @@ describe("the settings screen", () => {
     createHabit(input());
     const { container } = await renderSettings();
 
-    expect(valueAfter(container, copy.habits)).toBe("1");
-    expect(valueAfter(container, copy.checkIns)).toBe("0");
+    expect(valueAfter(container, settings.habits)).toBe("1");
+    expect(valueAfter(container, settings.checkIns)).toBe("0");
   });
 
   it("should put the app back before onboarding when that row is pressed", async () => {
     const { container } = await renderSettings();
 
-    await pressButton(settingsButton(container, copy.viewOnboarding));
+    await pressButton(settingsButton(container, settings.viewOnboarding));
 
     expect(getAppState().onboarded).toBe(false);
   });
@@ -195,8 +195,8 @@ describe("the settings screen", () => {
   it("should keep the way out of everything hidden while there is nothing to delete", async () => {
     const { container } = await renderSettings();
 
-    expect(() => nativeView(container, "label", copy.deleteAllData)).toThrow(
-      copy.deleteAllData,
+    expect(() => nativeView(container, "label", settings.deleteAllData)).toThrow(
+      settings.deleteAllData,
     );
   });
 
@@ -205,11 +205,11 @@ describe("the settings screen", () => {
     createHabit(input());
     const { container } = await renderSettings();
 
-    await pressButton(nativeView(container, "label", copy.deleteAllData));
+    await pressButton(nativeView(container, "label", settings.deleteAllData));
 
     expect(alert).toHaveBeenCalledWith(
-      copy.deleteAllTitle,
-      copy.deleteAllBody,
+      settings.deleteAllTitle,
+      settings.deleteAllBody,
       expect.any(Array),
     );
     expect(getAppState().habits).toHaveLength(1);

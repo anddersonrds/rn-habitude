@@ -72,26 +72,24 @@ function dots(container: TestInstance) {
     });
 }
 
-const copy = en.translations.onboarding;
+const onboarding = en.translations.onboarding;
 const WELCOME = {
-  title: copy.welcomeTitle,
-  description: copy.welcomeDescription,
-  cta: copy.welcomeCta,
+  title: onboarding.welcomeTitle,
+  description: onboarding.welcomeDescription,
+  cta: onboarding.welcomeCta,
 };
 const CONSISTENCY = {
-  title: copy.consistencyTitle,
-  description: copy.consistencyDescription,
-  cta: copy.consistencyCta,
+  title: onboarding.consistencyTitle,
+  description: onboarding.consistencyDescription,
+  cta: onboarding.consistencyCta,
 };
 const REMINDERS = {
-  title: copy.remindersTitle,
-  description: copy.remindersDescription,
-  cta: copy.remindersCta,
+  title: onboarding.remindersTitle,
+  description: onboarding.remindersDescription,
+  cta: onboarding.remindersCta,
 };
 
 beforeEach(async () => {
-  /* Pinned rather than inherited, so a change to how the device is resolved
-  cannot rewrite what these cases assert. */
   await i18n.changeLanguage("en");
   jest.clearAllMocks();
   useReducedMotion.mockReturnValue(false);

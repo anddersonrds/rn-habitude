@@ -44,8 +44,8 @@ jest.mock("expo-router", () => ({
   useLocalSearchParams: jest.fn(() => ({})),
 }));
 
-const copy = en.translations.habitForm;
-const shared = en.translations.common;
+const habitForm = en.translations.habitForm;
+const common = en.translations.common;
 
 /**
  * Fills a catalog template here rather than calling the same `t` the hook
@@ -473,7 +473,7 @@ describe("turning the reminder on", () => {
 
     expect(result.current.reminderOn).toBe(false);
     expect(alert).toHaveBeenCalledWith(
-      copy.notificationsOffTitle,
+      habitForm.notificationsOffTitle,
       "Allow notifications in iOS Settings to add a reminder.",
       expect.any(Array),
     );
@@ -487,7 +487,7 @@ describe("turning the reminder on", () => {
     await act(async () => result.current.toggleReminder(true));
 
     const settings = buttonsOf(alert).find(
-      (button) => button.text === copy.openSettings,
+      (button) => button.text === habitForm.openSettings,
     );
     await act(async () => settings?.onPress?.());
 
@@ -572,8 +572,8 @@ describe("deleting the habit being edited", () => {
     await act(async () => result.current.confirmDelete());
 
     expect(alert).toHaveBeenCalledWith(
-      fill(shared.deleteHabitTitle, { name: "Read" }),
-      shared.deleteHabitBody,
+      fill(common.deleteHabitTitle, { name: "Read" }),
+      common.deleteHabitBody,
       expect.any(Array),
     );
     expect(haptic.warning).toHaveBeenCalledTimes(1);

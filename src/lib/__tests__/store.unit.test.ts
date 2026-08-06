@@ -26,8 +26,6 @@ jest.mock("@/lib/notifications", () => ({
 }));
 
 /* A Wednesday, so a habit scheduled only on Mondays is not due on it. */
-/* The seed writes the names it is given, so the cases pin the language rather
-than inheriting one. */
 const sampleNames = i18n.getFixedT("en", "sampleData");
 
 const TODAY = "2026-07-29";

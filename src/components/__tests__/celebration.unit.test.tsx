@@ -36,7 +36,7 @@ const { default: useColorScheme } = jest.requireMock<{ default: jest.Mock }>(
 
 const DURATION_MS = 2100;
 
-const copy = en.translations.today;
+const today = en.translations.today;
 
 const RED = "#FF3B30";
 const GREEN = "#34C759";
@@ -76,8 +76,6 @@ function scrimColor(container: TestInstance) {
 }
 
 beforeEach(async () => {
-  /* Pinned rather than inherited, so a change to how the device is resolved
-  cannot rewrite what these cases assert. */
   await i18n.changeLanguage("en");
   useReducedMotion.mockReturnValue(false);
   useColorScheme.mockReturnValue("light");
@@ -91,8 +89,8 @@ describe("Celebration", () => {
       <Celebration colors={[RED]} onFinished={jest.fn()} />,
     );
 
-    expect(getByText(copy.celebrationTitle)).toBeOnTheScreen();
-    expect(getByText(copy.celebrationBody)).toBeOnTheScreen();
+    expect(getByText(today.celebrationTitle)).toBeOnTheScreen();
+    expect(getByText(today.celebrationBody)).toBeOnTheScreen();
   });
 
   it("should seal it with the same green the day's progress uses", async () => {
@@ -169,7 +167,7 @@ describe("Celebration", () => {
 
     expect(sparkColors(container)).toEqual([]);
     expect(ringColors(container)).toEqual([]);
-    expect(getByText(copy.celebrationTitle)).toBeOnTheScreen();
+    expect(getByText(today.celebrationTitle)).toBeOnTheScreen();
   });
 
   it("should still seal the day when motion is reduced", async () => {

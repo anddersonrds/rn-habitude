@@ -27,14 +27,14 @@ jest.mock("expo-router", () =>
 
 const routing = jest.requireMock<{ router: { push: jest.Mock } }>("expo-router");
 
-const copy = en.translations.habits;
-const shared = en.translations.common;
+const habits = en.translations.habits;
+const common = en.translations.common;
 const inPortuguese = ptBR.translations.habits;
-const scheduled = en.translations.schedule;
+const schedule = en.translations.schedule;
 const MON_WED_FRI = [
-  scheduled.mondayShort,
-  scheduled.wednesdayShort,
-  scheduled.fridayShort,
+  schedule.mondayShort,
+  schedule.wednesdayShort,
+  schedule.fridayShort,
 ].join(", ");
 
 /**
@@ -143,8 +143,6 @@ async function settle(): Promise<void> {
 }
 
 beforeEach(async () => {
-  /* Pinned rather than inherited, so a change to how the device is resolved
-  cannot rewrite what these cases assert. */
   await i18n.changeLanguage("en");
   freezeClock(`${TODAY}T12:00:00-03:00`);
   stableIds();
@@ -167,9 +165,9 @@ describe("a list with no habits", () => {
   it("should say there is nothing here yet, and offer a way out", async () => {
     const { getByText, getByLabelText } = await renderList();
 
-    expect(getByText(shared.noHabitsYet)).toBeTruthy();
-    expect(getByLabelText(shared.addHabit)).toBeTruthy();
-    await fireEvent.press(getByText(shared.newHabit));
+    expect(getByText(common.noHabitsYet)).toBeTruthy();
+    expect(getByLabelText(common.addHabit)).toBeTruthy();
+    await fireEvent.press(getByText(common.newHabit));
 
     expect(routing.router.push).toHaveBeenCalledWith("/habit-form");
   });
@@ -177,7 +175,7 @@ describe("a list with no habits", () => {
   it("should offer no reordering", async () => {
     const { queryByLabelText } = await renderList();
 
-    expect(queryByLabelText(copy.reorder)).toBeNull();
+    expect(queryByLabelText(habits.reorder)).toBeNull();
   });
 });
 
@@ -197,7 +195,7 @@ describe("a list with habits", () => {
 
     const { container } = await renderList();
 
-    expect(nativeView(container, "title", fill(copy.count_other, { count: 2 }))).toBeTruthy();
+    expect(nativeView(container, "title", fill(habits.count_other, { count: 2 }))).toBeTruthy();
   });
 
   it("should report the longest streak and every check-in ever made", async () => {
@@ -210,8 +208,8 @@ describe("a list with habits", () => {
     const { container } = await renderList();
 
     const drawn = drawnText(container);
-    expect(drawn[drawn.indexOf(copy.longestStreak) - 1]).toBe("3");
-    expect(drawn[drawn.indexOf(copy.checkIns) - 1]).toBe("4");
+    expect(drawn[drawn.indexOf(habits.longestStreak) - 1]).toBe("3");
+    expect(drawn[drawn.indexOf(habits.checkIns) - 1]).toBe("4");
   });
 
   it("should count one habit in the singular, in the app's language", async () => {
@@ -240,7 +238,7 @@ describe("what a row shows", () => {
 
     expect(modifier(rowNamed(container, "Walk outside"), "accessibilityLabel")).toEqual({
       $type: "accessibilityLabel",
-      label: fill(copy.rowLabelWithStreak_one, {
+      label: fill(habits.rowLabelWithStreak_one, {
         name: "Walk outside",
         schedule: MON_WED_FRI,
         count: 1,
@@ -254,7 +252,7 @@ describe("what a row shows", () => {
     const { container } = await renderList();
 
     expect(modifier(rowNamed(container, "Walk outside"), "accessibilityLabel")).toMatchObject(
-      { label: fill(copy.rowLabel, { name: "Walk outside", schedule: scheduled.everyDay }) },
+      { label: fill(habits.rowLabel, { name: "Walk outside", schedule: schedule.everyDay }) },
     );
   });
 
@@ -264,7 +262,7 @@ describe("what a row shows", () => {
     const { container } = await renderList();
 
     expect(modifier(rowNamed(container, "Walk outside"), "accessibilityHint")).toMatchObject(
-      { hint: copy.idleHint },
+      { hint: habits.idleHint },
     );
   });
 
@@ -285,7 +283,7 @@ describe("what a row shows", () => {
 
     const { container } = await renderList();
 
-    expect(drawnText(container)).toContain(scheduled.everyDay);
+    expect(drawnText(container)).toContain(schedule.everyDay);
     expect(() => nativeView(container, "systemName", "flame.fill")).toThrow(
       "figure.walk",
     );
@@ -299,7 +297,7 @@ describe("what a row shows", () => {
 
     const { container } = await renderList();
 
-    expect(drawnText(container)).toContain(fill(copy.streakAndSchedule_other, { count: 2, schedule: scheduled.everyDay }));
+    expect(drawnText(container)).toContain(fill(habits.streakAndSchedule_other, { count: 2, schedule: schedule.everyDay }));
     expect(
       modifier(nativeView(container, "systemName", "flame.fill"), "foregroundStyle"),
     ).toMatchObject({ color: HABIT_COLOR });
@@ -361,9 +359,9 @@ describe("the two shapes a row takes", () => {
 
     const { container } = await renderList();
 
-    expect(nativeView(container, "label", copy.open)).toBeTruthy();
-    expect(nativeView(container, "label", shared.edit)).toBeTruthy();
-    expect(nativeView(container, "label", shared.delete)).toBeTruthy();
+    expect(nativeView(container, "label", habits.open)).toBeTruthy();
+    expect(nativeView(container, "label", common.edit)).toBeTruthy();
+    expect(nativeView(container, "label", common.delete)).toBeTruthy();
   });
 
   it("should refuse the drag while the list is not being reordered", async () => {
@@ -389,9 +387,9 @@ describe("the two shapes a row takes", () => {
     seedHabit({ name: "Read" });
     const { container, getByLabelText } = await renderList();
 
-    await fireEvent.press(getByLabelText(copy.reorder));
+    await fireEvent.press(getByLabelText(habits.reorder));
 
-    expect(() => nativeView(container, "label", copy.open)).toThrow("none");
+    expect(() => nativeView(container, "label", habits.open)).toThrow("none");
     expect(
       nativeViews(container).some((node) =>
         ((node.props.modifiers ?? []) as { $type: string }[]).some(
@@ -415,7 +413,7 @@ describe("the two shapes a row takes", () => {
       "contentShape",
     );
 
-    await fireEvent.press(getByLabelText(copy.reorder));
+    await fireEvent.press(getByLabelText(habits.reorder));
 
     expect(modifier(rowNamed(container, "Walk outside"), "tag")).toMatchObject({
       tag: id,
@@ -427,10 +425,10 @@ describe("the two shapes a row takes", () => {
     seedHabit({ name: "Read" });
     const { container, getByLabelText } = await renderList();
 
-    await fireEvent.press(getByLabelText(copy.reorder));
+    await fireEvent.press(getByLabelText(habits.reorder));
 
     expect(modifier(rowNamed(container, "Walk outside"), "accessibilityHint")).toMatchObject(
-      { hint: copy.reorderingHint },
+      { hint: habits.reorderingHint },
     );
   });
 });
@@ -449,7 +447,7 @@ describe("what a row does", () => {
     seedHabit({ name: "Walk outside" });
     seedHabit({ name: "Read" });
     const { container, getByLabelText } = await renderList();
-    await fireEvent.press(getByLabelText(copy.reorder));
+    await fireEvent.press(getByLabelText(habits.reorder));
 
     /*
     The row still receives events - the modifiers it keeps carry their own -
@@ -467,7 +465,7 @@ describe("what a row does", () => {
     const habit = seedHabit({ name: "Walk outside" });
     const { container } = await renderList();
 
-    await pressButton(nativeView(container, "label", copy.open));
+    await pressButton(nativeView(container, "label", habits.open));
 
     expect(routing.router.push).toHaveBeenCalledWith(`/habit/${habit.id}`);
   });
@@ -476,7 +474,7 @@ describe("what a row does", () => {
     const habit = seedHabit({ name: "Walk outside" });
     const { container } = await renderList();
 
-    await pressButton(nativeView(container, "label", shared.edit));
+    await pressButton(nativeView(container, "label", common.edit));
 
     expect(routing.router.push).toHaveBeenCalledWith(
       `/habit-form?id=${habit.id}`,
@@ -488,11 +486,11 @@ describe("what a row does", () => {
     seedHabit({ name: "Walk outside" });
     const { container } = await renderList();
 
-    await pressButton(nativeView(container, "label", shared.delete));
+    await pressButton(nativeView(container, "label", common.delete));
 
     expect(alert).toHaveBeenCalledWith(
-      fill(shared.deleteHabitTitle, { name: "Walk outside" }),
-      shared.deleteHabitBody,
+      fill(common.deleteHabitTitle, { name: "Walk outside" }),
+      common.deleteHabitBody,
       expect.any(Array),
     );
     expect(getAppState().habits).toHaveLength(1);
@@ -505,7 +503,7 @@ describe("putting the habits in a different order", () => {
 
     const { queryByLabelText } = await renderList();
 
-    expect(queryByLabelText(copy.reorder)).toBeNull();
+    expect(queryByLabelText(habits.reorder)).toBeNull();
   });
 
   it("should offer to finish once the list is being reordered", async () => {
@@ -513,10 +511,10 @@ describe("putting the habits in a different order", () => {
     seedHabit({ name: "Read" });
     const { getByLabelText, queryByLabelText } = await renderList();
 
-    await fireEvent.press(getByLabelText(copy.reorder));
+    await fireEvent.press(getByLabelText(habits.reorder));
 
-    expect(getByLabelText(copy.reorderDone)).toBeTruthy();
-    expect(queryByLabelText(copy.reorder)).toBeNull();
+    expect(getByLabelText(habits.reorderDone)).toBeTruthy();
+    expect(queryByLabelText(habits.reorder)).toBeNull();
   });
 
   it("should write the order a drop asks for", async () => {
@@ -524,7 +522,7 @@ describe("putting the habits in a different order", () => {
     seedHabit({ name: "Read" });
     seedHabit({ name: "Stretch" });
     const { container, getByLabelText } = await renderList();
-    await fireEvent.press(getByLabelText(copy.reorder));
+    await fireEvent.press(getByLabelText(habits.reorder));
 
     await moveRow(reorderable(container), 2, 0);
     await settle();
@@ -540,7 +538,7 @@ describe("putting the habits in a different order", () => {
     seedHabit({ name: "Walk outside" });
     seedHabit({ name: "Read" });
     const { container, getByLabelText } = await renderList();
-    await fireEvent.press(getByLabelText(copy.reorder));
+    await fireEvent.press(getByLabelText(habits.reorder));
 
     await moveRow(reorderable(container), 1, 0);
     await settle();
@@ -554,8 +552,8 @@ describe("putting the habits in a different order", () => {
       .filter(Boolean)
       .map((entry) => entry!.label);
     expect(labels).toEqual([
-      fill(copy.rowLabel, { name: "Read", schedule: scheduled.everyDay }),
-      fill(copy.rowLabel, { name: "Walk outside", schedule: scheduled.everyDay }),
+      fill(habits.rowLabel, { name: "Read", schedule: schedule.everyDay }),
+      fill(habits.rowLabel, { name: "Walk outside", schedule: schedule.everyDay }),
     ]);
   });
 });

@@ -35,8 +35,8 @@ const routing = jest.requireMock<{
   Link: jest.Mock;
 }>("expo-router");
 
-const copy = en.translations.habitDetail;
-const scheduled = en.translations.schedule;
+const habitDetail = en.translations.habitDetail;
+const schedule = en.translations.schedule;
 
 /* A Wednesday. Every fixture below is dated against it. */
 const TODAY = "2026-07-29";
@@ -106,8 +106,6 @@ function seedHabit(
 }
 
 beforeEach(async () => {
-  /* Pinned rather than inherited, so a change to how the device is resolved
-  cannot rewrite what these cases assert. */
   await i18n.changeLanguage("en");
   freezeClock(`${TODAY}T12:00:00-03:00`);
   stableIds();
@@ -158,7 +156,7 @@ describe("the habit being shown", () => {
     const { getByText } = await renderDetail(habit.id);
 
     expect(getByText("Read")).toBeOnTheScreen();
-    expect(getByText(scheduled.mondayShort)).toBeOnTheScreen();
+    expect(getByText(schedule.mondayShort)).toBeOnTheScreen();
   });
 
   it("should give the reminder time beside the schedule", async () => {
@@ -166,7 +164,7 @@ describe("the habit being shown", () => {
 
     const { getByText } = await renderDetail(habit.id);
 
-    expect(getByText(`${scheduled.everyDay}  ·  7:30 AM`)).toBeOnTheScreen();
+    expect(getByText(`${schedule.everyDay}  ·  7:30 AM`)).toBeOnTheScreen();
   });
 
   it("should say it in the language the app is set to", async () => {
@@ -204,10 +202,10 @@ describe("the statistics", () => {
 
     const { getByText } = await renderDetail(habit.id);
 
-    expect(blockText(getByText(copy.currentStreak))).toEqual([
-      copy.currentStreak,
+    expect(blockText(getByText(habitDetail.currentStreak))).toEqual([
+      habitDetail.currentStreak,
       "2",
-      copy.day_other,
+      habitDetail.day_other,
     ]);
   });
 
@@ -222,12 +220,12 @@ describe("the statistics", () => {
 
     const { getByText } = await renderDetail(habit.id);
 
-    expect(blockText(getByText(copy.currentStreak))).toEqual([
-      copy.currentStreak,
+    expect(blockText(getByText(habitDetail.currentStreak))).toEqual([
+      habitDetail.currentStreak,
       "1",
-      copy.day_one,
+      habitDetail.day_one,
     ]);
-    expect(blockText(getByText(copy.bestStreak))).toEqual([copy.bestStreak, "3"]);
+    expect(blockText(getByText(habitDetail.bestStreak))).toEqual([habitDetail.bestStreak, "3"]);
   });
 
   it("should rate the last thirty days against the days that were scheduled", async () => {
@@ -239,7 +237,7 @@ describe("the statistics", () => {
     const { getByText } = await renderDetail(habit.id);
 
     /* Two of the three days the habit has existed for. */
-    expect(blockText(getByText(copy.monthRate))).toEqual([copy.monthRate, "67%"]);
+    expect(blockText(getByText(habitDetail.monthRate))).toEqual([habitDetail.monthRate, "67%"]);
   });
 
   it("should rate the last thirty days rather than the habit's whole life", async () => {
@@ -261,7 +259,7 @@ describe("the statistics", () => {
     const { getByText } = await renderDetail(habit.id);
 
     /* One day in thirty. Over the habit's ninety days it would read 6%. */
-    expect(blockText(getByText(copy.monthRate))).toEqual([copy.monthRate, "3%"]);
+    expect(blockText(getByText(habitDetail.monthRate))).toEqual([habitDetail.monthRate, "3%"]);
   });
 
   it("should read the streak off the completions rather than off today", async () => {
@@ -273,12 +271,12 @@ describe("the statistics", () => {
     const { getByText } = await renderDetail(habit.id);
 
     /* The run ended weeks ago, so nothing is running now. */
-    expect(blockText(getByText(copy.currentStreak))).toEqual([
-      copy.currentStreak,
+    expect(blockText(getByText(habitDetail.currentStreak))).toEqual([
+      habitDetail.currentStreak,
       "0",
-      copy.day_other,
+      habitDetail.day_other,
     ]);
-    expect(blockText(getByText(copy.bestStreak))).toEqual([copy.bestStreak, "2"]);
+    expect(blockText(getByText(habitDetail.bestStreak))).toEqual([habitDetail.bestStreak, "2"]);
   });
 
   it("should start a habit with no history at zero rather than blank", async () => {
@@ -286,13 +284,13 @@ describe("the statistics", () => {
 
     const { getByText } = await renderDetail(habit.id);
 
-    expect(blockText(getByText(copy.currentStreak))).toEqual([
-      copy.currentStreak,
+    expect(blockText(getByText(habitDetail.currentStreak))).toEqual([
+      habitDetail.currentStreak,
       "0",
-      copy.day_other,
+      habitDetail.day_other,
     ]);
-    expect(blockText(getByText(copy.bestStreak))).toEqual([copy.bestStreak, "0"]);
-    expect(blockText(getByText(copy.monthRate))).toEqual([copy.monthRate, "0%"]);
+    expect(blockText(getByText(habitDetail.bestStreak))).toEqual([habitDetail.bestStreak, "0"]);
+    expect(blockText(getByText(habitDetail.monthRate))).toEqual([habitDetail.monthRate, "0%"]);
   });
 });
 
@@ -302,7 +300,7 @@ describe("checking in from the detail screen", () => {
 
     const { getByRole } = await renderDetail(habit.id);
 
-    expect(getByRole("button", { name: copy.checkInLabel })).toBeOnTheScreen();
+    expect(getByRole("button", { name: habitDetail.checkInLabel })).toBeOnTheScreen();
   });
 
   it("should record the check-in, the streak and the grid together", async () => {
@@ -313,16 +311,16 @@ describe("checking in from the detail screen", () => {
     const view = await renderDetail(habit.id);
     expect(cellColors(view.container).filter((color) => color === DONE)).toHaveLength(2);
 
-    await fireEvent.press(view.getByRole("button", { name: copy.checkInLabel }));
+    await fireEvent.press(view.getByRole("button", { name: habitDetail.checkInLabel }));
 
     expect(getAppState().completions[habit.id]?.[TODAY]).toBe(true);
-    expect(blockText(view.getByText(copy.currentStreak))).toEqual([
-      copy.currentStreak,
+    expect(blockText(view.getByText(habitDetail.currentStreak))).toEqual([
+      habitDetail.currentStreak,
       "3",
-      copy.day_other,
+      habitDetail.day_other,
     ]);
-    expect(blockText(view.getByText(copy.monthRate))).toEqual([
-      copy.monthRate,
+    expect(blockText(view.getByText(habitDetail.monthRate))).toEqual([
+      habitDetail.monthRate,
       "100%",
     ]);
     expect(cellColors(view.container).filter((color) => color === DONE)).toHaveLength(3);
@@ -342,7 +340,7 @@ describe("checking in from the detail screen", () => {
 
     const { getByRole } = await renderDetail(habit.id);
 
-    expect(getByRole("button", { name: copy.undoCheckInLabel })).toBeOnTheScreen();
+    expect(getByRole("button", { name: habitDetail.undoCheckInLabel })).toBeOnTheScreen();
   });
 
   it("should take the check-in back when it is undone", async () => {
@@ -350,11 +348,11 @@ describe("checking in from the detail screen", () => {
     const view = await renderDetail(habit.id);
 
     await fireEvent.press(
-      view.getByRole("button", { name: copy.undoCheckInLabel }),
+      view.getByRole("button", { name: habitDetail.undoCheckInLabel }),
     );
 
     expect(getAppState().completions[habit.id]?.[TODAY]).toBeUndefined();
-    expect(view.getByRole("button", { name: copy.checkInLabel })).toBeOnTheScreen();
+    expect(view.getByRole("button", { name: habitDetail.checkInLabel })).toBeOnTheScreen();
   });
 
   it("should say the day is a rest day rather than offer a check-in", async () => {
@@ -362,9 +360,9 @@ describe("checking in from the detail screen", () => {
 
     const { getByText, queryByRole } = await renderDetail(habit.id);
 
-    expect(getByText(copy.notScheduled)).toBeOnTheScreen();
-    expect(getByText(copy.restDay)).toBeOnTheScreen();
-    expect(queryByRole("button", { name: copy.checkInLabel })).toBeNull();
+    expect(getByText(habitDetail.notScheduled)).toBeOnTheScreen();
+    expect(getByText(habitDetail.restDay)).toBeOnTheScreen();
+    expect(queryByRole("button", { name: habitDetail.checkInLabel })).toBeNull();
   });
 });
 
@@ -373,7 +371,7 @@ describe("going somewhere else", () => {
     const habit = seedHabit();
     const { getByRole } = await renderDetail(habit.id);
 
-    await fireEvent.press(getByRole("button", { name: copy.editHabit }));
+    await fireEvent.press(getByRole("button", { name: habitDetail.editHabit }));
 
     expect(routing.router.push).toHaveBeenCalledWith(
       `/habit-form?id=${habit.id}`,

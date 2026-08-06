@@ -36,8 +36,8 @@ jest.mock("@/lib/haptics", () => ({
 
 jest.mock("expo-router", () => ({ router: { push: jest.fn() } }));
 
-const copy = en.translations.today;
-const shared = en.translations.common;
+const today = en.translations.today;
+const common = en.translations.common;
 
 /**
  * Fills a catalog template here rather than calling the same `t` the hook
@@ -224,7 +224,7 @@ describe("what a habit says under its name", () => {
 
     expect(result.current.items[0]).toMatchObject({
       streak: 2,
-      subtitle: fill(copy.streak_other, { count: 2 }),
+      subtitle: fill(today.streak_other, { count: 2 }),
     });
     await unmount();
   });
@@ -245,7 +245,7 @@ describe("what a habit says under its name", () => {
     });
 
     expect(result.current.items[0].subtitle).toBe(
-      `${fill(copy.streak_one, { count: 1 })}  ·  7:30 AM`,
+      `${fill(today.streak_one, { count: 1 })}  ·  7:30 AM`,
     );
     await unmount();
   });
@@ -502,13 +502,13 @@ describe("deleting a habit", () => {
     await act(async () => result.current.confirmDelete(result.current.items[0].habit));
 
     expect(alert).toHaveBeenCalledWith(
-      fill(shared.deleteHabitTitle, { name: "Walk outside" }),
-      shared.deleteHabitBody,
+      fill(common.deleteHabitTitle, { name: "Walk outside" }),
+      common.deleteHabitBody,
       expect.any(Array),
     );
     expect(buttonsOf(alert).map((button) => button.text)).toEqual([
-      shared.cancel,
-      shared.delete,
+      common.cancel,
+      common.delete,
     ]);
     await unmount();
   });

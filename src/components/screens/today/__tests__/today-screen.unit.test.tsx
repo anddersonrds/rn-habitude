@@ -33,8 +33,8 @@ jest.mock("expo-router", () =>
 
 const routing = jest.requireMock<{ router: { push: jest.Mock } }>("expo-router");
 
-const copy = en.translations.today;
-const shared = en.translations.common;
+const today = en.translations.today;
+const common = en.translations.common;
 const inPortuguese = ptBR.translations.today;
 
 /**
@@ -125,8 +125,6 @@ async function settle(): Promise<void> {
 }
 
 beforeEach(async () => {
-  /* Pinned rather than inherited, so a change to how the device is resolved
-  cannot rewrite what these cases assert. */
   await i18n.changeLanguage("en");
   freezeClock(`${TODAY}T12:00:00-03:00`);
   stableIds();
@@ -149,9 +147,9 @@ describe("a day with no habits at all", () => {
   it("should say there is nothing here yet, and offer a way out", async () => {
     const { getByText, getByLabelText } = await renderToday();
 
-    expect(getByText(shared.noHabitsYet)).toBeTruthy();
-    expect(getByLabelText(shared.addHabit)).toBeTruthy();
-    await fireEvent.press(getByText(shared.newHabit));
+    expect(getByText(common.noHabitsYet)).toBeTruthy();
+    expect(getByLabelText(common.addHabit)).toBeTruthy();
+    await fireEvent.press(getByText(common.newHabit));
 
     expect(routing.router.push).toHaveBeenCalledWith("/habit-form");
   });
@@ -163,8 +161,8 @@ describe("a day with nothing scheduled", () => {
 
     const { container, queryByText } = await renderToday();
 
-    expect(queryByText(shared.noHabitsYet)).toBeNull();
-    expect(drawnText(container)).toContain(copy.nothingScheduled);
+    expect(queryByText(common.noHabitsYet)).toBeNull();
+    expect(drawnText(container)).toContain(today.nothingScheduled);
     expect(nativeView(container, "systemName", "moon.zzz.fill")).toBeTruthy();
   });
 
@@ -201,7 +199,7 @@ describe("a day with habits", () => {
 
     const { container } = await renderToday();
 
-    expect(drawnText(container)).toContain(fill(copy.progress_other, { done: 1, count: 2 }));
+    expect(drawnText(container)).toContain(fill(today.progress_other, { done: 1, count: 2 }));
   });
 
   it("should say the day is done rather than counting it", async () => {
@@ -209,7 +207,7 @@ describe("a day with habits", () => {
 
     const { container } = await renderToday();
 
-    expect(drawnText(container)).toContain(copy.allDone);
+    expect(drawnText(container)).toContain(today.allDone);
     expect(nativeView(container, "systemName", "checkmark.seal.fill")).toBeTruthy();
   });
 
@@ -222,10 +220,10 @@ describe("a day with habits", () => {
     const bar = progressBar(container);
     expect(bar.props.value).toBe(0.5);
     expect(modifier(bar, "accessibilityLabel")).toMatchObject({
-      label: copy.progressLabel,
+      label: today.progressLabel,
     });
     expect(modifier(bar, "accessibilityValue")).toMatchObject({
-      value: fill(copy.progressValue_other, { done: 1, count: 2 }),
+      value: fill(today.progressValue_other, { done: 1, count: 2 }),
     });
   });
 
@@ -392,7 +390,7 @@ describe("the actions behind a swipe", () => {
     const habit = seedHabit();
     const { container } = await renderToday();
 
-    const checkIn = nativeView(rowOf(container, habit), "label", copy.checkIn);
+    const checkIn = nativeView(rowOf(container, habit), "label", today.checkIn);
     expect(modifier(checkIn, "tint")).toMatchObject({ color: success });
     await pressButton(checkIn);
     await settle();
@@ -404,7 +402,7 @@ describe("the actions behind a swipe", () => {
     const habit = seedHabit({}, { done: true });
     const { container } = await renderToday();
 
-    const undo = nativeView(rowOf(container, habit), "label", copy.undo);
+    const undo = nativeView(rowOf(container, habit), "label", today.undo);
     expect(modifier(undo, "tint")).toMatchObject({ color: accent });
     await pressButton(undo);
     await settle();
@@ -416,7 +414,7 @@ describe("the actions behind a swipe", () => {
     const habit = seedHabit();
     const { container } = await renderToday();
 
-    await pressButton(nativeView(rowOf(container, habit), "label", shared.edit));
+    await pressButton(nativeView(rowOf(container, habit), "label", common.edit));
 
     expect(routing.router.push).toHaveBeenCalledWith(
       `/habit-form?id=${habit.id}`,
@@ -427,7 +425,7 @@ describe("the actions behind a swipe", () => {
     const habit = seedHabit();
     const { container } = await renderToday();
 
-    await pressButton(nativeView(rowOf(container, habit), "label", copy.history));
+    await pressButton(nativeView(rowOf(container, habit), "label", today.history));
 
     expect(routing.router.push).toHaveBeenCalledWith(`/habit/${habit.id}`);
   });
@@ -437,11 +435,11 @@ describe("the actions behind a swipe", () => {
     const habit = seedHabit({ name: "Walk outside" });
     const { container } = await renderToday();
 
-    await pressButton(nativeView(rowOf(container, habit), "label", shared.delete));
+    await pressButton(nativeView(rowOf(container, habit), "label", common.delete));
 
     expect(alert).toHaveBeenCalledWith(
-      fill(shared.deleteHabitTitle, { name: "Walk outside" }),
-      shared.deleteHabitBody,
+      fill(common.deleteHabitTitle, { name: "Walk outside" }),
+      common.deleteHabitBody,
       expect.any(Array),
     );
     expect(getAppState().habits).toHaveLength(1);

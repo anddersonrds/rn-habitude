@@ -36,9 +36,9 @@ jest.mock("@/lib/haptics", () => ({
 
 jest.mock("expo-router", () => ({ router: { push: jest.fn() } }));
 
-const copy = en.translations.habits;
-const shared = en.translations.common;
-const scheduled = en.translations.schedule;
+const habits = en.translations.habits;
+const common = en.translations.common;
+const schedule = en.translations.schedule;
 
 /**
  * Fills a catalog template here rather than calling the same `t` the hook
@@ -163,7 +163,7 @@ describe("the list as it stands", () => {
       rows: [],
       hasHabits: false,
       canReorder: false,
-      countLabel: fill(copy.count_other, { count: 0 }),
+      countLabel: fill(habits.count_other, { count: 0 }),
     });
     await unmount();
   });
@@ -173,14 +173,14 @@ describe("the list as it stands", () => {
       store.createHabit(input());
     });
 
-    expect(result.current.countLabel).toBe(fill(copy.count_one, { count: 1 }));
+    expect(result.current.countLabel).toBe(fill(habits.count_one, { count: 1 }));
     await unmount();
   });
 
   it("should count more than one habit in the plural", async () => {
     const { result, unmount } = await renderModel(seedThree);
 
-    expect(result.current.countLabel).toBe(fill(copy.count_other, { count: 3 }));
+    expect(result.current.countLabel).toBe(fill(habits.count_other, { count: 3 }));
     await unmount();
   });
 
@@ -218,7 +218,7 @@ describe("what a row says about its habit", () => {
       store.createHabit(input({ weekdays: EVERY_DAY }));
     });
 
-    expect(result.current.rows[0].schedule).toBe(scheduled.everyDay);
+    expect(result.current.rows[0].schedule).toBe(schedule.everyDay);
     await unmount();
   });
 
@@ -228,7 +228,7 @@ describe("what a row says about its habit", () => {
     });
 
     expect(result.current.rows[0].schedule).toBe(
-      [scheduled.mondayShort, scheduled.wednesdayShort, scheduled.fridayShort].join(
+      [schedule.mondayShort, schedule.wednesdayShort, schedule.fridayShort].join(
         ", ",
       ),
     );
@@ -476,8 +476,8 @@ describe("deleting a habit", () => {
     await act(async () => result.current.confirmDelete(result.current.rows[0].habit));
 
     expect(alert).toHaveBeenCalledWith(
-      fill(shared.deleteHabitTitle, { name: "Walk outside" }),
-      shared.deleteHabitBody,
+      fill(common.deleteHabitTitle, { name: "Walk outside" }),
+      common.deleteHabitBody,
       expect.any(Array),
     );
     expect(haptic.warning).toHaveBeenCalledTimes(1);

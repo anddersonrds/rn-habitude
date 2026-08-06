@@ -61,7 +61,7 @@ function permissionState(
   } as PermissionState;
 }
 
-const copy = en.translations.onboarding;
+const onboarding = en.translations.onboarding;
 
 const UNDETERMINED = {
   granted: false,
@@ -251,7 +251,7 @@ describe("what the button says", () => {
   it("should carry the step's own call to action before the last step", async () => {
     const { result, unmount } = await renderModel();
 
-    expect(result.current.ctaLabel).toBe(copy.welcomeCta);
+    expect(result.current.ctaLabel).toBe(onboarding.welcomeCta);
     await unmount();
   });
 
@@ -260,7 +260,7 @@ describe("what the button says", () => {
 
     await goToLastStep();
 
-    expect(result.current.ctaLabel).toBe(copy.remindersCta);
+    expect(result.current.ctaLabel).toBe(onboarding.remindersCta);
     await unmount();
   });
 
@@ -271,7 +271,7 @@ describe("what the button says", () => {
     await goToLastStep();
 
     expect(result.current).toMatchObject({
-      ctaLabel: copy.startTracking,
+      ctaLabel: onboarding.startTracking,
       permissionGranted: true,
     });
     await unmount();
@@ -285,7 +285,7 @@ describe("what the button says", () => {
 
     await goToLastStep();
 
-    expect(result.current.ctaLabel).toBe(copy.maybeLater);
+    expect(result.current.ctaLabel).toBe(onboarding.maybeLater);
     await unmount();
   });
 
@@ -305,7 +305,7 @@ describe("what the button says", () => {
     });
 
     expect(result.current).toMatchObject({
-      ctaLabel: copy.requesting,
+      ctaLabel: onboarding.requesting,
       requesting: true,
     });
 
