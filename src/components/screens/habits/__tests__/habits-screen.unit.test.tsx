@@ -85,15 +85,37 @@ function seedHabit(
   return habit;
 }
 
-/* A row is the one native view that names itself to a screen reader. */
-function rowNamed(container: TestInstance, name: string): TestInstance {
-  const row = nativeViews(container).find((node) =>
-    ((node.props.modifiers ?? []) as { $type: string; label?: string }[]).some(
-      (entry) => entry.$type === "accessibilityLabel" && entry.label?.startsWith(name),
+/* A row is a native view that names itself to a screen reader. */
+function rows(container: TestInstance): TestInstance[] {
+  return nativeViews(container).filter((node) =>
+    ((node.props.modifiers ?? []) as { $type: string }[]).some(
+      (entry) => entry.$type === "accessibilityLabel",
     ),
+  );
+}
+
+function rowNamed(container: TestInstance, name: string): TestInstance {
+  const row = rows(container).find((node) =>
+    (modifier(node, "accessibilityLabel").label as string).startsWith(name),
   );
   if (!row) throw new Error(`No row names itself "${name}".`);
   return row;
+}
+
+/** The name a row leads with, which is the first line it draws. */
+function titleOf(row: TestInstance): string {
+  const [first] = row.queryAll((node) => typeof node.props.text === "string");
+  if (!first) throw new Error("The row draws no name.");
+  return first.props.text as string;
+}
+
+/** The colour a row draws its habit's icon in. */
+function accentOf(row: TestInstance): unknown {
+  const [icon] = row.queryAll(
+    (node) => typeof node.props.systemName === "string",
+  );
+  if (!icon) throw new Error("The row draws no icon.");
+  return modifier(icon, "foregroundStyle").color;
 }
 
 /** The list itself, which is the only view carrying an edit mode. */
@@ -156,10 +178,11 @@ afterEach(() => {
 });
 
 describe("a list with no habits", () => {
-  it("should render the empty state", async () => {
-    const { toJSON } = await renderList();
+  it("should draw the empty state instead of a list", async () => {
+    const { container, getByText } = await renderList();
 
-    expect(toJSON()).toMatchSnapshot();
+    expect(getByText(habits.emptyDescription)).toBeTruthy();
+    expect(rows(container)).toHaveLength(0);
   });
 
   it("should say there is nothing here yet, and offer a way out", async () => {
@@ -180,13 +203,23 @@ describe("a list with no habits", () => {
 });
 
 describe("a list with habits", () => {
-  it("should render the list", async () => {
+  it("should draw a row per habit, in the order they were made", async () => {
     seedHabit({ name: "Walk outside" }, { createdAt: TWO_DAYS_AGO });
     seedHabit({ name: "Read", color: "#FF3B30" });
 
-    const { toJSON } = await renderList();
+    const { container } = await renderList();
 
-    expect(toJSON()).toMatchSnapshot();
+    expect(rows(container).map(titleOf)).toEqual(["Walk outside", "Read"]);
+  });
+
+  it("should draw each row in its own habit's colour", async () => {
+    seedHabit({ name: "Walk outside" }, { createdAt: TWO_DAYS_AGO });
+    seedHabit({ name: "Read", color: "#FF3B30" });
+
+    const { container } = await renderList();
+
+    expect(accentOf(rowNamed(container, "Walk outside"))).toBe(HABIT_COLOR);
+    expect(accentOf(rowNamed(container, "Read"))).toBe("#FF3B30");
   });
 
   it("should count the habits above them", async () => {
@@ -543,14 +576,9 @@ describe("putting the habits in a different order", () => {
     await moveRow(reorderable(container), 1, 0);
     await settle();
 
-    const labels = nativeViews(container)
-      .map((node) =>
-        ((node.props.modifiers ?? []) as { $type: string; label?: string }[]).find(
-          (entry) => entry.$type === "accessibilityLabel",
-        ),
-      )
-      .filter(Boolean)
-      .map((entry) => entry!.label);
+    const labels = rows(container).map(
+      (row) => modifier(row, "accessibilityLabel").label,
+    );
     expect(labels).toEqual([
       fill(habits.rowLabel, { name: "Read", schedule: schedule.everyDay }),
       fill(habits.rowLabel, { name: "Walk outside", schedule: schedule.everyDay }),
