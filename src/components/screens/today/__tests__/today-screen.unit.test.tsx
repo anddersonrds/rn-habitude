@@ -1,7 +1,7 @@
 import { TodayScreen } from "@/components/screens/today";
 import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
-import ptBR from "@/i18n/locales/pt-BR";
+import ptBR from "@/i18n/locales/pt-br";
 import {
   completeHabit,
   createHabit,
