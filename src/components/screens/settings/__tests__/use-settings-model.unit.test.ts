@@ -585,6 +585,7 @@ describe("choosing a language", () => {
 
     expect(result.current.languages).toEqual([
       { tag: "device", label: en.translations.language.systemDefault },
+      { tag: "de", label: "Deutsch" },
       { tag: "en", label: "English" },
       { tag: "es", label: "Español" },
       { tag: "fr", label: "Français" },

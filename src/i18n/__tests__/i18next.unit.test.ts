@@ -73,10 +73,10 @@ describe("the language resolution", () => {
 
   it("should take the first supported language in the device's own order", () => {
     const { i18next } = load({
-      preferences: [device("de-DE"), device("pt-PT"), device("en-US")],
+      preferences: [device("sv-SE"), device("de-DE"), device("en-US")],
     });
 
-    expect(i18next.language).toBe("pt-BR");
+    expect(i18next.language).toBe("de");
   });
 
   it("should resolve a regional variant through the codes a locale claims", () => {
@@ -87,7 +87,7 @@ describe("the language resolution", () => {
   });
 
   it("should fall back to English for a language the app does not ship", () => {
-    const { i18next } = load({ preferences: [device("de-DE")] });
+    const { i18next } = load({ preferences: [device("sv-SE")] });
 
     expect(i18next.language).toBe("en");
   });
