@@ -35,11 +35,13 @@ import {
   tag,
   tint,
 } from "@expo/ui/swift-ui/modifiers";
-import { Color, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { EaseView } from "react-native-ease";
-import { useTodayModel, type TodayItem } from "./useTodayModel";
+import { useTodayModel } from "./hooks/use-today-model";
+import type { TodayItem } from "./hooks/use-today-model/types";
+import { styles } from "./styles";
 
 const STATUS_ANIMATION = Animation.spring({ duration: 0.32, bounce: 0.18 });
 const LIST_CHANGE_ANIMATION = Animation.easeInOut({ duration: 0.22 });
@@ -302,18 +304,3 @@ export function TodayScreen() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  content: {
-    flex: 1,
-    backgroundColor: Color.ios.systemGroupedBackground,
-  },
-  empty: {
-    flex: 1,
-    backgroundColor: Color.ios.systemGroupedBackground,
-  },
-  host: {
-    flex: 1,
-    backgroundColor: Color.ios.systemGroupedBackground,
-  },
-});

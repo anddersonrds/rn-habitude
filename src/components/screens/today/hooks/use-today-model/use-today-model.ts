@@ -7,14 +7,7 @@ import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
-
-export type TodayItem = {
-  habit: Habit;
-  done: boolean;
-  streak: number;
-  /** "3-day streak · 7:30 AM", or null when there's nothing to show. */
-  subtitle: string | null;
-};
+import type { TodayItem } from "./types";
 
 /**
  * View model for the Today screen: all data shaping and actions live here so

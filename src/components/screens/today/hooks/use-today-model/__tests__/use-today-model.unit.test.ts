@@ -57,7 +57,7 @@ const MONDAY = [1];
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
 
 type StoreModule = typeof import("@/lib/store");
-type ModelModule = typeof import("@/components/screens/today/useTodayModel");
+type ModelModule = typeof import("@/components/screens/today/hooks/use-today-model");
 type HapticsModule = typeof import("@/lib/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 type AlertButtons = { text: string; style?: string; onPress?: () => void }[];
@@ -81,7 +81,7 @@ function load(language = "en"): Loaded {
   void i18n.default.changeLanguage(language);
   return {
     store: require("@/lib/store"),
-    useTodayModel: require("@/components/screens/today/useTodayModel")
+    useTodayModel: require("@/components/screens/today/hooks/use-today-model")
       .useTodayModel,
     haptic: require("@/lib/haptics").haptic,
     push: require("expo-router").router.push,
