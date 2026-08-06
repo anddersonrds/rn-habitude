@@ -1,3 +1,4 @@
+import { dateKey, parseKey } from "@/lib/dates";
 import {
   completionRate,
   computeStreaks,
@@ -125,6 +126,32 @@ describe("heatCells", () => {
     ]);
     expect([cells[0].week, cells[0].weekday]).toEqual([0, 0]);
     expect([cells[13].week, cells[13].weekday]).toEqual([1, 6]);
+  });
+
+  it("should begin every column on the day the week is said to start", () => {
+    /* TODAY is a Wednesday, so the two grids cover different fortnights. */
+    const sundayStart = heatCells(habit, done, 2, TODAY, 0);
+    const mondayStart = heatCells(habit, done, 2, TODAY, 1);
+
+    expect([sundayStart[0].date, sundayStart[13].date]).toEqual([
+      "2026-07-19",
+      "2026-08-01",
+    ]);
+    expect([mondayStart[0].date, mondayStart[13].date]).toEqual([
+      "2026-07-20",
+      "2026-08-02",
+    ]);
+  });
+
+  it("should keep every date a local midnight key whichever day it starts on", () => {
+    /* The one change in this milestone that could move a stored key rather
+    than a label: every one of these is read back out of the database. */
+    for (const weekStart of [0, 1]) {
+      for (const cell of heatCells(habit, done, 4, TODAY, weekStart)) {
+        expect(cell.date).toBe(dateKey(parseKey(cell.date)));
+        expect(parseKey(cell.date).getHours()).toBe(0);
+      }
+    }
   });
 
   it("should mark a completed day as done", () => {

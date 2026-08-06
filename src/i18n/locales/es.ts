@@ -4,6 +4,7 @@ const es: Locale = {
   tag: "es",
   label: "Español",
   matches: ["es"],
+  weekStart: 1,
   translations: {
     common: {
       cancel: "Cancelar",

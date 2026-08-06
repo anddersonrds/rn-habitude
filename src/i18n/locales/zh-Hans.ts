@@ -9,6 +9,7 @@ const zhHans: Locale = {
   tag: "zh-Hans",
   label: "中文（简体）",
   matches: ["zh"],
+  weekStart: 1,
   translations: {
     common: {
       cancel: "取消",

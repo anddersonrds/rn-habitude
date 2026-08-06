@@ -4,6 +4,7 @@ const ptBR: Locale = {
   tag: "pt-BR",
   label: "Português (Brasil)",
   matches: ["pt"],
+  weekStart: 0,
   translations: {
     common: {
       cancel: "Cancelar",

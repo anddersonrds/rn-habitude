@@ -6,6 +6,9 @@ export type SourceLocale = {
   label: string;
   /* The device language codes this locale claims, e.g. `pt` for `pt-BR`. */
   matches: string[];
+  /* The day a week starts on, 0 for Sunday. Declared rather than read from
+  CLDR because the engine on the device carries no `Intl.Locale`. */
+  weekStart: 0 | 1;
   translations: Record<string, Record<string, string>>;
 };
 

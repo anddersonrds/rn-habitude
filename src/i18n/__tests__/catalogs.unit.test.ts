@@ -1,4 +1,4 @@
-import i18next, { LOCALES } from "@/i18n/i18next";
+import i18next, { LOCALES, weekStartOf } from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
 
 /**
@@ -180,6 +180,29 @@ describe.each(TRANSLATIONS)("the %s catalog", (_tag, translations) => {
         );
       }
     }
+  });
+});
+
+describe("the week", () => {
+  it("should start where each language starts it", () => {
+    /* Declared per locale rather than read from CLDR, which the engine on the
+    device does not carry. A wrong number here is invisible to the compiler. */
+    expect(
+      Object.fromEntries(LOCALES.map((locale) => [locale.tag, locale.weekStart])),
+    ).toEqual({
+      en: 0,
+      "pt-BR": 0,
+      ja: 0,
+      ko: 0,
+      es: 1,
+      fr: 1,
+      de: 1,
+      "zh-Hans": 1,
+    });
+  });
+
+  it("should start on Sunday for a language the app does not ship", () => {
+    expect(weekStartOf("sv-SE")).toBe(0);
   });
 });
 

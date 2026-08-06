@@ -7,6 +7,7 @@ const ko: Locale = {
   tag: "ko",
   label: "한국어",
   matches: ["ko"],
+  weekStart: 0,
   translations: {
     common: {
       cancel: "취소",

@@ -1,4 +1,5 @@
 import { Text } from "@/components/ui/Text";
+import { weekStartOf } from "@/i18n/i18next";
 import { todayKey, weekdayInitials } from "@/lib/dates";
 import { heatCells, heatMonthLabels, type HeatCell } from "@/lib/streaks";
 import type { Habit } from "@/lib/types";
@@ -18,10 +19,12 @@ type Props = {
   scrollable?: boolean;
 };
 
-/* Every other row is named, so seven initials never crowd the column. */
-function weekdayRows(language: string): string[] {
-  return weekdayInitials(language).map((initial, day) =>
-    day % 2 === 1 ? initial : "",
+/* Every other row is named, so seven initials never crowd the column. The
+initials are indexed from Sunday, and the rows begin where the week does. */
+function weekdayRows(language: string, weekStart: number): string[] {
+  const initials = weekdayInitials(language);
+  return initials.map((_, row) =>
+    row % 2 === 1 ? initials[(row + weekStart) % 7] : "",
   );
 }
 
@@ -53,11 +56,12 @@ export function HeatMap({
 }: Props) {
   const { i18n } = useTranslation();
   const today = todayKey();
+  const weekStart = weekStartOf(i18n.language);
   const scrollRef = useRef<ScrollView>(null);
 
   const cells = useMemo(
-    () => heatCells(habit, completed, weeks, today),
-    [habit, completed, weeks, today],
+    () => heatCells(habit, completed, weeks, today, weekStart),
+    [habit, completed, weeks, today, weekStart],
   );
 
   const columns = useMemo(() => {
@@ -116,7 +120,7 @@ export function HeatMap({
     <View style={{ flexDirection: "row" }}>
       {labels && (
         <View style={[styles.weekdayColumn, { paddingTop: 16, gap }]}>
-          {weekdayRows(i18n.language).map((label, index) => (
+          {weekdayRows(i18n.language, weekStart).map((label, index) => (
             <View
               key={index}
               style={{ height: cellSize, justifyContent: "center" }}

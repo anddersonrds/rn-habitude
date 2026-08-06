@@ -208,12 +208,12 @@ describe("HeatMap", () => {
     expect(getByText("F")).toBeOnTheScreen();
   });
 
-  it("should name the months and the weekdays in the app's language", async () => {
+  it("should name the months in the app's language", async () => {
     /* The runner is pinned to `en_US`, so French labels can only have come
     from the language the app is set to. */
     await i18n.changeLanguage("fr");
 
-    const { container, getByText } = await renderWithProviders(
+    const { container } = await renderWithProviders(
       <HeatMap habit={habit} completed={undefined} weeks={6} labels scrollable />,
     );
 
@@ -221,9 +221,22 @@ describe("HeatMap", () => {
       { label: "juin", left: 0 },
       { label: "juil.", left: 28 },
     ]);
-    expect(getByText("L")).toBeOnTheScreen();
-    expect(getByText("M")).toBeOnTheScreen();
-    expect(getByText("V")).toBeOnTheScreen();
+  });
+
+  it("should begin the columns on the day the app's language starts the week on", async () => {
+    /* French starts on Monday, so the same six weeks cover different days and
+    the initials down the side begin one row later. */
+    await i18n.changeLanguage("fr");
+
+    const { getByText, queryByText } = await renderWithProviders(
+      <HeatMap habit={habit} completed={undefined} weeks={6} labels scrollable />,
+    );
+
+    expect(getByText("J")).toBeOnTheScreen();
+    expect(getByText("S")).toBeOnTheScreen();
+    /* Sunday-start French would name lundi and vendredi instead. */
+    expect(queryByText("L")).toBeNull();
+    expect(queryByText("V")).toBeNull();
   });
 
   it("should leave the weekday rows off a grid that does not scroll", async () => {

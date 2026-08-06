@@ -7,6 +7,7 @@ const ja: Locale = {
   tag: "ja",
   label: "日本語",
   matches: ["ja"],
+  weekStart: 0,
   translations: {
     common: {
       cancel: "キャンセル",

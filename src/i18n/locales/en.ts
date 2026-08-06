@@ -9,6 +9,7 @@ const en = {
   tag: "en",
   label: "English",
   matches: ["en"],
+  weekStart: 0,
   translations: {
     common: {
       cancel: "Cancel",
