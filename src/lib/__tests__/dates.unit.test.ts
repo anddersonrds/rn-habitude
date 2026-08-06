@@ -2,9 +2,11 @@ import {
   addDays,
   dateKey,
   formatFullDate,
+  formatMonthShort,
   formatTime,
   parseKey,
   todayKey,
+  weekdayInitials,
   weekdayOf,
 } from "@/lib/dates";
 import { freezeClock, restoreClock } from "@/test-utils/time";
@@ -159,5 +161,37 @@ describe("formatFullDate", () => {
   it("should follow the language it is given rather than the runner's", () => {
     expect(formatFullDate("2026-07-29", "fr")).toBe("mercredi 29 juillet");
     expect(formatFullDate("2026-07-29", "ja")).toBe("7月29日水曜日");
+  });
+});
+
+describe("formatMonthShort", () => {
+  it("should abbreviate the month the key falls in", () => {
+    expect(formatMonthShort("2026-07-29", "en")).toBe("Jul");
+  });
+
+  it("should follow the language it is given rather than the runner's", () => {
+    expect(formatMonthShort("2026-07-29", "fr")).toBe("juil.");
+    expect(formatMonthShort("2026-07-29", "ja")).toBe("7月");
+  });
+});
+
+describe("weekdayInitials", () => {
+  it("should start the list on Sunday, whatever the language", () => {
+    /* The list is indexed by `weekdayOf`, where 0 is Sunday. Where a week
+    starts on screen is the grid's business, not this list's. */
+    expect(weekdayInitials("en")).toEqual(["S", "M", "T", "W", "T", "F", "S"]);
+  });
+
+  it("should follow the language it is given rather than the runner's", () => {
+    expect(weekdayInitials("fr")).toEqual(["D", "L", "M", "M", "J", "V", "S"]);
+    expect(weekdayInitials("ja")).toEqual([
+      "日",
+      "月",
+      "火",
+      "水",
+      "木",
+      "金",
+      "土",
+    ]);
   });
 });

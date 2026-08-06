@@ -1,9 +1,10 @@
 import { Text } from "@/components/ui/Text";
-import { todayKey } from "@/lib/dates";
+import { todayKey, weekdayInitials } from "@/lib/dates";
 import { heatCells, heatMonthLabels, type HeatCell } from "@/lib/streaks";
 import type { Habit } from "@/lib/types";
 import { Color } from "expo-router";
 import { useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 type Props = {
@@ -17,7 +18,12 @@ type Props = {
   scrollable?: boolean;
 };
 
-const WEEKDAY_ROWS = ["", "M", "", "W", "", "F", ""];
+/* Every other row is named, so seven initials never crowd the column. */
+function weekdayRows(language: string): string[] {
+  return weekdayInitials(language).map((initial, day) =>
+    day % 2 === 1 ? initial : "",
+  );
+}
 
 function cellColor(cell: HeatCell, habit: Habit, today: string) {
   switch (cell.status) {
@@ -45,6 +51,7 @@ export function HeatMap({
   labels = false,
   scrollable = false,
 }: Props) {
+  const { i18n } = useTranslation();
   const today = todayKey();
   const scrollRef = useRef<ScrollView>(null);
 
@@ -62,8 +69,8 @@ export function HeatMap({
   }, [cells]);
 
   const months = useMemo(
-    () => (labels ? heatMonthLabels(cells) : []),
-    [cells, labels],
+    () => (labels ? heatMonthLabels(cells, i18n.language) : []),
+    [cells, labels, i18n.language],
   );
   const columnWidth = cellSize + gap;
 
@@ -109,7 +116,7 @@ export function HeatMap({
     <View style={{ flexDirection: "row" }}>
       {labels && (
         <View style={[styles.weekdayColumn, { paddingTop: 16, gap }]}>
-          {WEEKDAY_ROWS.map((label, index) => (
+          {weekdayRows(i18n.language).map((label, index) => (
             <View
               key={index}
               style={{ height: cellSize, justifyContent: "center" }}

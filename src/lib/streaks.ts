@@ -1,4 +1,10 @@
-import { addDays, parseKey, todayKey, weekdayOf } from "./dates";
+import {
+  addDays,
+  formatMonthShort,
+  parseKey,
+  todayKey,
+  weekdayOf,
+} from "./dates";
 import { isScheduledOn, type Habit } from "./types";
 
 export type Streaks = { current: number; best: number };
@@ -98,6 +104,7 @@ export function heatCells(
 /** Month labels for heat grid columns: [{ week, label }] at month starts. */
 export function heatMonthLabels(
   cells: HeatCell[],
+  language: string,
 ): { week: number; label: string }[] {
   const labels: { week: number; label: string }[] = [];
   let lastMonth = -1;
@@ -108,9 +115,7 @@ export function heatMonthLabels(
       if (lastMonth !== -1 || cells[0].weekday === 0) {
         labels.push({
           week: cell.week,
-          label: parseKey(cell.date).toLocaleDateString(undefined, {
-            month: "short",
-          }),
+          label: formatMonthShort(cell.date, language),
         });
       }
       lastMonth = month;
