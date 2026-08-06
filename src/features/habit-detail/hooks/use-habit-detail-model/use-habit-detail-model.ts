@@ -8,10 +8,7 @@ import { router, useLocalSearchParams, type Href } from "expo-router";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-/**
- * View model for the habit detail screen. Returns null once the habit it was
- * showing is gone, which is also when it sends the screen back.
- */
+/** Null once the habit is gone, which is also when it sends the screen back. */
 export function useHabitDetailModel() {
   const { i18n } = useTranslation();
   const { t: tSchedule } = useTranslation("schedule");
@@ -28,8 +25,7 @@ export function useHabitDetailModel() {
   const today = todayKey();
   const completed = state.completions[habit.id];
   const streaks = computeStreaks(habit, completed, today);
-  /* Typed as `Href` so the destination is still checked once it leaves the
-  template literal the router would otherwise narrow itself. */
+  /* Annotated because the destination stops being a literal on the way out. */
   const historyHref: Href = `/habit-history?id=${habit.id}`;
 
   const subtitle = [

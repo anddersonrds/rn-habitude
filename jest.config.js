@@ -56,14 +56,12 @@ module.exports = {
     /*
     Now that every screen is covered, the roots replace the paths that were
     named one at a time while the SwiftUI screens were still uncovered.
-    The 60 that `./src/app/` carried moved to `./src/features/` with the screens
-    that earned it. What is left under `./src/app/` is five `_layout.tsx` files
-    and the re-exports above, and a layout mounts a native navigator the runner
-    cannot render - so the tier stays named, at what it actually measures,
-    rather than being deleted and letting those files sink into `global`.
     */
     "./src/components/": { statements: 60 },
     "./src/features/": { statements: 60 },
+    /* Only layouts are left here, and a layout mounts a native navigator the
+    runner cannot render. Named at 0 rather than deleted, which would sink them
+    into `global` unmeasured. */
     "./src/app/": { statements: 0 },
   },
 };

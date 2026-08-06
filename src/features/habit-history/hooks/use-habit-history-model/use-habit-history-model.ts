@@ -4,10 +4,7 @@ import { completionRate, computeStreaks } from "@/lib/streaks";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 
-/**
- * View model for the habit history screen. Returns null once the habit it was
- * showing is gone, which is also when it sends the screen back.
- */
+/** Null once the habit is gone, which is also when it sends the screen back. */
 export function useHabitHistoryModel() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const state = useAppState();
