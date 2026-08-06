@@ -69,7 +69,7 @@ const DONE = 2;
 const PENDING = 3;
 
 type StoreModule = typeof import("@/lib/store");
-type ModelModule = typeof import("@/components/screens/habits/hooks/use-habits-model");
+type ModelModule = typeof import("@/features/habits/hooks/use-habits-model");
 type HapticsModule = typeof import("@/lib/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 type AlertButtons = { text: string; style?: string; onPress?: () => void }[];
@@ -93,7 +93,7 @@ function load(): Loaded {
   void i18n.default.changeLanguage("en");
   return {
     store: require("@/lib/store"),
-    useHabitsModel: require("@/components/screens/habits/hooks/use-habits-model")
+    useHabitsModel: require("@/features/habits/hooks/use-habits-model")
       .useHabitsModel,
     haptic: require("@/lib/haptics").haptic,
     push: require("expo-router").router.push,

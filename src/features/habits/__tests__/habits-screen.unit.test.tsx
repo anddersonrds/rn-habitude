@@ -1,4 +1,4 @@
-import { HabitsScreen } from "@/components/screens/habits";
+import { HabitsScreen } from "@/features/habits";
 import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
 import ptBR from "@/i18n/locales/pt-br";
