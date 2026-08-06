@@ -1,11 +1,13 @@
 import type { Locale } from "@/i18n/types";
 
 /* Japanese has one plural category, so only `_other` is ever selected. The
-`_one` forms are kept identical because the source's keys are the contract. */
+`_one` and `_many` forms are kept identical because the source's keys are the
+contract. */
 const ja: Locale = {
   tag: "ja",
   label: "日本語",
   matches: ["ja"],
+  weekStart: 0,
   translations: {
     common: {
       cancel: "キャンセル",
@@ -70,9 +72,11 @@ const ja: Locale = {
       restDay: "休みの日を楽しんで。連続記録は途切れません。",
       allDone: "すべて完了",
       progress_one: "{{count}}件中{{done}}件完了",
+      progress_many: "{{count}}件中{{done}}件完了",
       progress_other: "{{count}}件中{{done}}件完了",
       progressLabel: "今日の進捗",
       progressValue_one: "{{count}}件中{{done}}件の習慣が完了",
+      progressValue_many: "{{count}}件中{{done}}件の習慣が完了",
       progressValue_other: "{{count}}件中{{done}}件の習慣が完了",
       checkInSection: "記録",
       checkInFooter: "習慣をタップして記録します。スワイプで他の操作ができます。",
@@ -80,6 +84,7 @@ const ja: Locale = {
       undo: "取り消す",
       history: "履歴",
       streak_one: "{{count}}日連続",
+      streak_many: "{{count}}日連続",
       streak_other: "{{count}}日連続",
       celebrationTitle: "今日は完了",
       celebrationBody: "すべての習慣を記録しました。また明日。",
@@ -88,6 +93,7 @@ const ja: Locale = {
       emptyDescription:
         "作成した習慣は、連続記録と履歴と一緒にここに表示されます。",
       count_one: "習慣{{count}}件",
+      count_many: "習慣{{count}}件",
       count_other: "習慣{{count}}件",
       longestStreak: "継続中の最長記録",
       checkIns: "記録",
@@ -101,8 +107,10 @@ const ja: Locale = {
       idleHint: "習慣の履歴を開きます。長押しで他の操作ができます。",
       rowLabel: "{{name}}、{{schedule}}",
       rowLabelWithStreak_one: "{{name}}、{{schedule}}、{{count}}日連続",
+      rowLabelWithStreak_many: "{{name}}、{{schedule}}、{{count}}日連続",
       rowLabelWithStreak_other: "{{name}}、{{schedule}}、{{count}}日連続",
       streakAndSchedule_one: "{{count}}日  ·  {{schedule}}",
+      streakAndSchedule_many: "{{count}}日  ·  {{schedule}}",
       streakAndSchedule_other: "{{count}}日  ·  {{schedule}}",
       open: "開く",
     },
@@ -145,6 +153,7 @@ const ja: Locale = {
       restDay: "休みの日は連続記録が途切れません。",
       currentStreak: "現在の連続記録",
       day_one: "日",
+      day_many: "日",
       day_other: "日",
       bestStreak: "最長記録",
       monthRate: "30日の達成率",

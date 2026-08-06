@@ -1,6 +1,7 @@
 import HabitDetailScreen from "@/app/habit/[id]";
 import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
+import fr from "@/i18n/locales/fr";
 import ptBR from "@/i18n/locales/pt-BR";
 import {
   completeHabit,
@@ -165,6 +166,16 @@ describe("the habit being shown", () => {
     const { getByText } = await renderDetail(habit.id);
 
     expect(getByText(`${schedule.everyDay}  ·  7:30 AM`)).toBeOnTheScreen();
+  });
+
+  it("should give the reminder time on the app's clock, not the device's", async () => {
+    const habit = seedHabit({ reminderTime: "13:30" });
+    await i18n.changeLanguage("fr");
+
+    const { getByText } = await renderDetail(habit.id);
+
+    const inFrench = fr.translations.schedule;
+    expect(getByText(`${inFrench.everyDay}  ·  13:30`)).toBeOnTheScreen();
   });
 
   it("should say it in the language the app is set to", async () => {

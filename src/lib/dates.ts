@@ -28,20 +28,39 @@ export function weekdayOf(key: string): number {
   return parseKey(key).getDay();
 }
 
-export function formatTime(hhmm: string): string {
+/* Left undefined these follow the device, which is not the app's language once
+the picker has been used. This module imports nothing from `src/i18n/`. */
+
+export function formatTime(hhmm: string, language: string): string {
   const [hours, minutes] = hhmm.split(":").map(Number);
   const date = new Date();
   date.setHours(hours, minutes, 0, 0);
-  return date.toLocaleTimeString(undefined, {
+  return date.toLocaleTimeString(language, {
     hour: "numeric",
     minute: "2-digit",
   });
 }
 
-export function formatFullDate(key: string): string {
-  return parseKey(key).toLocaleDateString(undefined, {
+export function formatFullDate(key: string, language: string): string {
+  return parseKey(key).toLocaleDateString(language, {
     weekday: "long",
     month: "long",
     day: "numeric",
+  });
+}
+
+export function formatMonthShort(key: string, language: string): string {
+  return parseKey(key).toLocaleDateString(language, { month: "short" });
+}
+
+/** 1 January 2023, a Sunday, so day 0 of a week is day 0 of this one. */
+const REFERENCE_WEEK = new Date(2023, 0, 1);
+
+/** The seven weekday initials, Sunday first. */
+export function weekdayInitials(language: string): string[] {
+  return Array.from({ length: 7 }, (_, day) => {
+    const date = new Date(REFERENCE_WEEK);
+    date.setDate(date.getDate() + day);
+    return date.toLocaleDateString(language, { weekday: "narrow" });
   });
 }

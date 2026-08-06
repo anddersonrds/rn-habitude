@@ -1,10 +1,15 @@
 import type { SourceLocale } from "@/i18n/types";
 
-/* The source catalog: every other locale is typed against these keys. */
+/* The source catalog: every other locale is typed against these keys.
+
+Every plural key declares `_many` as well, which English never selects. Spanish,
+French and Portuguese select it at a million, and an absent form does not fall
+through to `_other` - it leaves the language and answers in English. */
 const en = {
   tag: "en",
   label: "English",
   matches: ["en"],
+  weekStart: 0,
   translations: {
     common: {
       cancel: "Cancel",
@@ -70,9 +75,11 @@ const en = {
       restDay: "Enjoy the rest day. Your streaks are safe.",
       allDone: "All done",
       progress_one: "{{done}} of {{count}} complete",
+      progress_many: "{{done}} of {{count}} complete",
       progress_other: "{{done}} of {{count}} complete",
       progressLabel: "Today's progress",
       progressValue_one: "{{done}} of {{count}} habits complete",
+      progressValue_many: "{{done}} of {{count}} habits complete",
       progressValue_other: "{{done}} of {{count}} habits complete",
       checkInSection: "Check in",
       checkInFooter: "Tap a habit to check it in. Swipe for more actions.",
@@ -80,6 +87,7 @@ const en = {
       undo: "Undo",
       history: "History",
       streak_one: "{{count}}-day streak",
+      streak_many: "{{count}}-day streak",
       streak_other: "{{count}}-day streak",
       celebrationTitle: "Day complete",
       celebrationBody: "Every habit checked in. See you tomorrow.",
@@ -88,6 +96,7 @@ const en = {
       emptyDescription:
         "Habits you create show up here with their streaks and history.",
       count_one: "{{count}} habit",
+      count_many: "{{count}} habits",
       count_other: "{{count}} habits",
       longestStreak: "longest active streak",
       checkIns: "check-ins",
@@ -100,8 +109,10 @@ const en = {
       idleHint: "Opens habit history. Long press for more actions.",
       rowLabel: "{{name}}, {{schedule}}",
       rowLabelWithStreak_one: "{{name}}, {{schedule}}, {{count}}-day streak",
+      rowLabelWithStreak_many: "{{name}}, {{schedule}}, {{count}}-day streak",
       rowLabelWithStreak_other: "{{name}}, {{schedule}}, {{count}}-day streak",
       streakAndSchedule_one: "{{count}} day  ·  {{schedule}}",
+      streakAndSchedule_many: "{{count}} days  ·  {{schedule}}",
       streakAndSchedule_other: "{{count}} days  ·  {{schedule}}",
       open: "Open",
     },
@@ -144,6 +155,7 @@ const en = {
       restDay: "Your streak is safe on rest days.",
       currentStreak: "CURRENT STREAK",
       day_one: "day",
+      day_many: "days",
       day_other: "days",
       bestStreak: "Best streak",
       monthRate: "30-day rate",

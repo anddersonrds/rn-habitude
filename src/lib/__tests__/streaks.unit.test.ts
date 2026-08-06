@@ -1,3 +1,4 @@
+import { dateKey, parseKey } from "@/lib/dates";
 import {
   completionRate,
   computeStreaks,
@@ -127,6 +128,31 @@ describe("heatCells", () => {
     expect([cells[13].week, cells[13].weekday]).toEqual([1, 6]);
   });
 
+  it("should begin every column on the day the week is said to start", () => {
+    /* TODAY is a Wednesday, so the two grids cover different fortnights. */
+    const sundayStart = heatCells(habit, done, 2, TODAY, 0);
+    const mondayStart = heatCells(habit, done, 2, TODAY, 1);
+
+    expect([sundayStart[0].date, sundayStart[13].date]).toEqual([
+      "2026-07-19",
+      "2026-08-01",
+    ]);
+    expect([mondayStart[0].date, mondayStart[13].date]).toEqual([
+      "2026-07-20",
+      "2026-08-02",
+    ]);
+  });
+
+  it("should keep every date a local midnight key whichever day it starts on", () => {
+    /* These keys are what completions are stored and read back under. */
+    for (const weekStart of [0, 1]) {
+      for (const cell of heatCells(habit, done, 4, TODAY, weekStart)) {
+        expect(cell.date).toBe(dateKey(parseKey(cell.date)));
+        expect(parseKey(cell.date).getHours()).toBe(0);
+      }
+    }
+  });
+
   it("should mark a completed day as done", () => {
     const cells = heatCells(habit, done, 2, TODAY);
     expect(cells.find((cell) => cell.date === "2026-07-22")?.status).toBe("done");
@@ -176,7 +202,7 @@ describe("heatMonthLabels", () => {
 
   it("should label each column where a new month starts", () => {
     const cells = heatCells(habit, undefined, 8, "2027-01-06");
-    expect(heatMonthLabels(cells)).toEqual([
+    expect(heatMonthLabels(cells, "en")).toEqual([
       { week: 0, label: "Nov" },
       { week: 3, label: "Dec" },
       { week: 7, label: "Jan" },
@@ -185,7 +211,7 @@ describe("heatMonthLabels", () => {
 
   it("should carry the label across a year boundary rather than repeating a month", () => {
     const cells = heatCells(habit, undefined, 12, "2027-01-06");
-    expect(heatMonthLabels(cells).map((entry) => entry.label)).toEqual([
+    expect(heatMonthLabels(cells, "en").map((entry) => entry.label)).toEqual([
       "Oct",
       "Nov",
       "Dec",
@@ -193,10 +219,19 @@ describe("heatMonthLabels", () => {
     ]);
   });
 
+  it("should abbreviate the month in the language it is given", () => {
+    const cells = heatCells(habit, undefined, 8, "2027-01-06");
+    expect(heatMonthLabels(cells, "fr").map((entry) => entry.label)).toEqual([
+      "nov.",
+      "déc.",
+      "janv.",
+    ]);
+  });
+
   it("should drop a first label that would collide with the second", () => {
     /* This grid opens on 25 October, one column before November starts. */
     const cells = heatCells(habit, undefined, 8, "2026-12-16");
-    expect(heatMonthLabels(cells)).toEqual([
+    expect(heatMonthLabels(cells, "en")).toEqual([
       { week: 1, label: "Nov" },
       { week: 6, label: "Dec" },
     ]);

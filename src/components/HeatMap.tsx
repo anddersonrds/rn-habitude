@@ -1,9 +1,11 @@
 import { Text } from "@/components/ui/Text";
-import { todayKey } from "@/lib/dates";
+import { weekStartOf } from "@/i18n/i18next";
+import { todayKey, weekdayInitials } from "@/lib/dates";
 import { heatCells, heatMonthLabels, type HeatCell } from "@/lib/streaks";
 import type { Habit } from "@/lib/types";
 import { Color } from "expo-router";
 import { useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 type Props = {
@@ -17,7 +19,13 @@ type Props = {
   scrollable?: boolean;
 };
 
-const WEEKDAY_ROWS = ["", "M", "", "W", "", "F", ""];
+/* Every other row is named, so seven initials never crowd the column. */
+function weekdayRows(language: string, weekStart: number): string[] {
+  const initials = weekdayInitials(language);
+  return initials.map((_, row) =>
+    row % 2 === 1 ? initials[(row + weekStart) % 7] : "",
+  );
+}
 
 function cellColor(cell: HeatCell, habit: Habit, today: string) {
   switch (cell.status) {
@@ -45,12 +53,14 @@ export function HeatMap({
   labels = false,
   scrollable = false,
 }: Props) {
+  const { i18n } = useTranslation();
   const today = todayKey();
+  const weekStart = weekStartOf(i18n.language);
   const scrollRef = useRef<ScrollView>(null);
 
   const cells = useMemo(
-    () => heatCells(habit, completed, weeks, today),
-    [habit, completed, weeks, today],
+    () => heatCells(habit, completed, weeks, today, weekStart),
+    [habit, completed, weeks, today, weekStart],
   );
 
   const columns = useMemo(() => {
@@ -62,8 +72,8 @@ export function HeatMap({
   }, [cells]);
 
   const months = useMemo(
-    () => (labels ? heatMonthLabels(cells) : []),
-    [cells, labels],
+    () => (labels ? heatMonthLabels(cells, i18n.language) : []),
+    [cells, labels, i18n.language],
   );
   const columnWidth = cellSize + gap;
 
@@ -109,7 +119,7 @@ export function HeatMap({
     <View style={{ flexDirection: "row" }}>
       {labels && (
         <View style={[styles.weekdayColumn, { paddingTop: 16, gap }]}>
-          {WEEKDAY_ROWS.map((label, index) => (
+          {weekdayRows(i18n.language, weekStart).map((label, index) => (
             <View
               key={index}
               style={{ height: cellSize, justifyContent: "center" }}

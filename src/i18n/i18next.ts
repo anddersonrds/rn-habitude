@@ -54,6 +54,10 @@ export function getLanguagePreference(): string {
   return LOCALES.some((locale) => locale.tag === stored) ? stored : DEVICE;
 }
 
+export function weekStartOf(tag: string): 0 | 1 {
+  return LOCALES.find((locale) => locale.tag === tag)?.weekStart ?? 0;
+}
+
 export function setLanguage(tag: string): void {
   setSetting(LANGUAGE_SETTING, tag);
   void changeLanguage(tag === DEVICE ? resolveFromDevice() : tag);

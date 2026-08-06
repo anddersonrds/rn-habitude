@@ -1,4 +1,5 @@
 import { HeatMap } from "@/components/HeatMap";
+import i18n from "@/i18n/i18next";
 import { makeHabit } from "@/test-utils/factories";
 import { renderWithProviders } from "@/test-utils/render";
 import { freezeClock, restoreClock } from "@/test-utils/time";
@@ -45,7 +46,10 @@ function labelPositions(container: TestInstance) {
     }));
 }
 
-beforeEach(() => freezeClock(TODAY));
+beforeEach(async () => {
+  await i18n.changeLanguage("en");
+  freezeClock(TODAY);
+});
 afterEach(restoreClock);
 
 describe("HeatMap", () => {
@@ -202,6 +206,33 @@ describe("HeatMap", () => {
     expect(getByText("M")).toBeOnTheScreen();
     expect(getByText("W")).toBeOnTheScreen();
     expect(getByText("F")).toBeOnTheScreen();
+  });
+
+  it("should name the months in the app's language", async () => {
+    await i18n.changeLanguage("fr");
+
+    const { container } = await renderWithProviders(
+      <HeatMap habit={habit} completed={undefined} weeks={6} labels scrollable />,
+    );
+
+    expect(labelPositions(container)).toEqual([
+      { label: "juin", left: 0 },
+      { label: "juil.", left: 28 },
+    ]);
+  });
+
+  it("should begin the columns on the day the app's language starts the week on", async () => {
+    await i18n.changeLanguage("fr");
+
+    const { getByText, queryByText } = await renderWithProviders(
+      <HeatMap habit={habit} completed={undefined} weeks={6} labels scrollable />,
+    );
+
+    expect(getByText("J")).toBeOnTheScreen();
+    expect(getByText("S")).toBeOnTheScreen();
+    /* Sunday-start French would name lundi and vendredi instead. */
+    expect(queryByText("L")).toBeNull();
+    expect(queryByText("V")).toBeNull();
   });
 
   it("should leave the weekday rows off a grid that does not scroll", async () => {

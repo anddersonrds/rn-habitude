@@ -1,5 +1,6 @@
 import { EmptyState } from "@/components/EmptyState";
 import { useHabitsModel } from "@/components/screens/habits/useHabitsModel";
+import { formatCount } from "@/lib/numbers";
 import type { Habit } from "@/lib/types";
 import {
   Button,
@@ -194,7 +195,7 @@ function HabitRow({
  * offers a drag it cannot finish.
  */
 export function HabitsScreen() {
-  const { t } = useTranslation(["habits", "common"]);
+  const { t, i18n } = useTranslation(["habits", "common"]);
   const {
     rows,
     hasHabits,
@@ -287,7 +288,7 @@ export function HabitsScreen() {
                     }),
                   ]}
                 >
-                  {`${bestStreak}`}
+                  {formatCount(bestStreak, i18n.language)}
                 </Text>
                 <Text
                   modifiers={[
@@ -305,7 +306,7 @@ export function HabitsScreen() {
                     font({ design: "rounded", textStyle: "headline" }),
                   ]}
                 >
-                  {`${totalCheckIns}`}
+                  {formatCount(totalCheckIns, i18n.language)}
                 </Text>
                 <Text
                   modifiers={[

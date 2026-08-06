@@ -1,6 +1,7 @@
 import HabitHistoryScreen from "@/app/habit-history";
 import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
+import fr from "@/i18n/locales/fr";
 import ptBR from "@/i18n/locales/pt-BR";
 import {
   completeHabit,
@@ -381,6 +382,21 @@ describe("the summary", () => {
     /* Three days out of the two hundred and ten since New Year. Over the last
     thirty alone it would read 3%. */
     expect(statBlock(getByText(history.yearRate))).toEqual(["1%", history.yearRate]);
+  });
+
+  it("should punctuate the rate the way the app's language punctuates it", async () => {
+    const habit = seedHabit(
+      {},
+      { createdAt: "2026-07-26", completions: ["2026-07-26", YESTERDAY] },
+    );
+    await i18n.changeLanguage("fr");
+
+    const { getByText } = await renderHistory(habit.id);
+
+    const inFrench = fr.translations.history;
+    const [rate] = statBlock(getByText(inFrench.yearRate));
+    expect(rate).not.toBe("50%");
+    expect(rate.replace(/\s/g, "")).toBe("50%");
   });
 
   it("should start a habit with no history at zero rather than blank", async () => {

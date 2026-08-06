@@ -1,4 +1,5 @@
 import { useSettingsModel } from "@/components/screens/settings/useSettingsModel";
+import { formatCount } from "@/lib/numbers";
 import { accent, colors } from "@/theme/colors";
 import {
   Button,
@@ -60,7 +61,7 @@ function SettingsButton({
 }
 
 export default function SettingsScreen() {
-  const { t } = useTranslation(["settings", "language"]);
+  const { t, i18n } = useTranslation(["settings", "language"]);
   const {
     permissionLabel,
     permissionColor,
@@ -182,7 +183,7 @@ export default function SettingsScreen() {
               <SettingsLabel label={t("habits")} systemImage="list.bullet" />
             }
           >
-            <Text modifiers={[font({ design: "rounded" })]}>{`${habitCount}`}</Text>
+            <Text modifiers={[font({ design: "rounded" })]}>{formatCount(habitCount, i18n.language)}</Text>
           </LabeledContent>
           <LabeledContent
             label={
@@ -192,7 +193,7 @@ export default function SettingsScreen() {
               />
             }
           >
-            <Text modifiers={[font({ design: "rounded" })]}>{`${totalCheckIns}`}</Text>
+            <Text modifiers={[font({ design: "rounded" })]}>{formatCount(totalCheckIns, i18n.language)}</Text>
           </LabeledContent>
           <LabeledContent
             label={

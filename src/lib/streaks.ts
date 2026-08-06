@@ -1,4 +1,10 @@
-import { addDays, parseKey, todayKey, weekdayOf } from "./dates";
+import {
+  addDays,
+  formatMonthShort,
+  parseKey,
+  todayKey,
+  weekdayOf,
+} from "./dates";
 import { isScheduledOn, type Habit } from "./types";
 
 export type Streaks = { current: number; best: number };
@@ -50,20 +56,22 @@ export type HeatCell = {
   date: string;
   /** Column (week) index, 0 = oldest week. */
   week: number;
-  /** Row index, 0 = Sunday … 6 = Saturday. */
+  /** Row index, 0 = the day the week starts on … 6 = the day it ends on. */
   weekday: number;
   status: HeatCellStatus;
 };
 
 /**
  * GitHub-style heat grid: `weeks` columns of 7 rows ending at `endDate`'s week.
- * Days before the habit existed or after today are "empty".
+ * Days before the habit existed or after today are "empty". `weekStart` is the
+ * day the columns begin on, 0 for Sunday.
  */
 export function heatCells(
   habit: Habit,
   completed: Record<string, true> | undefined,
   weeks: number,
   endDate: string = todayKey(),
+  weekStart = 0,
 ): HeatCell[] {
   const done = completed ?? {};
 
@@ -72,8 +80,9 @@ export function heatCells(
     if (key < firstTracked) firstTracked = key;
   }
 
-  // The last column is the week containing endDate; the grid ends on its Saturday.
-  const gridEnd = addDays(endDate, 6 - weekdayOf(endDate));
+  // The last column is the week containing endDate; the grid ends on its last day.
+  const dayInWeek = (weekdayOf(endDate) - weekStart + 7) % 7;
+  const gridEnd = addDays(endDate, 6 - dayInWeek);
   const gridStart = addDays(gridEnd, -(weeks * 7 - 1));
 
   const cells: HeatCell[] = [];
@@ -98,6 +107,7 @@ export function heatCells(
 /** Month labels for heat grid columns: [{ week, label }] at month starts. */
 export function heatMonthLabels(
   cells: HeatCell[],
+  language: string,
 ): { week: number; label: string }[] {
   const labels: { week: number; label: string }[] = [];
   let lastMonth = -1;
@@ -108,9 +118,7 @@ export function heatMonthLabels(
       if (lastMonth !== -1 || cells[0].weekday === 0) {
         labels.push({
           week: cell.week,
-          label: parseKey(cell.date).toLocaleDateString(undefined, {
-            month: "short",
-          }),
+          label: formatMonthShort(cell.date, language),
         });
       }
       lastMonth = month;

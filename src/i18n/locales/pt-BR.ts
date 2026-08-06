@@ -4,6 +4,7 @@ const ptBR: Locale = {
   tag: "pt-BR",
   label: "Português (Brasil)",
   matches: ["pt"],
+  weekStart: 0,
   translations: {
     common: {
       cancel: "Cancelar",
@@ -70,9 +71,11 @@ const ptBR: Locale = {
       restDay: "Aproveite o dia de descanso. Suas sequências estão seguras.",
       allDone: "Tudo feito",
       progress_one: "{{done}} de {{count}} concluído",
+      progress_many: "{{done}} de {{count}} concluídos",
       progress_other: "{{done}} de {{count}} concluídos",
       progressLabel: "Progresso de hoje",
       progressValue_one: "{{done}} de {{count}} hábito concluído",
+      progressValue_many: "{{done}} de {{count}} hábitos concluídos",
       progressValue_other: "{{done}} de {{count}} hábitos concluídos",
       checkInSection: "Registrar",
       checkInFooter:
@@ -81,6 +84,7 @@ const ptBR: Locale = {
       undo: "Desfazer",
       history: "Histórico",
       streak_one: "Sequência de {{count}} dia",
+      streak_many: "Sequência de {{count}} dias",
       streak_other: "Sequência de {{count}} dias",
       celebrationTitle: "Dia completo",
       celebrationBody: "Todos os hábitos registrados. Até amanhã.",
@@ -89,6 +93,7 @@ const ptBR: Locale = {
       emptyDescription:
         "Os hábitos que você criar aparecem aqui com suas sequências e histórico.",
       count_one: "{{count}} hábito",
+      count_many: "{{count}} hábitos",
       count_other: "{{count}} hábitos",
       longestStreak: "maior sequência ativa",
       checkIns: "registros",
@@ -104,9 +109,12 @@ const ptBR: Locale = {
       rowLabel: "{{name}}, {{schedule}}",
       rowLabelWithStreak_one:
         "{{name}}, {{schedule}}, sequência de {{count}} dia",
+      rowLabelWithStreak_many:
+        "{{name}}, {{schedule}}, sequência de {{count}} dias",
       rowLabelWithStreak_other:
         "{{name}}, {{schedule}}, sequência de {{count}} dias",
       streakAndSchedule_one: "{{count}} dia  ·  {{schedule}}",
+      streakAndSchedule_many: "{{count}} dias  ·  {{schedule}}",
       streakAndSchedule_other: "{{count}} dias  ·  {{schedule}}",
       open: "Abrir",
     },
@@ -149,6 +157,7 @@ const ptBR: Locale = {
       restDay: "Sua sequência está segura nos dias de descanso.",
       currentStreak: "SEQUÊNCIA ATUAL",
       day_one: "dia",
+      day_many: "dias",
       day_other: "dias",
       bestStreak: "Maior sequência",
       monthRate: "Taxa de 30 dias",

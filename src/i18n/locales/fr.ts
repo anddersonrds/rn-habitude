@@ -4,6 +4,7 @@ const fr: Locale = {
   tag: "fr",
   label: "Français",
   matches: ["fr"],
+  weekStart: 1,
   translations: {
     common: {
       cancel: "Annuler",
@@ -71,9 +72,11 @@ const fr: Locale = {
       restDay: "Profitez du jour de repos. Vos séries sont préservées.",
       allDone: "Tout est fait",
       progress_one: "{{done}} sur {{count}} terminée",
+      progress_many: "{{done}} sur {{count}} terminées",
       progress_other: "{{done}} sur {{count}} terminées",
       progressLabel: "Progression du jour",
       progressValue_one: "{{done}} habitude sur {{count}} terminée",
+      progressValue_many: "{{done}} habitudes sur {{count}} terminées",
       progressValue_other: "{{done}} habitudes sur {{count}} terminées",
       checkInSection: "Suivi",
       checkInFooter:
@@ -82,6 +85,7 @@ const fr: Locale = {
       undo: "Annuler",
       history: "Historique",
       streak_one: "Série de {{count}} jour",
+      streak_many: "Série de {{count}} jours",
       streak_other: "Série de {{count}} jours",
       celebrationTitle: "Journée complète",
       celebrationBody: "Toutes les habitudes sont validées. À demain.",
@@ -90,6 +94,7 @@ const fr: Locale = {
       emptyDescription:
         "Les habitudes que vous créez apparaissent ici avec leurs séries et leur historique.",
       count_one: "{{count}} habitude",
+      count_many: "{{count}} habitudes",
       count_other: "{{count}} habitudes",
       longestStreak: "plus longue série en cours",
       checkIns: "suivis",
@@ -104,9 +109,12 @@ const fr: Locale = {
         "Ouvre l'historique de l'habitude. Appui long pour plus d'actions.",
       rowLabel: "{{name}}, {{schedule}}",
       rowLabelWithStreak_one: "{{name}}, {{schedule}}, série de {{count}} jour",
+      rowLabelWithStreak_many:
+        "{{name}}, {{schedule}}, série de {{count}} jours",
       rowLabelWithStreak_other:
         "{{name}}, {{schedule}}, série de {{count}} jours",
       streakAndSchedule_one: "{{count}} jour  ·  {{schedule}}",
+      streakAndSchedule_many: "{{count}} jours  ·  {{schedule}}",
       streakAndSchedule_other: "{{count}} jours  ·  {{schedule}}",
       open: "Ouvrir",
     },
@@ -149,6 +157,7 @@ const fr: Locale = {
       restDay: "Votre série est préservée les jours de repos.",
       currentStreak: "SÉRIE EN COURS",
       day_one: "jour",
+      day_many: "jours",
       day_other: "jours",
       bestStreak: "Meilleure série",
       monthRate: "Taux sur 30 jours",

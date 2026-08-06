@@ -72,13 +72,13 @@ type Loaded = {
 };
 
 /** Loads the hook and every boundary it talks to into one fresh registry. */
-function load(): Loaded {
+function load(language = "en"): Loaded {
   jest.resetModules();
   const { Alert } = require("react-native") as typeof import("react-native");
   /* The hook translates, so the instance has to be the one in this registry,
   and its language pinned rather than inherited from how the device resolves. */
   const i18n = require("@/i18n/i18next") as typeof import("@/i18n/i18next");
-  void i18n.default.changeLanguage("en");
+  void i18n.default.changeLanguage(language);
   return {
     store: require("@/lib/store"),
     useTodayModel: require("@/components/screens/today/useTodayModel")
@@ -107,9 +107,12 @@ function input(overrides: Partial<HabitInput> = {}): HabitInput {
 }
 
 /** Renders the hook over a database seeded before its first render. */
-async function renderModel(seed: (store: StoreModule) => void = () => {}) {
+async function renderModel(
+  seed: (store: StoreModule) => void = () => {},
+  language?: string,
+) {
   resetDatabase();
-  const loaded = load();
+  const loaded = load(language);
   seed(loaded.store);
   await settle();
 
@@ -137,6 +140,23 @@ describe("the day being shown", () => {
     const { result, unmount } = await renderModel();
 
     expect(result.current.dateLabel).toBe("Wednesday, July 29");
+    await unmount();
+  });
+
+  it("should name them in the language the app is in, not the device's", async () => {
+    const { result, unmount } = await renderModel(() => {}, "fr");
+
+    expect(result.current.dateLabel).toBe("mercredi 29 juillet");
+    await unmount();
+  });
+
+  it("should give the reminder time on the app's clock too", async () => {
+    const { result, unmount } = await renderModel(
+      (store) => store.createHabit(input({ reminderTime: "13:30" })),
+      "fr",
+    );
+
+    expect(result.current.items[0].subtitle).toBe("13:30");
     await unmount();
   });
 });

@@ -1,11 +1,13 @@
 import type { Locale } from "@/i18n/types";
 
 /* Korean has one plural category, so only `_other` is ever selected. The `_one`
-forms are kept identical because the source's keys are the contract. */
+and `_many` forms are kept identical because the source's keys are the
+contract. */
 const ko: Locale = {
   tag: "ko",
   label: "한국어",
   matches: ["ko"],
+  weekStart: 0,
   translations: {
     common: {
       cancel: "취소",
@@ -69,9 +71,11 @@ const ko: Locale = {
       restDay: "쉬는 날을 즐기세요. 연속 기록은 그대로입니다.",
       allDone: "모두 완료",
       progress_one: "{{count}}개 중 {{done}}개 완료",
+      progress_many: "{{count}}개 중 {{done}}개 완료",
       progress_other: "{{count}}개 중 {{done}}개 완료",
       progressLabel: "오늘의 진행",
       progressValue_one: "습관 {{count}}개 중 {{done}}개 완료",
+      progressValue_many: "습관 {{count}}개 중 {{done}}개 완료",
       progressValue_other: "습관 {{count}}개 중 {{done}}개 완료",
       checkInSection: "기록",
       checkInFooter:
@@ -80,6 +84,7 @@ const ko: Locale = {
       undo: "실행 취소",
       history: "기록",
       streak_one: "{{count}}일 연속",
+      streak_many: "{{count}}일 연속",
       streak_other: "{{count}}일 연속",
       celebrationTitle: "오늘 완료",
       celebrationBody: "모든 습관을 기록했습니다. 내일 만나요.",
@@ -88,6 +93,7 @@ const ko: Locale = {
       emptyDescription:
         "만든 습관이 연속 기록과 함께 여기에 나타납니다.",
       count_one: "습관 {{count}}개",
+      count_many: "습관 {{count}}개",
       count_other: "습관 {{count}}개",
       longestStreak: "가장 긴 연속 기록",
       checkIns: "기록",
@@ -100,8 +106,10 @@ const ko: Locale = {
       idleHint: "습관 기록을 엽니다. 길게 누르면 더 많은 동작이 있습니다.",
       rowLabel: "{{name}}, {{schedule}}",
       rowLabelWithStreak_one: "{{name}}, {{schedule}}, {{count}}일 연속",
+      rowLabelWithStreak_many: "{{name}}, {{schedule}}, {{count}}일 연속",
       rowLabelWithStreak_other: "{{name}}, {{schedule}}, {{count}}일 연속",
       streakAndSchedule_one: "{{count}}일  ·  {{schedule}}",
+      streakAndSchedule_many: "{{count}}일  ·  {{schedule}}",
       streakAndSchedule_other: "{{count}}일  ·  {{schedule}}",
       open: "열기",
     },
@@ -144,6 +152,7 @@ const ko: Locale = {
       restDay: "쉬는 날에는 연속 기록이 끊기지 않습니다.",
       currentStreak: "현재 연속 기록",
       day_one: "일",
+      day_many: "일",
       day_other: "일",
       bestStreak: "최고 기록",
       monthRate: "30일 달성률",
