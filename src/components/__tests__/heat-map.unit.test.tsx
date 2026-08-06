@@ -209,8 +209,6 @@ describe("HeatMap", () => {
   });
 
   it("should name the months in the app's language", async () => {
-    /* The runner is pinned to `en_US`, so French labels can only have come
-    from the language the app is set to. */
     await i18n.changeLanguage("fr");
 
     const { container } = await renderWithProviders(
@@ -224,8 +222,6 @@ describe("HeatMap", () => {
   });
 
   it("should begin the columns on the day the app's language starts the week on", async () => {
-    /* French starts on Monday, so the same six weeks cover different days and
-    the initials down the side begin one row later. */
     await i18n.changeLanguage("fr");
 
     const { getByText, queryByText } = await renderWithProviders(

@@ -144,8 +144,6 @@ describe("the day being shown", () => {
   });
 
   it("should name them in the language the app is in, not the device's", async () => {
-    /* The runner is pinned to `en_US`, so a French date can only have come
-    from the language the app is set to. */
     const { result, unmount } = await renderModel(() => {}, "fr");
 
     expect(result.current.dateLabel).toBe("mercredi 29 juillet");

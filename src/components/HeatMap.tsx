@@ -19,8 +19,7 @@ type Props = {
   scrollable?: boolean;
 };
 
-/* Every other row is named, so seven initials never crowd the column. The
-initials are indexed from Sunday, and the rows begin where the week does. */
+/* Every other row is named, so seven initials never crowd the column. */
 function weekdayRows(language: string, weekStart: number): string[] {
   const initials = weekdayInitials(language);
   return initials.map((_, row) =>

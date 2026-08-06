@@ -14,7 +14,6 @@ type Namespace = Record<string, string>;
 
 const SOURCE = en.translations as Record<string, Namespace>;
 
-/** Every catalog the app ships, as `[tag, translations]`. */
 const CATALOGS = LOCALES.map(
   (locale) => [locale.tag, locale.translations as Record<string, Namespace>] as const,
 );
@@ -25,7 +24,6 @@ const TRANSLATIONS = CATALOGS.filter(([tag]) => tag !== en.tag);
 /** Counts wide enough to reach every category any shipped language selects. */
 const COUNTS = [0, 1, 2, 5, 21, 100, 1_000_000];
 
-/** What a count key's other placeholders are given while it is resolved. */
 const INTERPOLATED: Record<string, string> = {
   done: "3",
   name: "Read",
@@ -57,12 +55,10 @@ function pluralBase(key: string): string | null {
   return match ? match[1] : null;
 }
 
-/** The category of a plural key, e.g. `"other"` for `day_other`. */
 function pluralCategory(key: string): string {
   return key.slice(key.lastIndexOf("_") + 1);
 }
 
-/** Every `[namespace, base]` a catalog carries a plural form for. */
 function pluralBasesIn(translations: Record<string, Namespace>): [string, string][] {
   return Object.entries(translations).flatMap(([namespace, keys]) => {
     const bases = new Set(

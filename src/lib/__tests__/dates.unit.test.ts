@@ -143,8 +143,6 @@ describe("formatTime", () => {
   });
 
   it("should follow the language it is given rather than the runner's", () => {
-    /* The runner is pinned to `en_US`, so a 24-hour clock can only have come
-    from the argument. */
     expect(formatTime("13:30", "fr")).toBe("13:30");
   });
 });

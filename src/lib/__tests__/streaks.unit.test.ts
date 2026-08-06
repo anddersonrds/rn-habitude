@@ -144,8 +144,7 @@ describe("heatCells", () => {
   });
 
   it("should keep every date a local midnight key whichever day it starts on", () => {
-    /* The one change in this milestone that could move a stored key rather
-    than a label: every one of these is read back out of the database. */
+    /* These keys are what completions are stored and read back under. */
     for (const weekStart of [0, 1]) {
       for (const cell of heatCells(habit, done, 4, TODAY, weekStart)) {
         expect(cell.date).toBe(dateKey(parseKey(cell.date)));
@@ -221,8 +220,6 @@ describe("heatMonthLabels", () => {
   });
 
   it("should abbreviate the month in the language it is given", () => {
-    /* The runner is pinned to `en_US`, so a French month can only have come
-    from the argument. */
     const cells = heatCells(habit, undefined, 8, "2027-01-06");
     expect(heatMonthLabels(cells, "fr").map((entry) => entry.label)).toEqual([
       "nov.",

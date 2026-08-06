@@ -169,8 +169,6 @@ describe("the habit being shown", () => {
   });
 
   it("should give the reminder time on the app's clock, not the device's", async () => {
-    /* The runner is pinned to `en_US`, so a 24-hour time can only have come
-    from the language the app is in. */
     const habit = seedHabit({ reminderTime: "13:30" });
     await i18n.changeLanguage("fr");
 

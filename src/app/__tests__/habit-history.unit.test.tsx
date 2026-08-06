@@ -385,8 +385,6 @@ describe("the summary", () => {
   });
 
   it("should punctuate the rate the way the app's language punctuates it", async () => {
-    /* French writes a space before the sign and English does not, and the
-    runner is pinned to `en_US`, so the space can only be the app's doing. */
     const habit = seedHabit(
       {},
       { createdAt: "2026-07-26", completions: ["2026-07-26", YESTERDAY] },
