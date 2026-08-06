@@ -1,3 +1,3 @@
-import { TodayScreen } from "@/components/screens/today";
+import { TodayScreen } from "@/features/today";
 
 export default TodayScreen;
