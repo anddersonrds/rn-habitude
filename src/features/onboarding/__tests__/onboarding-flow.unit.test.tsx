@@ -1,5 +1,5 @@
-import { OnboardingFlow } from "@/components/onboarding";
-import { STEP_COUNT } from "@/components/onboarding/hooks/use-onboarding-model";
+import { OnboardingFlow } from "@/features/onboarding";
+import { STEP_COUNT } from "@/features/onboarding/hooks/use-onboarding-model";
 import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
 import ptBR from "@/i18n/locales/pt-br";
