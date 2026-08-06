@@ -8,18 +8,10 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
+import type { HabitRowModel } from "./types";
 
 /** Days of history shown in each row's inline heat strip. */
 export const STRIP_DAYS = 21;
-
-export type HabitRowModel = {
-  habit: Habit;
-  /** One entry per day of the strip, oldest first. */
-  states: number[];
-  streak: number;
-  /** "Every day", or the weekdays the habit runs on. */
-  schedule: string;
-};
 
 /**
  * View model for the habits list: the rows, the totals above them, and every

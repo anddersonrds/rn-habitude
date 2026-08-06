@@ -1,5 +1,4 @@
 import { EmptyState } from "@/components/empty-state";
-import { useHabitsModel } from "@/components/screens/habits/useHabitsModel";
 import { formatCount } from "@/lib/numbers";
 import type { Habit } from "@/lib/types";
 import {
@@ -33,9 +32,11 @@ import {
   shapes,
   tag,
 } from "@expo/ui/swift-ui/modifiers";
-import { Color, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, useColorScheme, View } from "react-native";
+import { useColorScheme, View } from "react-native";
+import { useHabitsModel } from "./hooks/use-habits-model";
+import { styles } from "./styles";
 
 const EDIT_ANIMATION = Animation.spring({ duration: 0.35, bounce: 0.06 });
 const LIST_CHANGE_ANIMATION = Animation.easeInOut({ duration: 0.22 });
@@ -346,14 +347,3 @@ export function HabitsScreen() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  host: {
-    flex: 1,
-    backgroundColor: Color.ios.systemGroupedBackground,
-  },
-  empty: {
-    flex: 1,
-    backgroundColor: Color.ios.systemGroupedBackground,
-  },
-});
