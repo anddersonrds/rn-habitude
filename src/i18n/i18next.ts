@@ -1,3 +1,16 @@
+/* Hermes has no `Intl.PluralRules`, and i18next answers a missing one with
+`count === 1 ? one : other`, for every language and without a warning. */
+import "@formatjs/intl-pluralrules/polyfill-force.js";
+/* No regional data is published; `pt-BR` and `zh-Hans` resolve through these. */
+import "@formatjs/intl-pluralrules/locale-data/de.js";
+import "@formatjs/intl-pluralrules/locale-data/en.js";
+import "@formatjs/intl-pluralrules/locale-data/es.js";
+import "@formatjs/intl-pluralrules/locale-data/fr.js";
+import "@formatjs/intl-pluralrules/locale-data/ja.js";
+import "@formatjs/intl-pluralrules/locale-data/ko.js";
+import "@formatjs/intl-pluralrules/locale-data/pt.js";
+import "@formatjs/intl-pluralrules/locale-data/zh.js";
+
 import de from "@/i18n/locales/de";
 import en from "@/i18n/locales/en";
 import es from "@/i18n/locales/es";
