@@ -1,4 +1,4 @@
-import HabitHistoryScreen from "@/app/habit-history";
+import { HabitHistoryScreen } from "@/features/habit-history";
 import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
 import fr from "@/i18n/locales/fr";
