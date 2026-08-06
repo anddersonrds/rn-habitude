@@ -44,18 +44,26 @@ module.exports = {
     "!src/app/\\(tabs\\)/\\(today\\)/index.tsx",
     "!src/app/\\(tabs\\)/habits/index.tsx",
     "!src/app/\\(tabs\\)/settings/index.tsx",
+    "!src/app/habit-history.tsx",
+    "!src/app/habit/\\[id\\].tsx",
   ],
   /* Each threshold is switched on by the work that covers its scope. */
   coverageThreshold: {
     global: { statements: 70 },
     "./src/lib/": { statements: 90, branches: 85 },
     "./src/i18n/": { statements: 90, branches: 85 },
-    "./src/components/screens/**/use*.ts": { statements: 90, branches: 85 },
+    "./src/features/**/hooks/**/use-*.ts": { statements: 90, branches: 85 },
     /*
-    Now that every screen is covered, the two roots replace the paths that were
+    Now that every screen is covered, the roots replace the paths that were
     named one at a time while the SwiftUI screens were still uncovered.
+    The 60 that `./src/app/` carried moved to `./src/features/` with the screens
+    that earned it. What is left under `./src/app/` is five `_layout.tsx` files
+    and the re-exports above, and a layout mounts a native navigator the runner
+    cannot render - so the tier stays named, at what it actually measures,
+    rather than being deleted and letting those files sink into `global`.
     */
     "./src/components/": { statements: 60 },
-    "./src/app/": { statements: 60 },
+    "./src/features/": { statements: 60 },
+    "./src/app/": { statements: 0 },
   },
 };
