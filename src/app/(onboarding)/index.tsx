@@ -1,3 +1,3 @@
-import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
+import { OnboardingFlow } from "@/components/onboarding";
 
 export default OnboardingFlow;

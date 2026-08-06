@@ -8,20 +8,14 @@ import type * as Notifications from "expo-notifications";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useReducedMotion } from "react-native-reanimated";
-
-export type OnboardingStep = {
-  id: (typeof STEP_KEYS)[number]["id"];
-  title: string;
-  description: string;
-  cta: string;
-};
+import type { OnboardingStep } from "./types";
 
 /**
  * The steps as keys rather than as copy. The strings are looked up per render:
  * a module-scope constant would freeze whatever language was active at import
  * and never follow a switch.
  */
-const STEP_KEYS = [
+export const STEP_KEYS = [
   {
     id: "welcome",
     title: "welcomeTitle",

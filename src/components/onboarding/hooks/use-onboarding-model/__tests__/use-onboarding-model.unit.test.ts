@@ -74,7 +74,7 @@ const REFUSED = permissionState(false, true);
 const REFUSED_FOR_GOOD = permissionState(false, false);
 
 type StoreModule = typeof import("@/lib/store");
-type ModelModule = typeof import("@/components/onboarding/useOnboardingModel");
+type ModelModule = typeof import("@/components/onboarding/hooks/use-onboarding-model");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 
 /** Loads the hook and the store it finishes onboarding through together. */
@@ -87,7 +87,7 @@ function load() {
   return {
     store: require("@/lib/store") as StoreModule,
     useOnboardingModel: (
-      require("@/components/onboarding/useOnboardingModel") as ModelModule
+      require("@/components/onboarding/hooks/use-onboarding-model") as ModelModule
     ).useOnboardingModel,
     testingLibrary: require("@testing-library/react-native/pure") as TestingLibrary,
   };
@@ -147,7 +147,7 @@ describe("the step being shown", () => {
   it("should count the steps there are rather than a number of its own", async () => {
     const { result, unmount } = await renderModel();
     const { STEP_COUNT } =
-      require("@/components/onboarding/useOnboardingModel") as ModelModule;
+      require("@/components/onboarding/hooks/use-onboarding-model") as ModelModule;
 
     expect(result.current.stepCount).toBe(STEP_COUNT);
     await unmount();
