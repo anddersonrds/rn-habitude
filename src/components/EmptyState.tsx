@@ -1,4 +1,4 @@
-import { Text } from "@/components/ui/Text";
+import { Text } from "@/components/ui/text";
 import { layout } from "@/constants/layout";
 import { accent, foregroundOnColor } from "@/theme/colors";
 import { SymbolView, type SFSymbol } from "expo-symbols";

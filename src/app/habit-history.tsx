@@ -1,5 +1,5 @@
 import { HeatMap } from "@/components/HeatMap";
-import { Text } from "@/components/ui/Text";
+import { Text } from "@/components/ui/text";
 import { layout } from "@/constants/layout";
 import { todayKey } from "@/lib/dates";
 import { useAppState } from "@/lib/store";

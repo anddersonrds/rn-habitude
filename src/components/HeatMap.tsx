@@ -1,4 +1,4 @@
-import { Text } from "@/components/ui/Text";
+import { Text } from "@/components/ui/text";
 import { weekStartOf } from "@/i18n/i18next";
 import { todayKey, weekdayInitials } from "@/lib/dates";
 import { heatCells, heatMonthLabels, type HeatCell } from "@/lib/streaks";

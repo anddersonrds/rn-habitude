@@ -1,4 +1,4 @@
-import { appFontFamily, Text } from "@/components/ui/Text";
+import { appFontFamily, Text } from "@/components/ui/text";
 import { renderWithProviders } from "@/test-utils/render";
 import { Color } from "expo-router";
 import type { ReactElement } from "react";

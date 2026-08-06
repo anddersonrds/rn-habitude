@@ -1,5 +1,5 @@
 import { STEP_COUNT, useOnboardingModel } from "@/components/onboarding/useOnboardingModel";
-import { appFontFamily, Text } from "@/components/ui/Text";
+import { appFontFamily, Text } from "@/components/ui/text";
 import { layout } from "@/constants/layout";
 import { accent, foregroundOnColor } from "@/theme/colors";
 import { GlassView } from "expo-glass-effect";

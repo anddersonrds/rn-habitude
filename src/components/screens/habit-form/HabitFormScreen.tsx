@@ -1,5 +1,5 @@
 import { useHabitFormModel } from "@/components/screens/habit-form/useHabitFormModel";
-import { appFontFamily, Text } from "@/components/ui/Text";
+import { appFontFamily, Text } from "@/components/ui/text";
 import {
   HABIT_COLORS,
   HABIT_ICONS,

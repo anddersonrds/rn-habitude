@@ -1,4 +1,4 @@
-import { Text } from "@/components/ui/Text";
+import { Text } from "@/components/ui/text";
 import { accent, success } from "@/theme/colors";
 import { GlassView } from "expo-glass-effect";
 import { Color } from "expo-router";
