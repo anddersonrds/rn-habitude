@@ -71,9 +71,11 @@ const de: Locale = {
       restDay: "Genieß den freien Tag. Deine Serien bleiben sicher.",
       allDone: "Alles erledigt",
       progress_one: "{{done}} von {{count}} erledigt",
+      progress_many: "{{done}} von {{count}} erledigt",
       progress_other: "{{done}} von {{count}} erledigt",
       progressLabel: "Fortschritt heute",
       progressValue_one: "{{done}} von {{count}} Gewohnheit erledigt",
+      progressValue_many: "{{done}} von {{count}} Gewohnheiten erledigt",
       progressValue_other: "{{done}} von {{count}} Gewohnheiten erledigt",
       checkInSection: "Eintragen",
       checkInFooter:
@@ -82,6 +84,7 @@ const de: Locale = {
       undo: "Zurücknehmen",
       history: "Verlauf",
       streak_one: "Serie von {{count}} Tag",
+      streak_many: "Serie von {{count}} Tagen",
       streak_other: "Serie von {{count}} Tagen",
       celebrationTitle: "Tag geschafft",
       celebrationBody: "Alle Gewohnheiten eingetragen. Bis morgen.",
@@ -90,6 +93,7 @@ const de: Locale = {
       emptyDescription:
         "Gewohnheiten, die du anlegst, erscheinen hier mit Serie und Verlauf.",
       count_one: "{{count}} Gewohnheit",
+      count_many: "{{count}} Gewohnheiten",
       count_other: "{{count}} Gewohnheiten",
       longestStreak: "längste laufende Serie",
       checkIns: "Einträge",
@@ -104,9 +108,12 @@ const de: Locale = {
         "Öffnet den Verlauf der Gewohnheit. Gedrückt halten für mehr Aktionen.",
       rowLabel: "{{name}}, {{schedule}}",
       rowLabelWithStreak_one: "{{name}}, {{schedule}}, Serie von {{count}} Tag",
+      rowLabelWithStreak_many:
+        "{{name}}, {{schedule}}, Serie von {{count}} Tagen",
       rowLabelWithStreak_other:
         "{{name}}, {{schedule}}, Serie von {{count}} Tagen",
       streakAndSchedule_one: "{{count}} Tag  ·  {{schedule}}",
+      streakAndSchedule_many: "{{count}} Tage  ·  {{schedule}}",
       streakAndSchedule_other: "{{count}} Tage  ·  {{schedule}}",
       open: "Öffnen",
     },
@@ -149,6 +156,7 @@ const de: Locale = {
       restDay: "An freien Tagen bleibt deine Serie sicher.",
       currentStreak: "AKTUELLE SERIE",
       day_one: "Tag",
+      day_many: "Tage",
       day_other: "Tage",
       bestStreak: "Beste Serie",
       monthRate: "Quote 30 Tage",

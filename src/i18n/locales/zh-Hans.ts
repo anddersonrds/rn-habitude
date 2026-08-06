@@ -1,7 +1,8 @@
 import type { Locale } from "@/i18n/types";
 
 /* Chinese has one plural category, so only `_other` is ever selected. The
-`_one` forms are kept identical because the source's keys are the contract.
+`_one` and `_many` forms are kept identical because the source's keys are the
+contract.
 `zh` is claimed outright, so a Traditional device lands here until a Traditional
 catalog exists. */
 const zhHans: Locale = {
@@ -70,9 +71,11 @@ const zhHans: Locale = {
       restDay: "好好休息。你的连续记录不受影响。",
       allDone: "全部完成",
       progress_one: "已完成 {{done}}/{{count}}",
+      progress_many: "已完成 {{done}}/{{count}}",
       progress_other: "已完成 {{done}}/{{count}}",
       progressLabel: "今天的进度",
       progressValue_one: "{{count}} 个习惯中已完成 {{done}} 个",
+      progressValue_many: "{{count}} 个习惯中已完成 {{done}} 个",
       progressValue_other: "{{count}} 个习惯中已完成 {{done}} 个",
       checkInSection: "打卡",
       checkInFooter: "轻点习惯即可打卡。滑动查看更多操作。",
@@ -80,6 +83,7 @@ const zhHans: Locale = {
       undo: "撤销",
       history: "记录",
       streak_one: "连续 {{count}} 天",
+      streak_many: "连续 {{count}} 天",
       streak_other: "连续 {{count}} 天",
       celebrationTitle: "今天完成",
       celebrationBody: "所有习惯都已打卡。明天见。",
@@ -87,6 +91,7 @@ const zhHans: Locale = {
     habits: {
       emptyDescription: "你创建的习惯会连同连续记录和历史显示在这里。",
       count_one: "{{count}} 个习惯",
+      count_many: "{{count}} 个习惯",
       count_other: "{{count}} 个习惯",
       longestStreak: "最长的连续记录",
       checkIns: "次打卡",
@@ -98,8 +103,10 @@ const zhHans: Locale = {
       idleHint: "打开习惯记录。长按查看更多操作。",
       rowLabel: "{{name}}，{{schedule}}",
       rowLabelWithStreak_one: "{{name}}，{{schedule}}，连续 {{count}} 天",
+      rowLabelWithStreak_many: "{{name}}，{{schedule}}，连续 {{count}} 天",
       rowLabelWithStreak_other: "{{name}}，{{schedule}}，连续 {{count}} 天",
       streakAndSchedule_one: "{{count}} 天  ·  {{schedule}}",
+      streakAndSchedule_many: "{{count}} 天  ·  {{schedule}}",
       streakAndSchedule_other: "{{count}} 天  ·  {{schedule}}",
       open: "打开",
     },
@@ -141,6 +148,7 @@ const zhHans: Locale = {
       restDay: "休息日不会中断连续记录。",
       currentStreak: "当前连续记录",
       day_one: "天",
+      day_many: "天",
       day_other: "天",
       bestStreak: "最佳记录",
       monthRate: "30 天完成率",

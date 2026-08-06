@@ -70,9 +70,11 @@ const es: Locale = {
       restDay: "Disfruta del día de descanso. Tus rachas están a salvo.",
       allDone: "Todo hecho",
       progress_one: "{{done}} de {{count}} completado",
+      progress_many: "{{done}} de {{count}} completados",
       progress_other: "{{done}} de {{count}} completados",
       progressLabel: "Progreso de hoy",
       progressValue_one: "{{done}} de {{count}} hábito completado",
+      progressValue_many: "{{done}} de {{count}} hábitos completados",
       progressValue_other: "{{done}} de {{count}} hábitos completados",
       checkInSection: "Registrar",
       checkInFooter:
@@ -81,6 +83,7 @@ const es: Locale = {
       undo: "Deshacer",
       history: "Historial",
       streak_one: "Racha de {{count}} día",
+      streak_many: "Racha de {{count}} días",
       streak_other: "Racha de {{count}} días",
       celebrationTitle: "Día completo",
       celebrationBody: "Todos los hábitos registrados. Hasta mañana.",
@@ -89,6 +92,7 @@ const es: Locale = {
       emptyDescription:
         "Los hábitos que crees aparecen aquí con sus rachas y su historial.",
       count_one: "{{count}} hábito",
+      count_many: "{{count}} hábitos",
       count_other: "{{count}} hábitos",
       longestStreak: "racha activa más larga",
       checkIns: "registros",
@@ -103,9 +107,12 @@ const es: Locale = {
         "Abre el historial del hábito. Mantén pulsado para más acciones.",
       rowLabel: "{{name}}, {{schedule}}",
       rowLabelWithStreak_one: "{{name}}, {{schedule}}, racha de {{count}} día",
+      rowLabelWithStreak_many:
+        "{{name}}, {{schedule}}, racha de {{count}} días",
       rowLabelWithStreak_other:
         "{{name}}, {{schedule}}, racha de {{count}} días",
       streakAndSchedule_one: "{{count}} día  ·  {{schedule}}",
+      streakAndSchedule_many: "{{count}} días  ·  {{schedule}}",
       streakAndSchedule_other: "{{count}} días  ·  {{schedule}}",
       open: "Abrir",
     },
@@ -148,6 +155,7 @@ const es: Locale = {
       restDay: "Tu racha está a salvo los días de descanso.",
       currentStreak: "RACHA ACTUAL",
       day_one: "día",
+      day_many: "días",
       day_other: "días",
       bestStreak: "Mejor racha",
       monthRate: "Tasa de 30 días",
