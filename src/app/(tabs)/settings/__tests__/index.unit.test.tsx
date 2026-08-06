@@ -82,17 +82,13 @@ function settingsButton(container: TestInstance, label: string): TestInstance {
   return found;
 }
 
-/** The title of every section, in the order the form drew them. */
 function sectionTitles(container: TestInstance): string[] {
   return nativeViews(container)
     .filter((node) => typeof node.props.title === "string")
     .map((node) => node.props.title as string);
 }
 
-/**
- * The label of every row that names itself with an icon, in order. A row's
- * label reaches the tree as the text inside the label's own title slot.
- */
+/** A row's label reaches the tree as the text inside its own title slot. */
 function rowLabels(container: TestInstance): string[] {
   return nativeViews(container)
     .filter((node) => node.props.name === "title")
@@ -183,12 +179,7 @@ describe("the settings screen", () => {
     ]);
   });
 
-  /*
-  The runner's config declares no version, so the model falls back to the
-  binary's. Which of the two sources wins is the model's business and its own
-  tests cover it; what this case holds is that the row draws that version rather
-  than a count or the placeholder for a bundle that never shipped.
-  */
+  /* The runner's config declares no version, so the model falls back here. */
   it("should show the version the app is running", async () => {
     const { container } = await renderSettings();
 

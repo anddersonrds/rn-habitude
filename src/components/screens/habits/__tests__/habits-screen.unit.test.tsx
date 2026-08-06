@@ -102,14 +102,12 @@ function rowNamed(container: TestInstance, name: string): TestInstance {
   return row;
 }
 
-/** The name a row leads with, which is the first line it draws. */
 function titleOf(row: TestInstance): string {
   const [first] = row.queryAll((node) => typeof node.props.text === "string");
   if (!first) throw new Error("The row draws no name.");
   return first.props.text as string;
 }
 
-/** The colour a row draws its habit's icon in. */
 function accentOf(row: TestInstance): unknown {
   const [icon] = row.queryAll(
     (node) => typeof node.props.systemName === "string",
