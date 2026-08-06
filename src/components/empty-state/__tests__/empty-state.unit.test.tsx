@@ -1,4 +1,4 @@
-import { EmptyState } from "@/components/EmptyState";
+import { EmptyState } from "@/components/empty-state";
 import { haptic } from "@/lib/haptics";
 import { symbolView, symbolViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";

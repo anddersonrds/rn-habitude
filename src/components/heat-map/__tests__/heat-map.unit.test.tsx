@@ -1,4 +1,4 @@
-import { HeatMap } from "@/components/HeatMap";
+import { HeatMap } from "@/components/heat-map";
 import i18n from "@/i18n/i18next";
 import { makeHabit } from "@/test-utils/factories";
 import { renderWithProviders } from "@/test-utils/render";

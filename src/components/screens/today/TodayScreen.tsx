@@ -1,5 +1,5 @@
-import { Celebration } from "@/components/Celebration";
-import { EmptyState } from "@/components/EmptyState";
+import { Celebration } from "@/components/celebration";
+import { EmptyState } from "@/components/empty-state";
 import { accent, success } from "@/theme/colors";
 import {
   Button,

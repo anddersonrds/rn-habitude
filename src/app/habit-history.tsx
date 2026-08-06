@@ -1,4 +1,4 @@
-import { HeatMap } from "@/components/HeatMap";
+import { HeatMap } from "@/components/heat-map";
 import { Text } from "@/components/ui/text";
 import { layout } from "@/constants/layout";
 import { todayKey } from "@/lib/dates";

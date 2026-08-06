@@ -1,4 +1,4 @@
-import { EmptyState } from "@/components/EmptyState";
+import { EmptyState } from "@/components/empty-state";
 import { useHabitsModel } from "@/components/screens/habits/useHabitsModel";
 import { formatCount } from "@/lib/numbers";
 import type { Habit } from "@/lib/types";

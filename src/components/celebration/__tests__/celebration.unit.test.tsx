@@ -1,4 +1,4 @@
-import { Celebration } from "@/components/Celebration";
+import { Celebration } from "@/components/celebration";
 import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
 import { symbolView } from "@/test-utils/native-views";
