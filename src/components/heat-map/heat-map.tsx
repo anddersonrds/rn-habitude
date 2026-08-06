@@ -6,18 +6,9 @@ import type { Habit } from "@/lib/types";
 import { Color } from "expo-router";
 import { useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, StyleSheet, View } from "react-native";
-
-type Props = {
-  habit: Habit;
-  completed: Record<string, true> | undefined;
-  weeks?: number;
-  cellSize?: number;
-  gap?: number;
-  /** Show month labels above and weekday labels on the left. */
-  labels?: boolean;
-  scrollable?: boolean;
-};
+import { ScrollView, View } from "react-native";
+import { styles } from "./styles";
+import type { Props } from "./types";
 
 /* Every other row is named, so seven initials never crowd the column. */
 function weekdayRows(language: string, weekStart: number): string[] {
@@ -144,13 +135,3 @@ export function HeatMap({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  monthRow: {
-    position: "relative",
-    height: 16,
-  },
-  weekdayColumn: {
-    marginRight: 6,
-  },
-});

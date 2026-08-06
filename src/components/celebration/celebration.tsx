@@ -1,11 +1,10 @@
 import { Text } from "@/components/ui/text";
 import { accent, success } from "@/theme/colors";
 import { GlassView } from "expo-glass-effect";
-import { Color } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, useColorScheme, View } from "react-native";
+import { useColorScheme, View } from "react-native";
 import Animated, {
   Easing,
   FadeIn,
@@ -17,12 +16,8 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-
-type Props = {
-  /** The colors of the habits completed today, so the moment is personal. */
-  colors: string[];
-  onFinished: () => void;
-};
+import { styles } from "./styles";
+import type { Props } from "./types";
 
 const SPARK_COUNT = 14;
 const DURATION_MS = 2100;
@@ -166,61 +161,3 @@ export function Celebration({ colors, onFinished }: Props) {
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 100,
-  },
-  scrim: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  center: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  spark: {
-    position: "absolute",
-    borderRadius: 6,
-  },
-  ring: {
-    position: "absolute",
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    borderWidth: 2,
-  },
-  badge: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  textBlock: {
-    marginTop: 16,
-  },
-  textCard: {
-    alignItems: "center",
-    gap: 2,
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-    borderRadius: 26,
-    borderCurve: "continuous",
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
-    shadowColor: "#000000",
-    shadowOpacity: 0.15,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 8 },
-  },
-});

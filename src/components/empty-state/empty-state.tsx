@@ -1,20 +1,11 @@
 import { Text } from "@/components/ui/text";
-import { layout } from "@/constants/layout";
 import { accent, foregroundOnColor } from "@/theme/colors";
-import { SymbolView, type SFSymbol } from "expo-symbols";
+import { SymbolView } from "expo-symbols";
 import { PressableScale } from "pressto";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
-
-type Props = {
-  symbol: SFSymbol;
-  title: string;
-  description: string;
-  actionLabel?: string;
-  onAction?: () => void;
-  /** Overrides the app accent, so a habit-scoped empty state can use its color. */
-  tint?: string;
-};
+import { styles } from "./styles";
+import type { Props } from "./types";
 
 /**
  * Every empty state in the app: a symbol, a title, a one-line description, and
@@ -64,43 +55,3 @@ export function EmptyState({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 40,
-    paddingVertical: 48,
-    gap: 8,
-  },
-  symbolSurface: {
-    width: 76,
-    height: 76,
-    borderRadius: 24,
-    borderCurve: "continuous",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  copy: {
-    alignItems: "center",
-    gap: 6,
-    marginTop: 8,
-  },
-  centered: {
-    textAlign: "center",
-  },
-  description: {
-    textAlign: "center",
-    lineHeight: 22,
-    maxWidth: 300,
-  },
-  button: {
-    minHeight: 50,
-    marginTop: 16,
-    paddingHorizontal: 24,
-    justifyContent: "center",
-    borderRadius: layout.ctaRadius,
-    borderCurve: "continuous",
-  },
-});
