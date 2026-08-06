@@ -3,6 +3,7 @@ import { Text } from "@/components/ui/Text";
 import { layout } from "@/constants/layout";
 import { todayKey } from "@/lib/dates";
 import { useAppState } from "@/lib/store";
+import { formatCount, formatPercent } from "@/lib/numbers";
 import { completionRate, computeStreaks } from "@/lib/streaks";
 import { Color, router, Stack, useLocalSearchParams } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
@@ -38,7 +39,7 @@ function Stat({ value, label }: { value: string; label: string }) {
 
 /** Full-year consistency, reached with a zoom transition from the habit card. */
 export default function HabitHistoryScreen() {
-  const { t } = useTranslation("history");
+  const { t, i18n } = useTranslation("history");
   const { id } = useLocalSearchParams<{ id: string }>();
   const state = useAppState();
   const habit = state.habits.find((candidate) => candidate.id === id);
@@ -104,11 +105,20 @@ export default function HabitHistoryScreen() {
         </View>
 
         <View style={styles.statsCard}>
-          <Stat value={`${totalDone}`} label={t("totalCheckIns")} />
+          <Stat
+            value={formatCount(totalDone, i18n.language)}
+            label={t("totalCheckIns")}
+          />
           <View style={styles.statDivider} />
-          <Stat value={`${streaks.best}`} label={t("bestStreak")} />
+          <Stat
+            value={formatCount(streaks.best, i18n.language)}
+            label={t("bestStreak")}
+          />
           <View style={styles.statDivider} />
-          <Stat value={`${Math.round(yearRate * 100)}%`} label={t("yearRate")} />
+          <Stat
+            value={formatPercent(yearRate, i18n.language)}
+            label={t("yearRate")}
+          />
         </View>
       </ScrollView>
     </>

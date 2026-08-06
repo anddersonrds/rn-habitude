@@ -4,6 +4,7 @@ import { layout } from "@/constants/layout";
 import { formatTime, todayKey, weekdayOf } from "@/lib/dates";
 import { scheduleLabel } from "@/lib/habits";
 import { haptic } from "@/lib/haptics";
+import { formatCount, formatPercent } from "@/lib/numbers";
 import { toggleCompletion, useAppState } from "@/lib/store";
 import { completionRate, computeStreaks } from "@/lib/streaks";
 import { isScheduledOn } from "@/lib/types";
@@ -182,7 +183,7 @@ export default function HabitDetailScreen() {
             </Text>
             <View style={styles.featuredValue}>
               <Text variant="title" style={styles.statNumber}>
-                {streaks.current}
+                {formatCount(streaks.current, i18n.language)}
               </Text>
               <Text variant="footnote" secondary>
                 {t("day", { count: streaks.current })}
@@ -194,14 +195,14 @@ export default function HabitDetailScreen() {
             <SecondaryStat
               symbol="trophy.fill"
               color="#FFCC00"
-              value={`${streaks.best}`}
+              value={formatCount(streaks.best, i18n.language)}
               label={t("bestStreak")}
             />
             <View style={styles.secondaryDivider} />
             <SecondaryStat
               symbol="chart.bar.fill"
               color="#007AFF"
-              value={`${Math.round(rate * 100)}%`}
+              value={formatPercent(rate, i18n.language)}
               label={t("monthRate")}
             />
           </View>
