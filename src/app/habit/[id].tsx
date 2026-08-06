@@ -41,7 +41,7 @@ function SecondaryStat({
 }
 
 export default function HabitDetailScreen() {
-  const { t } = useTranslation("habitDetail");
+  const { t, i18n } = useTranslation("habitDetail");
   const { t: tSchedule } = useTranslation("schedule");
   const { id } = useLocalSearchParams<{ id: string }>();
   const state = useAppState();
@@ -62,7 +62,7 @@ export default function HabitDetailScreen() {
 
   const subtitle = [
     scheduleLabel(habit, tSchedule),
-    habit.reminderTime ? formatTime(habit.reminderTime) : null,
+    habit.reminderTime ? formatTime(habit.reminderTime, i18n.language) : null,
   ]
     .filter(Boolean)
     .join("  ·  ");

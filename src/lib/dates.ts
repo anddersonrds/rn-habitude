@@ -28,18 +28,22 @@ export function weekdayOf(key: string): number {
   return parseKey(key).getDay();
 }
 
-export function formatTime(hhmm: string): string {
+/* The language is passed in rather than resolved here. Left undefined these
+would follow the device, which is a different language from the app's whenever
+the picker has been used, and this module imports nothing from `src/i18n/`. */
+
+export function formatTime(hhmm: string, language: string): string {
   const [hours, minutes] = hhmm.split(":").map(Number);
   const date = new Date();
   date.setHours(hours, minutes, 0, 0);
-  return date.toLocaleTimeString(undefined, {
+  return date.toLocaleTimeString(language, {
     hour: "numeric",
     minute: "2-digit",
   });
 }
 
-export function formatFullDate(key: string): string {
-  return parseKey(key).toLocaleDateString(undefined, {
+export function formatFullDate(key: string, language: string): string {
+  return parseKey(key).toLocaleDateString(language, {
     weekday: "long",
     month: "long",
     day: "numeric",

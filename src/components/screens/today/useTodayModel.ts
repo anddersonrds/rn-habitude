@@ -1,4 +1,4 @@
-import { formatTime, todayKey, weekdayOf } from "@/lib/dates";
+import { formatFullDate, formatTime, todayKey, weekdayOf } from "@/lib/dates";
 import { haptic } from "@/lib/haptics";
 import { deleteHabit, toggleCompletion, useAppState } from "@/lib/store";
 import { computeStreaks } from "@/lib/streaks";
@@ -21,17 +21,13 @@ export type TodayItem = {
  * the SwiftUI view stays a thin render layer.
  */
 export function useTodayModel() {
-  const { t } = useTranslation(["today", "common"]);
+  const { t, i18n } = useTranslation(["today", "common"]);
   const state = useAppState();
   const [celebrating, setCelebrating] = useState(false);
 
   const today = todayKey();
   const weekday = weekdayOf(today);
-  const dateLabel = new Date().toLocaleDateString(undefined, {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
+  const dateLabel = formatFullDate(today, i18n.language);
 
   const todayHabits = state.habits.filter(
     (habit) => isScheduledOn(habit, weekday) && habit.createdAt <= today,
@@ -43,7 +39,7 @@ export function useTodayModel() {
       .current;
     const subtitle = [
       streak > 0 ? t("streak", { count: streak }) : null,
-      habit.reminderTime ? formatTime(habit.reminderTime) : null,
+      habit.reminderTime ? formatTime(habit.reminderTime, i18n.language) : null,
     ]
       .filter(Boolean)
       .join("  ·  ");

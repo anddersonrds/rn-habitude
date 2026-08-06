@@ -128,25 +128,36 @@ describe("weekdayOf", () => {
 });
 
 describe("formatTime", () => {
-  it("should format an afternoon time in the locale the suite fixes", () => {
-    expect(formatTime("13:30")).toBe("1:30 PM");
+  it("should format an afternoon time in English", () => {
+    expect(formatTime("13:30", "en")).toBe("1:30 PM");
   });
 
   it("should format midnight as 12 AM rather than 0", () => {
-    expect(formatTime("00:00")).toBe("12:00 AM");
+    expect(formatTime("00:00", "en")).toBe("12:00 AM");
   });
 
   it("should zero-pad the minutes and leave the hour unpadded", () => {
-    expect(formatTime("09:05")).toBe("9:05 AM");
+    expect(formatTime("09:05", "en")).toBe("9:05 AM");
+  });
+
+  it("should follow the language it is given rather than the runner's", () => {
+    /* The runner is pinned to `en_US`, so a 24-hour clock can only have come
+    from the argument. */
+    expect(formatTime("13:30", "fr")).toBe("13:30");
   });
 });
 
 describe("formatFullDate", () => {
   it("should format a key with its weekday, month and day", () => {
-    expect(formatFullDate("2026-07-29")).toBe("Wednesday, July 29");
+    expect(formatFullDate("2026-07-29", "en")).toBe("Wednesday, July 29");
   });
 
   it("should not pad a single-digit day", () => {
-    expect(formatFullDate("2026-01-05")).toBe("Monday, January 5");
+    expect(formatFullDate("2026-01-05", "en")).toBe("Monday, January 5");
+  });
+
+  it("should follow the language it is given rather than the runner's", () => {
+    expect(formatFullDate("2026-07-29", "fr")).toBe("mercredi 29 juillet");
+    expect(formatFullDate("2026-07-29", "ja")).toBe("7月29日水曜日");
   });
 });
