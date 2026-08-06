@@ -138,10 +138,13 @@ afterEach(() => {
 });
 
 describe("the form a new habit opens on", () => {
-  it("should render the whole form", async () => {
-    const { toJSON } = await renderForm();
+  it("should open on an empty name, every day, and no reminder", async () => {
+    const { container, getByLabelText, queryByText } = await renderForm();
 
-    expect(toJSON()).toMatchSnapshot();
+    expect(getByLabelText(habitForm.nameLabel).props.value).toBe("");
+    expect(frequencyPicker(container).props.selection).toBe("daily");
+    expect(reminderSwitch(container).props.value).toBe(false);
+    expect(queryByText(habitForm.time)).toBeNull();
   });
 
   it("should name every control it offers", async () => {
@@ -195,14 +198,47 @@ describe("the form a new habit opens on", () => {
 });
 
 describe("the form an existing habit opens on", () => {
-  it("should render the whole form", async () => {
+  it("should open on the habit's name, icon and colour", async () => {
     const habit = createHabit(
-      input({ name: "Read", icon: "book.fill", reminderTime: "07:30" }),
+      input({ name: "Read", icon: "book.fill", color: OTHER_COLOR }),
     );
 
-    const { toJSON } = await renderForm(habit.id);
+    const { container, getByLabelText } = await renderForm(habit.id);
 
-    expect(toJSON()).toMatchSnapshot();
+    expect(getByLabelText(habitForm.nameLabel).props.value).toBe("Read");
+    expect(
+      getByLabelText(fill(habitForm.iconLabel, { symbol: "book.fill" })).props
+        .accessibilityState,
+    ).toMatchObject({ selected: true });
+    expect(
+      getByLabelText(fill(habitForm.colorLabel, { color: OTHER_COLOR })).props
+        .accessibilityState,
+    ).toMatchObject({ selected: true });
+    expect(symbolView(container, "book.fill").props.tintColor).toBe(OTHER_COLOR);
+  });
+
+  it("should open on the days the habit runs rather than on daily", async () => {
+    const habit = createHabit(input({ weekdays: [1, 3, 5] }));
+
+    const { container, getByLabelText } = await renderForm(habit.id);
+
+    expect(frequencyPicker(container).props.selection).toBe("specific");
+    for (const [day, name] of WEEKDAY_NAMES.entries()) {
+      expect(getByLabelText(name).props.accessibilityState).toMatchObject({
+        selected: [1, 3, 5].includes(day),
+      });
+    }
+  });
+
+  it("should open on the reminder the habit carries, set to its time", async () => {
+    const habit = createHabit(input({ reminderTime: "07:30" }));
+
+    const { container, getByText } = await renderForm(habit.id);
+
+    expect(reminderSwitch(container).props.value).toBe(true);
+    expect(getByText(habitForm.time)).toBeTruthy();
+    const shown = new Date(timePicker(container).props.selection);
+    expect([shown.getHours(), shown.getMinutes()]).toEqual([7, 30]);
   });
 
   it("should offer to save rather than to add", async () => {

@@ -75,15 +75,35 @@ function seedHabit(
   return habit;
 }
 
-/* A row is the one native view tagged with the habit it belongs to. */
-function rowOf(container: TestInstance, habit: Habit): TestInstance {
-  const row = nativeViews(container).find((node) =>
-    ((node.props.modifiers ?? []) as { $type: string; tag?: string }[]).some(
-      (entry) => entry.$type === "tag" && entry.tag === habit.id,
+/* A row is a native view tagged with the habit it belongs to. */
+function rows(container: TestInstance): TestInstance[] {
+  return nativeViews(container).filter((node) =>
+    ((node.props.modifiers ?? []) as { $type: string }[]).some(
+      (entry) => entry.$type === "tag",
     ),
+  );
+}
+
+function rowOf(container: TestInstance, habit: Habit): TestInstance {
+  const row = rows(container).find(
+    (node) => modifier(node, "tag").tag === habit.id,
   );
   if (!row) throw new Error(`No row is tagged for "${habit.name}".`);
   return row;
+}
+
+function titleOf(row: TestInstance): string {
+  const [first] = row.queryAll((node) => typeof node.props.text === "string");
+  if (!first) throw new Error("The row draws no name.");
+  return first.props.text as string;
+}
+
+function accentOf(row: TestInstance): unknown {
+  const [icon] = row.queryAll(
+    (node) => typeof node.props.systemName === "string",
+  );
+  if (!icon) throw new Error("The row draws no icon.");
+  return modifier(icon, "foregroundStyle").color;
 }
 
 /* The row's own content, which is what a tap lands on. */
@@ -138,10 +158,12 @@ afterEach(() => {
 });
 
 describe("a day with no habits at all", () => {
-  it("should render the empty state", async () => {
-    const { toJSON } = await renderToday();
+  it("should draw the empty state instead of a list", async () => {
+    const { container, getByText } = await renderToday();
 
-    expect(toJSON()).toMatchSnapshot();
+    expect(getByText(today.emptyDescription)).toBeTruthy();
+    expect(rows(container)).toHaveLength(0);
+    expect(() => progressBar(container)).toThrow("no progress bar");
   });
 
   it("should say there is nothing here yet, and offer a way out", async () => {
@@ -176,13 +198,23 @@ describe("a day with nothing scheduled", () => {
 });
 
 describe("a day with habits", () => {
-  it("should render the day", async () => {
+  it("should draw a row per habit due today, in the order they were made", async () => {
     seedHabit({ name: "Walk outside" }, { done: true });
     seedHabit({ name: "Read", color: "#FF3B30" });
 
-    const { toJSON } = await renderToday();
+    const { container } = await renderToday();
 
-    expect(toJSON()).toMatchSnapshot();
+    expect(rows(container).map(titleOf)).toEqual(["Walk outside", "Read"]);
+  });
+
+  it("should draw each row in its own habit's colour", async () => {
+    const walk = seedHabit({ name: "Walk outside" }, { done: true });
+    const read = seedHabit({ name: "Read", color: "#FF3B30" });
+
+    const { container } = await renderToday();
+
+    expect(accentOf(rowOf(container, walk))).toBe(HABIT_COLOR);
+    expect(accentOf(rowOf(container, read))).toBe("#FF3B30");
   });
 
   it("should head the list with the day it is showing", async () => {

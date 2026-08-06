@@ -11,6 +11,7 @@ import { modifier, nativeView, nativeViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 import { act } from "@testing-library/react-native";
+import * as Application from "expo-application";
 import { Alert } from "react-native";
 import type { TestInstance } from "test-renderer";
 
@@ -81,6 +82,25 @@ function settingsButton(container: TestInstance, label: string): TestInstance {
   return found;
 }
 
+function sectionTitles(container: TestInstance): string[] {
+  return nativeViews(container)
+    .filter((node) => typeof node.props.title === "string")
+    .map((node) => node.props.title as string);
+}
+
+/** A row's label reaches the tree as the text inside its own title slot. */
+function rowLabels(container: TestInstance): string[] {
+  return nativeViews(container)
+    .filter((node) => node.props.name === "title")
+    .map((slot) => {
+      const [text] = slot.queryAll(
+        (child) => typeof child.props.text === "string",
+      );
+      if (!text) throw new Error("A row's title slot draws no text.");
+      return text.props.text as string;
+    });
+}
+
 /**
  * Found by the handler rather than by its label, since the label is itself
  * translated and moves as soon as a language is picked.
@@ -132,12 +152,40 @@ afterEach(() => {
 });
 
 describe("the settings screen", () => {
-  it("should render the whole screen", async () => {
+  it("should draw its sections in order", async () => {
+    const { container } = await renderSettings();
+
+    expect(sectionTitles(container)).toEqual([
+      language.title,
+      settings.notifications,
+      settings.data,
+      settings.about,
+    ]);
+  });
+
+  it("should draw the rows of every section, in order", async () => {
     createHabit(input());
 
-    const { toJSON } = await renderSettings();
+    const { container } = await renderSettings();
 
-    expect(toJSON()).toMatchSnapshot();
+    expect(rowLabels(container)).toEqual([
+      settings.permission,
+      settings.sendTestNotification,
+      settings.loadSampleData,
+      settings.viewOnboarding,
+      settings.habits,
+      settings.checkIns,
+      settings.version,
+    ]);
+  });
+
+  /* The runner's config declares no version, so the model falls back here. */
+  it("should show the version the app is running", async () => {
+    const { container } = await renderSettings();
+
+    expect(valueAfter(container, settings.version)).toBe(
+      Application.nativeApplicationVersion,
+    );
   });
 
   it("should draw every row's icon in the app's colour", async () => {
@@ -205,7 +253,9 @@ describe("the settings screen", () => {
     createHabit(input());
     const { container } = await renderSettings();
 
-    await pressButton(nativeView(container, "label", settings.deleteAllData));
+    const deleteAll = nativeView(container, "label", settings.deleteAllData);
+    expect(deleteAll.props.role).toBe("destructive");
+    await pressButton(deleteAll);
 
     expect(alert).toHaveBeenCalledWith(
       settings.deleteAllTitle,
