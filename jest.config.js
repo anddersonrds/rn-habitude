@@ -22,10 +22,8 @@ module.exports = {
     ...iosPreset.setupFiles,
     require.resolve("react-native-gesture-handler/jestSetup.js"),
   ],
-  /*
-  The preset transforms nothing under `node_modules` but the packages it names,
-  and `@formatjs` publishes ESM only, which the runner cannot require as it is.
-  */
+  /* `@formatjs` publishes ESM only, and the preset transforms nothing under
+  `node_modules` but the packages it names. */
   transformIgnorePatterns: iosPreset.transformIgnorePatterns.map((pattern) =>
     pattern.replace("(?!(", "(?!(@formatjs|"),
   ),
