@@ -6,6 +6,7 @@ import { computeStreaks, trailingDayStates } from "@/lib/streaks";
 import type { Habit } from "@/lib/types";
 import { router } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
 
 /** Days of history shown in each row's inline heat strip. */
@@ -25,6 +26,8 @@ export type HabitRowModel = {
  * action the list can take, so the SwiftUI view stays a thin render layer.
  */
 export function useHabitsModel() {
+  const { t } = useTranslation(["habits", "common"]);
+  const { t: tSchedule } = useTranslation("schedule");
   const state = useAppState();
   const [reordering, setReordering] = useState(false);
   const today = todayKey();
@@ -33,7 +36,7 @@ export function useHabitsModel() {
     habit,
     states: trailingDayStates(habit, state.completions[habit.id], STRIP_DAYS, today),
     streak: computeStreaks(habit, state.completions[habit.id], today).current,
-    schedule: scheduleLabel(habit),
+    schedule: scheduleLabel(habit, tSchedule),
   }));
 
   const bestStreak = rows.reduce((best, row) => Math.max(best, row.streak), 0);
@@ -54,12 +57,12 @@ export function useHabitsModel() {
   const confirmDelete = (habit: Habit) => {
     haptic.warning();
     Alert.alert(
-      `Delete "${habit.name}"?`,
-      "This permanently deletes the habit and its history.",
+      t("common:deleteHabitTitle", { name: habit.name }),
+      t("common:deleteHabitBody"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("common:cancel"), style: "cancel" },
         {
-          text: "Delete",
+          text: t("common:delete"),
           style: "destructive",
           onPress: () => deleteHabit(habit.id),
         },
@@ -92,8 +95,7 @@ export function useHabitsModel() {
     hasHabits: state.habits.length > 0,
     /** One habit cannot be put in a different order than itself. */
     canReorder: state.habits.length > 1,
-    countLabel:
-      state.habits.length === 1 ? "1 habit" : `${state.habits.length} habits`,
+    countLabel: t("count", { count: state.habits.length }),
     bestStreak,
     totalCheckIns,
     reordering,

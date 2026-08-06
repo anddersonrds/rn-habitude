@@ -36,6 +36,7 @@ import {
   tint,
 } from "@expo/ui/swift-ui/modifiers";
 import { Color, Stack } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import { EaseView } from "react-native-ease";
 import { useTodayModel, type TodayItem } from "./useTodayModel";
@@ -62,6 +63,7 @@ function HabitRow({
   onHistory: () => void;
   onDelete: () => void;
 }) {
+  const { t } = useTranslation(["today", "common"]);
   const { habit, done, subtitle } = item;
 
   return (
@@ -120,7 +122,7 @@ function HabitRow({
       {/* Full swipe from the leading edge checks in, like Mail's mark-as-read. */}
       <SwipeActions.Actions edge="leading">
         <Button
-          label={done ? "Undo" : "Check in"}
+          label={done ? t("undo") : t("checkIn")}
           systemImage={done ? "arrow.uturn.backward" : "checkmark"}
           onPress={onToggle}
           modifiers={[tint(done ? accent : success)]}
@@ -130,18 +132,18 @@ function HabitRow({
       <SwipeActions.Actions edge="trailing" allowsFullSwipe={false}>
         <Button
           role="destructive"
-          label="Delete"
+          label={t("common:delete")}
           systemImage="trash.fill"
           onPress={onDelete}
         />
         <Button
-          label="Edit"
+          label={t("common:edit")}
           systemImage="pencil"
           onPress={onEdit}
           modifiers={[tint("#8E8E93")]}
         />
         <Button
-          label="History"
+          label={t("history")}
           systemImage="chart.bar.fill"
           onPress={onHistory}
           modifiers={[tint("#007AFF")]}
@@ -156,19 +158,20 @@ function HabitRow({
  * the React Native empty state shared with the Habits screen.
  */
 export function TodayScreen() {
+  const { t } = useTranslation(["today", "common"]);
   const model = useTodayModel();
 
   const progressSummary = model.allDone
-    ? "All done"
-    : `${model.doneCount} of ${model.items.length} complete`;
+    ? t("allDone")
+    : t("progress", { done: model.doneCount, count: model.items.length });
 
   return (
     <>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
           icon="plus"
-          accessibilityLabel="Add habit"
-          accessibilityHint="Opens the new habit screen"
+          accessibilityLabel={t("common:addHabit")}
+          accessibilityHint={t("addHabitHint")}
           onPress={model.addHabit}
         />
       </Stack.Toolbar>
@@ -183,9 +186,9 @@ export function TodayScreen() {
           <View style={styles.empty}>
             <EmptyState
               symbol="checklist"
-              title="No habits yet"
-              description="Add the first small thing you want to do consistently."
-              actionLabel="New habit"
+              title={t("common:noHabitsYet")}
+              description={t("emptyDescription")}
+              actionLabel={t("common:newHabit")}
               onAction={model.addHabit}
             />
           </View>
@@ -207,7 +210,7 @@ export function TodayScreen() {
                           font({ design: "rounded", textStyle: "headline" }),
                         ]}
                       >
-                        Nothing scheduled today
+                        {t("nothingScheduled")}
                       </Text>
                       <Text
                         modifiers={[
@@ -215,7 +218,7 @@ export function TodayScreen() {
                           opacity(0.55),
                         ]}
                       >
-                        Enjoy the rest day. Your streaks are safe.
+                        {t("restDay")}
                       </Text>
                     </VStack>
                   </HStack>
@@ -246,9 +249,12 @@ export function TodayScreen() {
                         progressViewStyle("linear"),
                         tint(model.allDone ? success : accent),
                         animation(PROGRESS_ANIMATION, model.progress),
-                        accessibilityLabel("Today's progress"),
+                        accessibilityLabel(t("progressLabel")),
                         accessibilityValue(
-                          `${model.doneCount} of ${model.items.length} habits complete`,
+                          t("progressValue", {
+                            done: model.doneCount,
+                            count: model.items.length,
+                          }),
                         ),
                       ]}
                     />
@@ -258,7 +264,7 @@ export function TodayScreen() {
 
               {model.items.length > 0 && (
                 <Section
-                  title="Check in"
+                  title={t("checkInSection")}
                   footer={
                     <Text
                       modifiers={[
@@ -266,7 +272,7 @@ export function TodayScreen() {
                         opacity(0.55),
                       ]}
                     >
-                      Tap a habit to check it in. Swipe for more actions.
+                      {t("checkInFooter")}
                     </Text>
                   }
                 >

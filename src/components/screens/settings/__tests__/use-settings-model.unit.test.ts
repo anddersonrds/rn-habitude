@@ -98,7 +98,7 @@ type Permission = {
   canAskAgain: boolean;
 };
 
-const copy = en.translations.settings;
+const settings = en.translations.settings;
 
 const GRANTED: Permission = { granted: true, canAskAgain: false };
 const NOT_ASKED: Permission = { granted: false, canAskAgain: true };
@@ -132,7 +132,7 @@ function load(): Loaded {
     require("react-native") as typeof import("react-native");
   const notifications = require("@/lib/notifications");
   /*
-  Pinned rather than inherited: the hook reads its copy through this registry,
+  Pinned rather than inherited: the hook reads its settings through this registry,
   and a change to how the device is resolved must not rewrite what these cases
   assert.
   */
@@ -217,7 +217,7 @@ describe("what the screen says about notifications", () => {
     );
 
     expect(result.current).toMatchObject({
-      permissionLabel: copy.permissionPending,
+      permissionLabel: settings.permissionPending,
       permissionColor: "secondary",
       canRequestPermission: false,
       canOpenSettings: false,
@@ -229,7 +229,7 @@ describe("what the screen says about notifications", () => {
     const { result, unmount } = await renderModel(GRANTED);
 
     expect(result.current).toMatchObject({
-      permissionLabel: copy.permissionAllowed,
+      permissionLabel: settings.permissionAllowed,
       permissionColor: "green",
       canRequestPermission: false,
       canOpenSettings: false,
@@ -241,7 +241,7 @@ describe("what the screen says about notifications", () => {
     const { result, unmount } = await renderModel(NOT_ASKED);
 
     expect(result.current).toMatchObject({
-      permissionLabel: copy.permissionNotRequested,
+      permissionLabel: settings.permissionNotRequested,
       permissionColor: "secondary",
       canRequestPermission: true,
       canOpenSettings: false,
@@ -253,7 +253,7 @@ describe("what the screen says about notifications", () => {
     const { result, unmount } = await renderModel(DENIED);
 
     expect(result.current).toMatchObject({
-      permissionLabel: copy.permissionDenied,
+      permissionLabel: settings.permissionDenied,
       permissionColor: "red",
       canRequestPermission: false,
       canOpenSettings: true,
@@ -271,7 +271,7 @@ describe("asking for permission", () => {
 
     await act(async () => result.current.requestPermission());
 
-    expect(result.current.permissionLabel).toBe(copy.permissionAllowed);
+    expect(result.current.permissionLabel).toBe(settings.permissionAllowed);
     await unmount();
   });
 
@@ -295,7 +295,7 @@ describe("asking for permission", () => {
     await act(async () => result.current.requestPermission());
 
     expect(haptic.success).not.toHaveBeenCalled();
-    expect(result.current.permissionLabel).toBe(copy.permissionDenied);
+    expect(result.current.permissionLabel).toBe(settings.permissionDenied);
     await unmount();
   });
 
@@ -319,8 +319,8 @@ describe("sending a test notification", () => {
     expect(sendTestNotification).toHaveBeenCalledTimes(1);
     expect(haptic.impact).toHaveBeenCalledTimes(1);
     expect(alert).toHaveBeenCalledWith(
-      copy.testSentTitle,
-      copy.testSentBody,
+      settings.testSentTitle,
+      settings.testSentBody,
     );
     await unmount();
   });
@@ -334,8 +334,8 @@ describe("sending a test notification", () => {
 
     expect(sendTestNotification).not.toHaveBeenCalled();
     expect(alert).toHaveBeenCalledWith(
-      copy.notificationsOffTitle,
-      copy.notificationsOffBody,
+      settings.notificationsOffTitle,
+      settings.notificationsOffBody,
       expect.any(Array),
     );
     await unmount();
@@ -347,10 +347,10 @@ describe("sending a test notification", () => {
     ensurePermission.mockResolvedValue(false);
     await act(async () => result.current.sendTest());
 
-    const settings = buttonsOf(alert).find(
-      (button) => button.text === copy.openSettings,
+    const openSettings = buttonsOf(alert).find(
+      (button) => button.text === settings.openSettings,
     );
-    await act(async () => settings?.onPress?.());
+    await act(async () => openSettings?.onPress?.());
 
     expect(openURL).toHaveBeenCalledWith("app-settings:");
     await unmount();
@@ -395,8 +395,8 @@ describe("loading the sample data", () => {
     await act(async () => result.current.loadSample());
 
     expect(alert).toHaveBeenCalledWith(
-      copy.loadSampleTitle,
-      copy.loadSampleBody,
+      settings.loadSampleTitle,
+      settings.loadSampleBody,
       expect.any(Array),
     );
     expect(store.getAppState().habits).toHaveLength(1);
@@ -431,7 +431,7 @@ describe("loading the sample data", () => {
     );
     await act(async () => result.current.loadSample());
 
-    const load = buttonsOf(alert).find((button) => button.text === copy.load);
+    const load = buttonsOf(alert).find((button) => button.text === settings.load);
     await act(async () => load?.onPress?.());
     await settle();
 
@@ -454,8 +454,8 @@ describe("deleting everything", () => {
     await act(async () => result.current.deleteEverything());
 
     expect(alert).toHaveBeenCalledWith(
-      copy.deleteAllTitle,
-      copy.deleteAllBody,
+      settings.deleteAllTitle,
+      settings.deleteAllBody,
       expect.any(Array),
     );
     expect(haptic.warning).toHaveBeenCalledTimes(1);

@@ -57,15 +57,20 @@ export const HABIT_ICONS: readonly SFSymbol[] = [
 
 export const DEFAULT_HABIT_ICON = HABIT_ICONS[0];
 
-export const WEEKDAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"] as const;
-export const WEEKDAY_NAMES = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
+/**
+ * Catalog keys in the `schedule` namespace, indexed by weekday with Sunday
+ * first to match `Date#getDay`. The abbreviation and the initial are keys of
+ * their own rather than slices of the name: cutting the first three letters is
+ * an English habit that produces nothing readable in Japanese or Korean.
+ */
+export const WEEKDAY_KEYS = [
+  { name: "sunday", short: "sundayShort", initial: "sundayInitial" },
+  { name: "monday", short: "mondayShort", initial: "mondayInitial" },
+  { name: "tuesday", short: "tuesdayShort", initial: "tuesdayInitial" },
+  { name: "wednesday", short: "wednesdayShort", initial: "wednesdayInitial" },
+  { name: "thursday", short: "thursdayShort", initial: "thursdayInitial" },
+  { name: "friday", short: "fridayShort", initial: "fridayInitial" },
+  { name: "saturday", short: "saturdayShort", initial: "saturdayInitial" },
 ] as const;
 
 export const ALL_WEEKDAYS = [0, 1, 2, 3, 4, 5, 6];

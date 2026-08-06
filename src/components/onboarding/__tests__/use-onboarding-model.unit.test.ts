@@ -3,6 +3,7 @@ the store loads its state at import, so every case reloads it against its own
 database, and the hook has to come from that same registry to be the one being
 driven.
 */
+import en from "@/i18n/locales/en";
 import { resetDatabase } from "@/test-utils/sqlite";
 import type * as Notifications from "expo-notifications";
 /*
@@ -60,6 +61,8 @@ function permissionState(
   } as PermissionState;
 }
 
+const onboarding = en.translations.onboarding;
+
 const UNDETERMINED = {
   granted: false,
   canAskAgain: true,
@@ -77,6 +80,10 @@ type TestingLibrary = typeof import("@testing-library/react-native/pure");
 /** Loads the hook and the store it finishes onboarding through together. */
 function load() {
   jest.resetModules();
+  /* The hook translates, so the instance has to be the one in this registry,
+  and its language pinned rather than inherited from how the device resolves. */
+  const i18n = require("@/i18n/i18next") as typeof import("@/i18n/i18next");
+  void i18n.default.changeLanguage("en");
   return {
     store: require("@/lib/store") as StoreModule,
     useOnboardingModel: (
@@ -139,10 +146,10 @@ describe("the step being shown", () => {
 
   it("should count the steps there are rather than a number of its own", async () => {
     const { result, unmount } = await renderModel();
-    const { STEPS } =
+    const { STEP_COUNT } =
       require("@/components/onboarding/useOnboardingModel") as ModelModule;
 
-    expect(result.current.stepCount).toBe(STEPS.length);
+    expect(result.current.stepCount).toBe(STEP_COUNT);
     await unmount();
   });
 
@@ -244,7 +251,7 @@ describe("what the button says", () => {
   it("should carry the step's own call to action before the last step", async () => {
     const { result, unmount } = await renderModel();
 
-    expect(result.current.ctaLabel).toBe("Continue");
+    expect(result.current.ctaLabel).toBe(onboarding.welcomeCta);
     await unmount();
   });
 
@@ -253,7 +260,7 @@ describe("what the button says", () => {
 
     await goToLastStep();
 
-    expect(result.current.ctaLabel).toBe("Allow notifications");
+    expect(result.current.ctaLabel).toBe(onboarding.remindersCta);
     await unmount();
   });
 
@@ -264,7 +271,7 @@ describe("what the button says", () => {
     await goToLastStep();
 
     expect(result.current).toMatchObject({
-      ctaLabel: "Start tracking",
+      ctaLabel: onboarding.startTracking,
       permissionGranted: true,
     });
     await unmount();
@@ -278,7 +285,7 @@ describe("what the button says", () => {
 
     await goToLastStep();
 
-    expect(result.current.ctaLabel).toBe("Maybe later");
+    expect(result.current.ctaLabel).toBe(onboarding.maybeLater);
     await unmount();
   });
 
@@ -298,7 +305,7 @@ describe("what the button says", () => {
     });
 
     expect(result.current).toMatchObject({
-      ctaLabel: "Requesting…",
+      ctaLabel: onboarding.requesting,
       requesting: true,
     });
 

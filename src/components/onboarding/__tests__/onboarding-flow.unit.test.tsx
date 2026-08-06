@@ -1,5 +1,8 @@
 import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
-import { STEPS } from "@/components/onboarding/useOnboardingModel";
+import { STEP_COUNT } from "@/components/onboarding/useOnboardingModel";
+import i18n from "@/i18n/i18next";
+import en from "@/i18n/locales/en";
+import ptBR from "@/i18n/locales/pt-BR";
 import { symbolViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
 import { accent } from "@/theme/colors";
@@ -69,9 +72,25 @@ function dots(container: TestInstance) {
     });
 }
 
-const [WELCOME, CONSISTENCY, REMINDERS] = STEPS;
+const onboarding = en.translations.onboarding;
+const WELCOME = {
+  title: onboarding.welcomeTitle,
+  description: onboarding.welcomeDescription,
+  cta: onboarding.welcomeCta,
+};
+const CONSISTENCY = {
+  title: onboarding.consistencyTitle,
+  description: onboarding.consistencyDescription,
+  cta: onboarding.consistencyCta,
+};
+const REMINDERS = {
+  title: onboarding.remindersTitle,
+  description: onboarding.remindersDescription,
+  cta: onboarding.remindersCta,
+};
 
-beforeEach(() => {
+beforeEach(async () => {
+  await i18n.changeLanguage("en");
   jest.clearAllMocks();
   useReducedMotion.mockReturnValue(false);
   notifications.getNotificationPermission.mockResolvedValue(UNDETERMINED);
@@ -96,10 +115,22 @@ describe("the step on screen", () => {
     expect(getByText(WELCOME.description)).toBeOnTheScreen();
   });
 
+  it("should open in the language the app is set to", async () => {
+    await i18n.changeLanguage("pt-BR");
+
+    const { getByRole, getByText } = await renderFlow();
+
+    const inPortuguese = ptBR.translations.onboarding;
+    expect(getByText(inPortuguese.welcomeDescription)).toBeOnTheScreen();
+    expect(
+      getByRole("button", { name: inPortuguese.welcomeCta }),
+    ).toBeOnTheScreen();
+  });
+
   it("should count the step out of the steps there are", async () => {
     const { getByText } = await renderFlow();
 
-    expect(getByText(`1/${STEPS.length}`)).toBeOnTheScreen();
+    expect(getByText(`1/${STEP_COUNT}`)).toBeOnTheScreen();
   });
 
   it("should move the counter on with the step", async () => {
@@ -107,7 +138,7 @@ describe("the step on screen", () => {
 
     await fireEvent.press(getByRole("button", { name: WELCOME.cta }));
 
-    expect(getByText(`2/${STEPS.length}`)).toBeOnTheScreen();
+    expect(getByText(`2/${STEP_COUNT}`)).toBeOnTheScreen();
     expect(getByText(CONSISTENCY.title)).toBeOnTheScreen();
   });
 
@@ -117,7 +148,7 @@ describe("the step on screen", () => {
     await fireEvent.press(getByRole("button", { name: WELCOME.cta }));
     await fireEvent.press(getByRole("button", { name: CONSISTENCY.cta }));
 
-    expect(getByText(`${STEPS.length}/${STEPS.length}`)).toBeOnTheScreen();
+    expect(getByText(`${STEP_COUNT}/${STEP_COUNT}`)).toBeOnTheScreen();
     expect(getByText(REMINDERS.title)).toBeOnTheScreen();
     expect(getByRole("button", { name: REMINDERS.cta })).toBeOnTheScreen();
   });
@@ -148,7 +179,7 @@ describe("the progress dots", () => {
   it("should draw one dot per step", async () => {
     const { container } = await renderFlow();
 
-    expect(dots(container)).toHaveLength(STEPS.length);
+    expect(dots(container)).toHaveLength(STEP_COUNT);
   });
 
   it("should widen the dot of the step being shown", async () => {
@@ -212,7 +243,7 @@ describe("going back", () => {
     await fireEvent.press(getByRole("button", { name: "Previous step" }));
 
     expect(getByText(WELCOME.title)).toBeOnTheScreen();
-    expect(getByText(`1/${STEPS.length}`)).toBeOnTheScreen();
+    expect(getByText(`1/${STEP_COUNT}`)).toBeOnTheScreen();
   });
 });
 
@@ -306,7 +337,7 @@ describe("when motion is reduced", () => {
     });
 
     expect(getByText(CONSISTENCY.title)).toBeOnTheScreen();
-    expect(getByText(`2/${STEPS.length}`)).toBeOnTheScreen();
+    expect(getByText(`2/${STEP_COUNT}`)).toBeOnTheScreen();
   });
 });
 

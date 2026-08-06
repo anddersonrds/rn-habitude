@@ -1,4 +1,7 @@
 import { TodayScreen } from "@/components/screens/today/TodayScreen";
+import i18n from "@/i18n/i18next";
+import en from "@/i18n/locales/en";
+import ptBR from "@/i18n/locales/pt-BR";
 import {
   completeHabit,
   createHabit,
@@ -29,6 +32,21 @@ jest.mock("expo-router", () =>
 );
 
 const routing = jest.requireMock<{ router: { push: jest.Mock } }>("expo-router");
+
+const today = en.translations.today;
+const common = en.translations.common;
+const inPortuguese = ptBR.translations.today;
+
+/**
+ * Fills a catalog template here rather than calling the same `t` the screen
+ * calls, so a case still fails when the screen interpolates the wrong number.
+ */
+function fill(template: string, values: Record<string, string | number>) {
+  return Object.entries(values).reduce(
+    (text, [name, value]) => text.replace(`{{${name}}}`, `${value}`),
+    template,
+  );
+}
 
 /* A Wednesday. Every fixture below is dated against it. */
 const TODAY = "2026-07-29";
@@ -107,6 +125,7 @@ async function settle(): Promise<void> {
 }
 
 beforeEach(async () => {
+  await i18n.changeLanguage("en");
   freezeClock(`${TODAY}T12:00:00-03:00`);
   stableIds();
   await deleteAllData();
@@ -128,9 +147,9 @@ describe("a day with no habits at all", () => {
   it("should say there is nothing here yet, and offer a way out", async () => {
     const { getByText, getByLabelText } = await renderToday();
 
-    expect(getByText("No habits yet")).toBeTruthy();
-    expect(getByLabelText("Add habit")).toBeTruthy();
-    await fireEvent.press(getByText("New habit"));
+    expect(getByText(common.noHabitsYet)).toBeTruthy();
+    expect(getByLabelText(common.addHabit)).toBeTruthy();
+    await fireEvent.press(getByText(common.newHabit));
 
     expect(routing.router.push).toHaveBeenCalledWith("/habit-form");
   });
@@ -142,8 +161,8 @@ describe("a day with nothing scheduled", () => {
 
     const { container, queryByText } = await renderToday();
 
-    expect(queryByText("No habits yet")).toBeNull();
-    expect(drawnText(container)).toContain("Nothing scheduled today");
+    expect(queryByText(common.noHabitsYet)).toBeNull();
+    expect(drawnText(container)).toContain(today.nothingScheduled);
     expect(nativeView(container, "systemName", "moon.zzz.fill")).toBeTruthy();
   });
 
@@ -180,7 +199,7 @@ describe("a day with habits", () => {
 
     const { container } = await renderToday();
 
-    expect(drawnText(container)).toContain("1 of 2 complete");
+    expect(drawnText(container)).toContain(fill(today.progress_other, { done: 1, count: 2 }));
   });
 
   it("should say the day is done rather than counting it", async () => {
@@ -188,7 +207,7 @@ describe("a day with habits", () => {
 
     const { container } = await renderToday();
 
-    expect(drawnText(container)).toContain("All done");
+    expect(drawnText(container)).toContain(today.allDone);
     expect(nativeView(container, "systemName", "checkmark.seal.fill")).toBeTruthy();
   });
 
@@ -201,11 +220,39 @@ describe("a day with habits", () => {
     const bar = progressBar(container);
     expect(bar.props.value).toBe(0.5);
     expect(modifier(bar, "accessibilityLabel")).toMatchObject({
-      label: "Today's progress",
+      label: today.progressLabel,
     });
     expect(modifier(bar, "accessibilityValue")).toMatchObject({
-      value: "1 of 2 habits complete",
+      value: fill(today.progressValue_other, { done: 1, count: 2 }),
     });
+  });
+
+  it("should draw the day in the language the app is set to", async () => {
+    seedHabit({ name: "Walk outside" }, { done: true });
+    seedHabit({ name: "Read" });
+    await i18n.changeLanguage("pt-BR");
+
+    const { container } = await renderToday();
+
+    expect(
+      nativeView(container, "title", inPortuguese.checkInSection),
+    ).toBeTruthy();
+    expect(drawnText(container)).toContain(
+      fill(inPortuguese.progress_other, { done: 1, count: 2 }),
+    );
+  });
+
+  it("should count one habit in the singular", async () => {
+    seedHabit({ name: "Walk outside" });
+    await i18n.changeLanguage("pt-BR");
+
+    const { container } = await renderToday();
+
+    /* Asserted in Portuguese because English spells both forms the same way,
+    so an English case cannot tell `progress_one` from `progress_other`. */
+    expect(drawnText(container)).toContain(
+      fill(inPortuguese.progress_one, { done: 0, count: 1 }),
+    );
   });
 
   it("should turn the progress bar from the app's colour to the done colour", async () => {
@@ -343,7 +390,7 @@ describe("the actions behind a swipe", () => {
     const habit = seedHabit();
     const { container } = await renderToday();
 
-    const checkIn = nativeView(rowOf(container, habit), "label", "Check in");
+    const checkIn = nativeView(rowOf(container, habit), "label", today.checkIn);
     expect(modifier(checkIn, "tint")).toMatchObject({ color: success });
     await pressButton(checkIn);
     await settle();
@@ -355,7 +402,7 @@ describe("the actions behind a swipe", () => {
     const habit = seedHabit({}, { done: true });
     const { container } = await renderToday();
 
-    const undo = nativeView(rowOf(container, habit), "label", "Undo");
+    const undo = nativeView(rowOf(container, habit), "label", today.undo);
     expect(modifier(undo, "tint")).toMatchObject({ color: accent });
     await pressButton(undo);
     await settle();
@@ -367,7 +414,7 @@ describe("the actions behind a swipe", () => {
     const habit = seedHabit();
     const { container } = await renderToday();
 
-    await pressButton(nativeView(rowOf(container, habit), "label", "Edit"));
+    await pressButton(nativeView(rowOf(container, habit), "label", common.edit));
 
     expect(routing.router.push).toHaveBeenCalledWith(
       `/habit-form?id=${habit.id}`,
@@ -378,7 +425,7 @@ describe("the actions behind a swipe", () => {
     const habit = seedHabit();
     const { container } = await renderToday();
 
-    await pressButton(nativeView(rowOf(container, habit), "label", "History"));
+    await pressButton(nativeView(rowOf(container, habit), "label", today.history));
 
     expect(routing.router.push).toHaveBeenCalledWith(`/habit/${habit.id}`);
   });
@@ -388,11 +435,11 @@ describe("the actions behind a swipe", () => {
     const habit = seedHabit({ name: "Walk outside" });
     const { container } = await renderToday();
 
-    await pressButton(nativeView(rowOf(container, habit), "label", "Delete"));
+    await pressButton(nativeView(rowOf(container, habit), "label", common.delete));
 
     expect(alert).toHaveBeenCalledWith(
-      'Delete "Walk outside"?',
-      "This permanently deletes the habit and its history.",
+      fill(common.deleteHabitTitle, { name: "Walk outside" }),
+      common.deleteHabitBody,
       expect.any(Array),
     );
     expect(getAppState().habits).toHaveLength(1);

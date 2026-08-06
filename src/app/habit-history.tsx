@@ -7,6 +7,7 @@ import { completionRate, computeStreaks } from "@/lib/streaks";
 import { Color, router, Stack, useLocalSearchParams } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 const HISTORY_WEEKS = 52;
@@ -37,6 +38,7 @@ function Stat({ value, label }: { value: string; label: string }) {
 
 /** Full-year consistency, reached with a zoom transition from the habit card. */
 export default function HabitHistoryScreen() {
+  const { t } = useTranslation("history");
   const { id } = useLocalSearchParams<{ id: string }>();
   const state = useAppState();
   const habit = state.habits.find((candidate) => candidate.id === id);
@@ -71,9 +73,9 @@ export default function HabitHistoryScreen() {
               />
             </View>
             <View style={styles.cardTitle}>
-              <Text variant="headline">Consistency</Text>
+              <Text variant="headline">{t("consistency")}</Text>
               <Text variant="footnote" secondary>
-                Last 12 months
+                {t("range")}
               </Text>
             </View>
           </View>
@@ -89,24 +91,24 @@ export default function HabitHistoryScreen() {
           />
 
           <View style={styles.legend}>
-            <LegendSwatch color={habit.color} label="Done" />
+            <LegendSwatch color={habit.color} label={t("legendDone")} />
             <LegendSwatch
               color={Color.ios.tertiarySystemFill as string}
-              label="Missed"
+              label={t("legendMissed")}
             />
             <LegendSwatch
               color={Color.ios.quaternarySystemFill as string}
-              label="Rest day"
+              label={t("legendRest")}
             />
           </View>
         </View>
 
         <View style={styles.statsCard}>
-          <Stat value={`${totalDone}`} label="Total check-ins" />
+          <Stat value={`${totalDone}`} label={t("totalCheckIns")} />
           <View style={styles.statDivider} />
-          <Stat value={`${streaks.best}`} label="Best streak" />
+          <Stat value={`${streaks.best}`} label={t("bestStreak")} />
           <View style={styles.statDivider} />
-          <Stat value={`${Math.round(yearRate * 100)}%`} label="Year rate" />
+          <Stat value={`${Math.round(yearRate * 100)}%`} label={t("yearRate")} />
         </View>
       </ScrollView>
     </>

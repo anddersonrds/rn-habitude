@@ -8,6 +8,7 @@ import { ensureNotificationPermission } from "@/lib/notifications";
 import { createHabit, deleteHabit, updateHabit, useAppState } from "@/lib/store";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, Keyboard, Linking } from "react-native";
 
 /** The habit form's two modes, as the screen asks about them. */
@@ -34,6 +35,7 @@ function dateToTime(date: Date): string {
  * every action the form can take, so the SwiftUI view stays a thin render layer.
  */
 export function useHabitFormModel() {
+  const { t } = useTranslation(["habitForm", "common"]);
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { habits } = useAppState();
   const editing = id ? habits.find((habit) => habit.id === id) : undefined;
@@ -127,29 +129,25 @@ export function useHabitFormModel() {
       return;
     }
 
-    Alert.alert(
-      "Notifications are off",
-      "Allow notifications in iOS Settings to add a reminder.",
-      [
-        { text: "Not Now", style: "cancel" },
-        {
-          text: "Open Settings",
-          onPress: () => void Linking.openURL("app-settings:"),
-        },
-      ],
-    );
+    Alert.alert(t("notificationsOffTitle"), t("notificationsOffBody"), [
+      { text: t("notNow"), style: "cancel" },
+      {
+        text: t("openSettings"),
+        onPress: () => void Linking.openURL("app-settings:"),
+      },
+    ]);
   };
 
   const confirmDelete = () => {
     if (!editing) return;
     haptic.warning();
     Alert.alert(
-      `Delete "${editing.name}"?`,
-      "This permanently deletes the habit and its history.",
+      t("common:deleteHabitTitle", { name: editing.name }),
+      t("common:deleteHabitBody"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("common:cancel"), style: "cancel" },
         {
-          text: "Delete",
+          text: t("common:delete"),
           style: "destructive",
           onPress: () => {
             deleteHabit(editing.id);

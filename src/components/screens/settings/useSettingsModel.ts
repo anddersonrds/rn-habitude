@@ -43,6 +43,7 @@ const version =
  */
 export function useSettingsModel() {
   const { t } = useTranslation(["settings", "common", "language"]);
+  const { t: tSampleData } = useTranslation("sampleData");
   const reduceMotion = !!useReducedMotion();
   const { habits, completions } = useAppState();
   const [permission, setPermission] =
@@ -127,7 +128,7 @@ export function useSettingsModel() {
 
   const loadSample = () => {
     const run = () => {
-      loadSampleData();
+      loadSampleData(tSampleData);
       haptic.success();
     };
     /* Nothing to lose, so nothing to confirm. */

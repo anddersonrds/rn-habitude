@@ -6,40 +6,43 @@ import {
 import { setOnboarded } from "@/lib/store";
 import type * as Notifications from "expo-notifications";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useReducedMotion } from "react-native-reanimated";
 
-type StepId = "welcome" | "consistency" | "reminders";
-
 export type OnboardingStep = {
-  id: StepId;
+  id: (typeof STEP_KEYS)[number]["id"];
   title: string;
   description: string;
   cta: string;
 };
 
-export const STEPS: OnboardingStep[] = [
+/**
+ * The steps as keys rather than as copy. The strings are looked up per render:
+ * a module-scope constant would freeze whatever language was active at import
+ * and never follow a switch.
+ */
+const STEP_KEYS = [
   {
     id: "welcome",
-    title: "habitude",
-    description:
-      "A habit is a small thing done often. Track a few, and watch them add up.",
-    cta: "Continue",
+    title: "welcomeTitle",
+    description: "welcomeDescription",
+    cta: "welcomeCta",
   },
   {
     id: "consistency",
-    title: "See your consistency",
-    description:
-      "Every check-in fills a square. Streaks and history make the pattern obvious.",
-    cta: "Continue",
+    title: "consistencyTitle",
+    description: "consistencyDescription",
+    cta: "consistencyCta",
   },
   {
     id: "reminders",
-    title: "A nudge at the right time",
-    description:
-      "Give a habit a reminder time and habitude will tap you on the shoulder.",
-    cta: "Allow notifications",
+    title: "remindersTitle",
+    description: "remindersDescription",
+    cta: "remindersCta",
   },
-];
+] as const;
+
+export const STEP_COUNT = STEP_KEYS.length;
 
 /**
  * View model for the onboarding flow: the step it is on, the permission it asks
@@ -47,6 +50,7 @@ export const STEPS: OnboardingStep[] = [
  * renders.
  */
 export function useOnboardingModel() {
+  const { t } = useTranslation("onboarding");
   const reduceMotion = !!useReducedMotion();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visible, setVisible] = useState(true);
@@ -55,19 +59,25 @@ export function useOnboardingModel() {
   const [requesting, setRequesting] = useState(false);
   const pendingIndex = useRef<number | null>(null);
 
-  const step = STEPS[currentIndex];
-  const isLast = currentIndex === STEPS.length - 1;
+  const keys = STEP_KEYS[currentIndex];
+  const step: OnboardingStep = {
+    id: keys.id,
+    title: t(keys.title),
+    description: t(keys.description),
+    cta: t(keys.cta),
+  };
+  const isLast = currentIndex === STEP_COUNT - 1;
   const granted = permission?.granted === true;
   const cannotAsk =
     permission != null && !permission.granted && !permission.canAskAgain;
   const ctaLabel = !isLast
     ? step.cta
     : granted
-      ? "Start tracking"
+      ? t("startTracking")
       : cannotAsk
-        ? "Maybe later"
+        ? t("maybeLater")
         : requesting
-          ? "Requesting…"
+          ? t("requesting")
           : step.cta;
 
   useEffect(() => {
@@ -77,7 +87,7 @@ export function useOnboardingModel() {
   }, [step.id]);
 
   const navigateToStep = (index: number) => {
-    if (index < 0 || index >= STEPS.length || index === currentIndex) return;
+    if (index < 0 || index >= STEP_COUNT || index === currentIndex) return;
     if (reduceMotion) {
       pendingIndex.current = null;
       setVisible(true);
@@ -133,7 +143,7 @@ export function useOnboardingModel() {
   return {
     step,
     stepNumber: currentIndex + 1,
-    stepCount: STEPS.length,
+    stepCount: STEP_COUNT,
     currentIndex,
     isLast,
     reduceMotion,

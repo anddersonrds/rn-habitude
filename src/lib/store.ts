@@ -1,3 +1,4 @@
+import type { TFunction } from "i18next";
 import { useSyncExternalStore } from "react";
 import { AppState as RNAppState } from "react-native";
 import { todayKey, weekdayOf } from "./dates";
@@ -230,14 +231,14 @@ export async function deleteAllData(): Promise<void> {
   emit();
 }
 
-export function loadSampleData(): void {
+export function loadSampleData(t: TFunction<"sampleData">): void {
   const previousReminderIds = state.habits
     .filter((habit) => habit.id.startsWith("sample-"))
     .flatMap((habit) => habit.notificationIds);
   if (previousReminderIds.length > 0) {
     void cancelReminders(previousReminderIds);
   }
-  const habitsWithReminders = seedSampleData();
+  const habitsWithReminders = seedSampleData(t);
   emit();
   for (const habit of habitsWithReminders) {
     void refreshReminders(habit);

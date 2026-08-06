@@ -3,6 +3,7 @@ the store loads its state at import, so every case reloads it against its own
 database, and the hook, the router and the haptics have to come from that same
 registry to be the ones the hook actually calls.
 */
+import en from "@/i18n/locales/en";
 import type { HabitInput } from "@/lib/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
@@ -35,6 +36,20 @@ jest.mock("@/lib/haptics", () => ({
 
 jest.mock("expo-router", () => ({ router: { push: jest.fn() } }));
 
+const today = en.translations.today;
+const common = en.translations.common;
+
+/**
+ * Fills a catalog template here rather than calling the same `t` the hook
+ * calls, so a case still fails when the hook interpolates the wrong number.
+ */
+function fill(template: string, values: Record<string, string | number>) {
+  return Object.entries(values).reduce(
+    (text, [name, value]) => text.replace(`{{${name}}}`, `${value}`),
+    template,
+  );
+}
+
 /* A Wednesday, so a habit scheduled only on Mondays is not due on it. */
 const TODAY = "2026-07-29";
 const YESTERDAY = "2026-07-28";
@@ -60,6 +75,10 @@ type Loaded = {
 function load(): Loaded {
   jest.resetModules();
   const { Alert } = require("react-native") as typeof import("react-native");
+  /* The hook translates, so the instance has to be the one in this registry,
+  and its language pinned rather than inherited from how the device resolves. */
+  const i18n = require("@/i18n/i18next") as typeof import("@/i18n/i18next");
+  void i18n.default.changeLanguage("en");
   return {
     store: require("@/lib/store"),
     useTodayModel: require("@/components/screens/today/useTodayModel")
@@ -205,7 +224,7 @@ describe("what a habit says under its name", () => {
 
     expect(result.current.items[0]).toMatchObject({
       streak: 2,
-      subtitle: "2-day streak",
+      subtitle: fill(today.streak_other, { count: 2 }),
     });
     await unmount();
   });
@@ -225,7 +244,9 @@ describe("what a habit says under its name", () => {
       store.completeHabit(habit.id, TODAY);
     });
 
-    expect(result.current.items[0].subtitle).toBe("1-day streak  ·  7:30 AM");
+    expect(result.current.items[0].subtitle).toBe(
+      `${fill(today.streak_one, { count: 1 })}  ·  7:30 AM`,
+    );
     await unmount();
   });
 });
@@ -481,13 +502,13 @@ describe("deleting a habit", () => {
     await act(async () => result.current.confirmDelete(result.current.items[0].habit));
 
     expect(alert).toHaveBeenCalledWith(
-      'Delete "Walk outside"?',
-      "This permanently deletes the habit and its history.",
+      fill(common.deleteHabitTitle, { name: "Walk outside" }),
+      common.deleteHabitBody,
       expect.any(Array),
     );
     expect(buttonsOf(alert).map((button) => button.text)).toEqual([
-      "Cancel",
-      "Delete",
+      common.cancel,
+      common.delete,
     ]);
     await unmount();
   });
