@@ -10,10 +10,9 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Keyboard, Linking } from "react-native";
+import type { FrequencyChoice } from "./types";
 
 /** The habit form's two modes, as the screen asks about them. */
-export type FrequencyChoice = "daily" | "specific";
-
 const DEFAULT_WEEKDAYS = [1, 2, 3, 4, 5];
 const DEFAULT_REMINDER_TIME = "09:00";
 

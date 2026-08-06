@@ -1,3 +1,3 @@
-import { HabitFormScreen } from "@/components/screens/habit-form/HabitFormScreen";
+import { HabitFormScreen } from "@/components/screens/habit-form";
 
 export default HabitFormScreen;
