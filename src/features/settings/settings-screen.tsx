@@ -1,11 +1,8 @@
 import { formatCount } from "@/lib/numbers";
-import { accent, colors } from "@/theme/colors";
 import {
   Button,
   Form,
   Host,
-  Image,
-  Label,
   LabeledContent,
   Picker,
   Section,
@@ -17,48 +14,10 @@ import {
   pickerStyle,
   tag,
 } from "@expo/ui/swift-ui/modifiers";
-import type { ComponentProps } from "react";
 import { useTranslation } from "react-i18next";
+import { SettingsButton } from "./components/settings-button";
+import { SettingsLabel } from "./components/settings-label";
 import { useSettingsModel } from "./hooks/use-settings-model";
-
-type SettingsIcon = NonNullable<ComponentProps<typeof Image>["systemName"]>;
-
-function SettingsLabel({
-  label,
-  systemImage,
-}: {
-  label: string;
-  systemImage: SettingsIcon;
-}) {
-  return (
-    <Label icon={<Image systemName={systemImage} color={accent} size={18} />}>
-      <Text
-        modifiers={[
-          font({ design: "rounded" }),
-          foregroundStyle({ type: "color", color: colors.text }),
-        ]}
-      >
-        {label}
-      </Text>
-    </Label>
-  );
-}
-
-function SettingsButton({
-  label,
-  systemImage,
-  onPress,
-}: {
-  label: string;
-  systemImage: SettingsIcon;
-  onPress: () => void;
-}) {
-  return (
-    <Button onPress={onPress}>
-      <SettingsLabel label={label} systemImage={systemImage} />
-    </Button>
-  );
-}
 
 export function SettingsScreen() {
   const { t, i18n } = useTranslation(["settings", "language"]);

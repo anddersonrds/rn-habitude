@@ -8,32 +8,9 @@ import { PressableScale } from "pressto";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, View } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
+import { SecondaryStat } from "./components/secondary-stat";
 import { useHabitDetailModel } from "./hooks/use-habit-detail-model";
 import { styles } from "./styles";
-
-function SecondaryStat({
-  symbol,
-  color,
-  value,
-  label,
-}: {
-  symbol: SFSymbol;
-  color: string;
-  value: string;
-  label: string;
-}) {
-  return (
-    <View style={styles.secondaryStat}>
-      <SymbolView name={symbol} size={16} tintColor={color} />
-      <Text variant="subheadline" secondary style={styles.secondaryStatLabel}>
-        {label}
-      </Text>
-      <Text variant="headline" style={styles.statNumber}>
-        {value}
-      </Text>
-    </View>
-  );
-}
 
 export function HabitDetailScreen() {
   const { t, i18n } = useTranslation("habitDetail");

@@ -39,30 +39,12 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 16,
   },
-  legendItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  legendSwatch: {
-    width: 11,
-    height: 11,
-    borderRadius: 3,
-  },
   statsCard: {
     flexDirection: "row",
     backgroundColor: Color.ios.secondarySystemGroupedBackground,
     borderRadius: layout.cardRadius,
     borderCurve: "continuous",
     paddingVertical: 16,
-  },
-  stat: {
-    flex: 1,
-    alignItems: "center",
-    gap: 2,
-  },
-  statNumber: {
-    fontVariant: ["tabular-nums"],
   },
   statDivider: {
     width: StyleSheet.hairlineWidth,
