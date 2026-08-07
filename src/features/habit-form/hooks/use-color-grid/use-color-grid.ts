@@ -1,5 +1,5 @@
 import { HABIT_COLORS } from "@/constants/habit-options";
-import { layout } from "@/constants/layout";
+import { layout } from "@/theme/spacing";
 import { useWindowDimensions } from "react-native";
 import {
   COLOR_CARD_PADDING,
