@@ -23,7 +23,7 @@ function cellColor(cell: HeatCell, habit: Habit, today: string) {
     case "done":
       return habit.color;
     case "missed":
-      // Today isn't missed yet, so show a hint of the habit color instead.
+      /* The day isn't over, so today reads as a faded accent, not a miss. */
       return cell.date === today
         ? `${habit.color}55`
         : Color.ios.tertiarySystemFill;
