@@ -1,5 +1,5 @@
-import { appFontFamily } from "@/components/ui/text";
 import { layout } from "@/constants/layout";
+import { appFontFamily } from "@/theme/typography";
 import { Color } from "expo-router";
 import { StyleSheet } from "react-native";
 

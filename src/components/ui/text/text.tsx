@@ -1,10 +1,8 @@
+import { appFontFamily } from "@/theme/typography";
 import { Color } from "expo-router";
 import { Text as RNText } from "react-native";
 import { styles } from "./styles";
 import type { Props } from "./types";
-
-/** SF Rounded, matching the SwiftUI screens that use `font({ design: "rounded" })`. */
-export const appFontFamily = "ui-rounded";
 
 export function Text({
   variant = "body",

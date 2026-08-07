@@ -1,1 +1,1 @@
-export { appFontFamily, Text } from "./text";
+export { Text } from "./text";
