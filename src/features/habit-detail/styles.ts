@@ -105,16 +105,6 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 6,
   },
-  secondaryStat: {
-    minHeight: 52,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    paddingHorizontal: 14,
-  },
-  secondaryStatLabel: {
-    flex: 1,
-  },
   secondaryDivider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: Color.ios.separator,

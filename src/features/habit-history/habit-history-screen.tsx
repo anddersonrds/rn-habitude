@@ -5,34 +5,12 @@ import { Color, Stack } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
+import { LegendSwatch } from "./components/legend-swatch";
+import { Stat } from "./components/stat";
 import { useHabitHistoryModel } from "./hooks/use-habit-history-model";
 import { styles } from "./styles";
 
 const HISTORY_WEEKS = 52;
-
-function LegendSwatch({ color, label }: { color: string; label: string }) {
-  return (
-    <View style={styles.legendItem}>
-      <View style={[styles.legendSwatch, { backgroundColor: color }]} />
-      <Text variant="caption" secondary>
-        {label}
-      </Text>
-    </View>
-  );
-}
-
-function Stat({ value, label }: { value: string; label: string }) {
-  return (
-    <View style={styles.stat}>
-      <Text variant="title2" style={styles.statNumber}>
-        {value}
-      </Text>
-      <Text variant="footnote" secondary>
-        {label}
-      </Text>
-    </View>
-  );
-}
 
 /** Full-year consistency, reached with a zoom transition from the habit card. */
 export function HabitHistoryScreen() {
