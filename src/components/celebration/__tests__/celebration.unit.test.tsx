@@ -3,7 +3,7 @@ import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
 import { symbolView } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
-import { accent, success } from "@/theme/colors";
+import { accent, success } from "@/theme";
 import { act } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 import type { TestInstance } from "test-renderer";

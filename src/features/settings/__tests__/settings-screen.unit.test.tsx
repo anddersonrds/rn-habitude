@@ -5,7 +5,7 @@ import ptBR from "@/i18n/locales/pt-br";
 import { getSetting } from "@/lib/db";
 import { createHabit, deleteAllData, getAppState } from "@/lib/store";
 import type { HabitInput } from "@/lib/types";
-import { accent } from "@/theme/colors";
+import { accent } from "@/theme";
 import { chooseOption, pressButton } from "@/test-utils/native-events";
 import { modifier, nativeView, nativeViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";

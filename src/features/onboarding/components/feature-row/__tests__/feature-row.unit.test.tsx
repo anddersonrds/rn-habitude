@@ -1,7 +1,7 @@
 import { FeatureRow } from "@/features/onboarding/components/feature-row";
 import { symbolViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
-import { accent } from "@/theme/colors";
+import { accent } from "@/theme";
 
 const props = {
   symbol: "flame.fill",

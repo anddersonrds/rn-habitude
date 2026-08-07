@@ -1,4 +1,4 @@
-import { layout } from "@/theme/spacing";
+import { layout } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({

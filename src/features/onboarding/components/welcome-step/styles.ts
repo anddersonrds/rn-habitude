@@ -1,4 +1,4 @@
-import { appFontFamily } from "@/theme/typography";
+import { appFontFamily } from "@/theme";
 import { Color } from "expo-router";
 import { StyleSheet } from "react-native";
 

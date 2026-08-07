@@ -1,7 +1,7 @@
 import { HeatMap } from "@/components/heat-map";
 import { Text } from "@/components/ui/text";
 import { formatCount, formatPercent } from "@/lib/numbers";
-import { foregroundOnColor } from "@/theme/colors";
+import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
 import { Color, Link, Stack } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { PressableScale } from "pressto";

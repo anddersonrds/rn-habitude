@@ -1,4 +1,4 @@
-import { layout } from "@/theme/spacing";
+import { layout } from "@/theme";
 import { Color } from "expo-router";
 import { StyleSheet } from "react-native";
 

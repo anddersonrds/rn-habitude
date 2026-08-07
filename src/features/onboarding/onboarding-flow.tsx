@@ -1,5 +1,6 @@
 import { Text } from "@/components/ui/text";
-import { accent, foregroundOnColor } from "@/theme/colors";
+import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
+import { accent } from "@/theme";
 import { GlassView } from "expo-glass-effect";
 import { Color } from "expo-router";
 import { SymbolView } from "expo-symbols";

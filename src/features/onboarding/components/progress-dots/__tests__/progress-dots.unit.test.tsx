@@ -1,6 +1,6 @@
 import { ProgressDots } from "@/features/onboarding/components/progress-dots";
 import { renderWithProviders } from "@/test-utils/render";
-import { accent } from "@/theme/colors";
+import { accent } from "@/theme";
 import { Color } from "expo-router";
 import { StyleSheet } from "react-native";
 import type { TestInstance } from "test-renderer";

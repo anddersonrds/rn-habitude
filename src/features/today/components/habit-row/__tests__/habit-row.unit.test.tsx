@@ -6,7 +6,7 @@ import { makeHabit } from "@/test-utils/factories";
 import { pressButton, tapNative } from "@/test-utils/native-events";
 import { modifier, nativeView, nativeViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
-import { accent, success } from "@/theme/colors";
+import { accent, success } from "@/theme";
 import { Host } from "@expo/ui/swift-ui";
 import type { TestInstance } from "test-renderer";
 

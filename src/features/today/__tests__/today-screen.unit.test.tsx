@@ -9,7 +9,7 @@ import {
   getAppState,
 } from "@/lib/store";
 import type { Habit, HabitInput } from "@/lib/types";
-import { accent, success } from "@/theme/colors";
+import { accent, success } from "@/theme";
 import { pressButton, tapNative } from "@/test-utils/native-events";
 import { modifier, nativeView, nativeViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";

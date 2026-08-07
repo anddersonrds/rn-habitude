@@ -1,4 +1,4 @@
-import { accent } from "@/theme/colors";
+import { accent } from "@/theme";
 import { Color } from "expo-router";
 import { View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";

@@ -1,6 +1,6 @@
 import { Text } from "@/components/ui/text";
 import { HABIT_ICONS, WEEKDAY_KEYS } from "@/constants/habit-options";
-import { foregroundOnColor } from "@/theme/colors";
+import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
 import {
   DatePicker,
   Host,

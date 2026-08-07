@@ -1,5 +1,5 @@
 import { Text } from "@/components/ui/text";
-import { accent, success } from "@/theme/colors";
+import { accent, success } from "@/theme";
 import { GlassView } from "expo-glass-effect";
 import { SymbolView } from "expo-symbols";
 import { useEffect } from "react";

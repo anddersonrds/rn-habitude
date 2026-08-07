@@ -1,5 +1,5 @@
 import { Text } from "@/components/ui/text";
-import { accent } from "@/theme/colors";
+import { accent } from "@/theme";
 import { SymbolView } from "expo-symbols";
 import { View } from "react-native";
 import Animated, { FadeInUp, useReducedMotion } from "react-native-reanimated";

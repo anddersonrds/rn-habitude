@@ -4,7 +4,7 @@ import { useLanguageSwitch } from "@/i18n/switching";
 import { haptic } from "@/lib/haptics";
 import { useNotificationActions } from "@/lib/notification-actions";
 import { useAppState } from "@/lib/store";
-import { getNavigationTheme } from "@/theme/colors";
+import { getNavigationTheme } from "@/theme";
 import { Color, router, Stack } from "expo-router";
 import { ThemeProvider } from "expo-router/react-navigation";
 import { StatusBar } from "expo-status-bar";

@@ -1,6 +1,6 @@
 import { Text } from "@/components/ui/text";
 import { renderWithProviders } from "@/test-utils/render";
-import { appFontFamily } from "@/theme/typography";
+import { appFontFamily } from "@/theme";
 import { Color } from "expo-router";
 import type { ReactElement } from "react";
 import { StyleSheet } from "react-native";

@@ -1,6 +1,6 @@
 import { Celebration } from "@/components/celebration";
 import { EmptyState } from "@/components/empty-state";
-import { accent, success } from "@/theme/colors";
+import { accent, success } from "@/theme";
 import {
   Host,
   HStack,

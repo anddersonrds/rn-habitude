@@ -1,5 +1,4 @@
-import { layout } from "@/theme/spacing";
-import { appFontFamily } from "@/theme/typography";
+import { appFontFamily, layout } from "@/theme";
 import { Color } from "expo-router";
 import { StyleSheet } from "react-native";
 

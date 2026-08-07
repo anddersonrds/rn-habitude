@@ -1,4 +1,4 @@
-import { accent, success } from "@/theme/colors";
+import { accent, success } from "@/theme";
 import {
   Button,
   HStack,

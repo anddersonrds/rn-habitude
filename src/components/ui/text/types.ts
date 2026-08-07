@@ -1,4 +1,4 @@
-import type { typography } from "@/theme/typography";
+import type { typography } from "@/theme";
 import type { TextProps } from "react-native";
 
 export type Variant = keyof typeof typography;
