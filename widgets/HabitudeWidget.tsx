@@ -48,9 +48,9 @@ const HabitudeWidgetView = (
   const background = isDark ? "#1C1C1E" : "#FFFFFF";
   const label = isDark ? "#FFFFFF" : "#000000";
   const neutral = isDark ? "#FFFFFF" : "#000000";
-  // A hand-maintained copy of `appConfig.accent`. It cannot be imported: the
-  // NOTE below means nothing from module scope reaches this function at
-  // runtime. Keep the two in step.
+  // A hand-maintained copy of `theme/colors.ts`'s `accent`. It cannot be
+  // imported: the NOTE below means nothing from module scope reaches this
+  // function at runtime. Keep the two in step.
   const accent = "#32ADE6";
 
   // NOTE: this function is serialized by the 'widget' directive and runs inside

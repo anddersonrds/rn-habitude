@@ -1,4 +1,3 @@
-import { appConfig } from "@/config/app";
 import { Color } from "expo-router";
 import {
   DarkTheme,
@@ -22,7 +21,15 @@ export const colors: Record<
   separator: Color.ios.separator,
 };
 
-export const accent = appConfig.accent;
+/**
+ * The app tint. Apple's `systemCyan`, kept as a hex string so it can be
+ * composed with alpha suffixes and passed to native tint props.
+ *
+ * It is deliberately the same hex as the cyan habit color, so a cyan habit
+ * matches app chrome. `widgets/HabitudeWidget.tsx` holds a copy of this value
+ * that has to be updated by hand; it cannot import the token.
+ */
+export const accent = "#32ADE6";
 
 /**
  * The one green that means "complete". Apple's `systemGreen`, shared by the
