@@ -131,7 +131,7 @@ export function useSettingsModel() {
       loadSampleData(tSampleData);
       haptic.success();
     };
-    /* Nothing to lose, so nothing to confirm. */
+    /* On an empty list the samples can't crowd out anything the user made. */
     if (habits.length === 0) {
       run();
       return;
