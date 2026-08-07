@@ -1,4 +1,4 @@
-import { HabitFormScreen } from "@/components/screens/habit-form/HabitFormScreen";
+import { HabitFormScreen } from "@/components/screens/habit-form";
 import {
   DEFAULT_HABIT_COLOR,
   DEFAULT_HABIT_ICON,
@@ -7,7 +7,7 @@ import {
 } from "@/constants/habit-options";
 import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
-import ptBR from "@/i18n/locales/pt-BR";
+import ptBR from "@/i18n/locales/pt-br";
 import { createHabit, deleteAllData, getAppState } from "@/lib/store";
 import type { HabitInput } from "@/lib/types";
 import { foregroundOnColor } from "@/theme/colors";

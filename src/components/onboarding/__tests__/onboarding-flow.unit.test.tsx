@@ -1,8 +1,8 @@
-import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
-import { STEP_COUNT } from "@/components/onboarding/useOnboardingModel";
+import { OnboardingFlow } from "@/components/onboarding";
+import { STEP_COUNT } from "@/components/onboarding/hooks/use-onboarding-model";
 import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
-import ptBR from "@/i18n/locales/pt-BR";
+import ptBR from "@/i18n/locales/pt-br";
 import { symbolViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
 import { accent } from "@/theme/colors";

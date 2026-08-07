@@ -1,4 +1,4 @@
-import { useSettingsModel } from "@/components/screens/settings/useSettingsModel";
+import { useSettingsModel } from "@/components/screens/settings/hooks/use-settings-model";
 import { formatCount } from "@/lib/numbers";
 import { accent, colors } from "@/theme/colors";
 import {

@@ -2,7 +2,7 @@ import HabitHistoryScreen from "@/app/habit-history";
 import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
 import fr from "@/i18n/locales/fr";
-import ptBR from "@/i18n/locales/pt-BR";
+import ptBR from "@/i18n/locales/pt-br";
 import {
   completeHabit,
   createHabit,

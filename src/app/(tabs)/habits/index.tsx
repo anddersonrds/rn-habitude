@@ -1,3 +1,3 @@
-import { HabitsScreen } from "@/components/screens/habits/HabitsScreen";
+import { HabitsScreen } from "@/components/screens/habits";
 
 export default HabitsScreen;
