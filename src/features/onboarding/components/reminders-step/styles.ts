@@ -1,4 +1,4 @@
-import { Color } from "expo-router";
+import { colors } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 22,
     borderCurve: "continuous",
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
+    backgroundColor: colors.secondaryBackground,
     boxShadow: "0 8px 24px rgba(0, 0, 0, 0.08)",
   },
   notificationHeader: {
@@ -65,6 +65,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 9,
     borderRadius: 20,
-    backgroundColor: Color.ios.tertiarySystemFill,
+    backgroundColor: colors.fill,
   },
 });

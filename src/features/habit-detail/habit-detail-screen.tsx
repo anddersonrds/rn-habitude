@@ -2,7 +2,8 @@ import { HeatMap } from "@/components/heat-map";
 import { Text } from "@/components/ui/text";
 import { formatCount, formatPercent } from "@/lib/numbers";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
-import { Color, Link, Stack } from "expo-router";
+import { colors } from "@/theme";
+import { Link, Stack } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { PressableScale } from "pressto";
 import { useTranslation } from "react-i18next";
@@ -76,7 +77,7 @@ export function HabitDetailScreen() {
                 styles.todayButton,
                 {
                   backgroundColor: doneToday
-                    ? Color.ios.tertiarySystemFill
+                    ? colors.fill
                     : habit.color,
                 },
               ]}
@@ -85,7 +86,7 @@ export function HabitDetailScreen() {
                 name={doneToday ? "arrow.uturn.backward" : "checkmark"}
                 size={17}
                 tintColor={
-                  doneToday ? Color.ios.label : foregroundOnColor(habit.color)
+                  doneToday ? colors.text : foregroundOnColor(habit.color)
                 }
               />
               <Text
@@ -104,7 +105,7 @@ export function HabitDetailScreen() {
               <SymbolView
                 name="calendar.badge.clock"
                 size={19}
-                tintColor={Color.ios.secondaryLabel}
+                tintColor={colors.secondaryText}
               />
             </View>
             <View style={styles.restCopy}>
@@ -131,7 +132,7 @@ export function HabitDetailScreen() {
                 name="flame.fill"
                 size={22}
                 tintColor={
-                  streaks.current > 0 ? habit.color : Color.ios.tertiaryLabel
+                  streaks.current > 0 ? habit.color : colors.tertiaryText
                 }
               />
             </View>
@@ -186,7 +187,7 @@ export function HabitDetailScreen() {
                   <SymbolView
                     name="arrow.up.left.and.arrow.down.right"
                     size={13}
-                    tintColor={Color.ios.tertiaryLabel}
+                    tintColor={colors.tertiaryText}
                   />
                 </View>
                 <HeatMap

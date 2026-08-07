@@ -1,11 +1,10 @@
-import { layout } from "@/theme";
-import { Color } from "expo-router";
+import { colors, layout } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.ios.systemGroupedBackground,
+    backgroundColor: colors.groupedBackground,
   },
   content: {
     padding: layout.screenPadding,
@@ -46,7 +45,7 @@ export const styles = StyleSheet.create({
     padding: 14,
     borderRadius: layout.cardRadius,
     borderCurve: "continuous",
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
+    backgroundColor: colors.secondaryBackground,
   },
   restIcon: {
     width: 42,
@@ -55,7 +54,7 @@ export const styles = StyleSheet.create({
     borderCurve: "continuous",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Color.ios.tertiarySystemFill,
+    backgroundColor: colors.fill,
   },
   restCopy: {
     flex: 1,
@@ -63,7 +62,7 @@ export const styles = StyleSheet.create({
   },
   statsCard: {
     flexDirection: "row",
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
+    backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
     borderCurve: "continuous",
     overflow: "hidden",
@@ -97,7 +96,7 @@ export const styles = StyleSheet.create({
   },
   statsDivider: {
     width: StyleSheet.hairlineWidth,
-    backgroundColor: Color.ios.separator,
+    backgroundColor: colors.separator,
     marginVertical: 12,
   },
   secondaryStats: {
@@ -107,11 +106,11 @@ export const styles = StyleSheet.create({
   },
   secondaryDivider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: Color.ios.separator,
+    backgroundColor: colors.separator,
     marginLeft: 38,
   },
   heatCard: {
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
+    backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
     borderCurve: "continuous",
     padding: 16,

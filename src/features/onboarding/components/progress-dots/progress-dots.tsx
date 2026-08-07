@@ -1,5 +1,4 @@
-import { accent } from "@/theme";
-import { Color } from "expo-router";
+import { accent, colors } from "@/theme";
 import { View } from "react-native";
 import Animated, {
   LinearTransition,
@@ -24,7 +23,7 @@ export function ProgressDots({ currentIndex, stepCount }: Props) {
             { width: index === currentIndex ? 24 : 7 },
             index <= currentIndex
               ? { backgroundColor: accent }
-              : { backgroundColor: Color.ios.tertiarySystemFill },
+              : { backgroundColor: colors.fill },
           ]}
         />
       ))}

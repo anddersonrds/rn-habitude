@@ -5,9 +5,8 @@ import en from "@/i18n/locales/en";
 import ptBR from "@/i18n/locales/pt-br";
 import { symbolViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
-import { accent } from "@/theme";
+import { accent, colors } from "@/theme";
 import { fireEvent } from "@testing-library/react-native";
-import { Color } from "expo-router";
 import { StyleSheet } from "react-native";
 import type { TestInstance } from "test-renderer";
 
@@ -215,8 +214,8 @@ describe("the progress dots", () => {
 
     expect(tints).toEqual([
       accent,
-      Color.ios.tertiarySystemFill,
-      Color.ios.tertiarySystemFill,
+      colors.fill,
+      colors.fill,
     ]);
   });
 });

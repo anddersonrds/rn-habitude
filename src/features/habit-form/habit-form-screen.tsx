@@ -1,6 +1,7 @@
 import { Text } from "@/components/ui/text";
 import { HABIT_ICONS, WEEKDAY_KEYS } from "@/constants/habit-options";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
+import { colors } from "@/theme";
 import {
   DatePicker,
   Host,
@@ -18,7 +19,7 @@ import {
   tag,
   tint,
 } from "@expo/ui/swift-ui/modifiers";
-import { Color, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { PressableScale } from "pressto";
 import { useTranslation } from "react-i18next";
@@ -108,7 +109,7 @@ export function HabitFormScreen() {
               value={name}
               onChangeText={setName}
               placeholder={t("namePlaceholder")}
-              placeholderTextColor={Color.ios.tertiaryLabel as never}
+              placeholderTextColor={colors.tertiaryText as never}
               accessibilityLabel={t("nameLabel")}
               autoFocus={!isEditing}
               clearButtonMode="while-editing"
@@ -168,7 +169,7 @@ export function HabitFormScreen() {
                           {
                             backgroundColor: selected
                               ? color
-                              : Color.ios.tertiarySystemFill,
+                              : colors.fill,
                           },
                         ]}
                       >
@@ -177,7 +178,7 @@ export function HabitFormScreen() {
                           style={{
                             color: selected
                               ? foregroundOnColor(color)
-                              : (Color.ios.secondaryLabel as never),
+                              : (colors.secondaryText as never),
                             fontWeight: "600",
                           }}
                         >
@@ -248,7 +249,7 @@ export function HabitFormScreen() {
                       {
                         backgroundColor: selected
                           ? color
-                          : Color.ios.tertiarySystemFill,
+                          : colors.fill,
                       },
                     ]}
                   >
@@ -256,7 +257,7 @@ export function HabitFormScreen() {
                       name={symbol}
                       size={21}
                       tintColor={
-                        selected ? foregroundOnColor(color) : Color.ios.secondaryLabel
+                        selected ? foregroundOnColor(color) : colors.secondaryText
                       }
                     />
                   </Pressable>
@@ -311,7 +312,7 @@ export function HabitFormScreen() {
 
           {isEditing && (
             <PressableScale onPress={confirmDelete} style={styles.deleteButton}>
-              <Text variant="headline" style={{ color: Color.ios.systemRed }}>
+              <Text variant="headline" style={{ color: colors.destructive }}>
                 {t("deleteHabit")}
               </Text>
             </PressableScale>

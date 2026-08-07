@@ -1,7 +1,6 @@
 import { HeatPreview } from "@/features/onboarding/components/heat-preview";
 import { renderWithProviders } from "@/test-utils/render";
-import { accent } from "@/theme";
-import { Color } from "expo-router";
+import { accent, colors } from "@/theme";
 import { StyleSheet } from "react-native";
 import type { TestInstance } from "test-renderer";
 
@@ -39,7 +38,7 @@ describe("HeatPreview", () => {
     const empty = cellColors(container).filter((color) => color !== accent);
 
     expect(empty).toEqual(
-      new Array(empty.length).fill(Color.ios.tertiarySystemFill),
+      new Array(empty.length).fill(colors.fill),
     );
   });
 

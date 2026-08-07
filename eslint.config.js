@@ -53,16 +53,14 @@ module.exports = defineConfig([
   {
     files: ['src/components/**'],
     rules: {
-      /* `Color` is a theme value that happens to ship with the router. */
       'no-restricted-imports': [
         'error',
         {
           paths: [
             {
               name: 'expo-router',
-              allowImportNames: ['Color'],
               message:
-                'A shared component does not navigate. Take a handler as a prop and let the feature route.',
+                'A shared component does not navigate. Take a handler as a prop and let the feature route. `Color` is a theme value: import it from `@/theme`.',
             },
           ],
         },

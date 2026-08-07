@@ -1,11 +1,10 @@
-import { layout } from "@/theme";
-import { Color } from "expo-router";
+import { colors, layout } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.ios.systemGroupedBackground,
+    backgroundColor: colors.groupedBackground,
   },
   content: {
     padding: layout.screenPadding,
@@ -13,7 +12,7 @@ export const styles = StyleSheet.create({
     gap: 16,
   },
   card: {
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
+    backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
     borderCurve: "continuous",
     padding: 16,
@@ -41,13 +40,13 @@ export const styles = StyleSheet.create({
   },
   statsCard: {
     flexDirection: "row",
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
+    backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
     borderCurve: "continuous",
     paddingVertical: 16,
   },
   statDivider: {
     width: StyleSheet.hairlineWidth,
-    backgroundColor: Color.ios.separator,
+    backgroundColor: colors.separator,
   },
 });

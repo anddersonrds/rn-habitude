@@ -1,8 +1,7 @@
 import { Text } from "@/components/ui/text";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
-import { accent } from "@/theme";
+import { accent, colors } from "@/theme";
 import { GlassView } from "expo-glass-effect";
-import { Color } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { PressableScale } from "pressto";
 import { useTranslation } from "react-i18next";
@@ -37,7 +36,7 @@ export function OnboardingFlow() {
                 name="chevron.left"
                 size={18}
                 weight="semibold"
-                tintColor={Color.ios.label}
+                tintColor={colors.text}
               />
             </PressableScale>
           )}

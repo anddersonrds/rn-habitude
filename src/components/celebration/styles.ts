@@ -1,4 +1,4 @@
-import { Color } from "expo-router";
+import { colors } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -51,7 +51,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 26,
     borderCurve: "continuous",
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
+    backgroundColor: colors.secondaryBackground,
     shadowColor: "#000000",
     shadowOpacity: 0.15,
     shadowRadius: 24,

@@ -3,7 +3,7 @@ import { weekStartOf } from "@/i18n/i18next";
 import { todayKey, weekdayInitials } from "@/lib/dates";
 import { heatCells, heatMonthLabels, type HeatCell } from "@/lib/streaks";
 import type { Habit } from "@/lib/types";
-import { Color } from "expo-router";
+import { colors } from "@/theme";
 import { useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
@@ -26,9 +26,9 @@ function cellColor(cell: HeatCell, habit: Habit, today: string) {
       /* The day isn't over, so today reads as a faded accent, not a miss. */
       return cell.date === today
         ? `${habit.color}55`
-        : Color.ios.tertiarySystemFill;
+        : colors.fill;
     case "unscheduled":
-      return Color.ios.quaternarySystemFill;
+      return colors.subtleFill;
     case "empty":
       return "transparent";
   }

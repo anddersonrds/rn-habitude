@@ -4,16 +4,35 @@ import type { ColorValue } from "react-native";
 /**
  * Semantic system colors. Using these instead of hard-coded values is what
  * makes dark mode free and keeps the app looking native.
+ *
+ * They ship inside `expo-router`, which is a routing package, so this is the
+ * one file allowed to reach for them. Everything else asks `theme/`.
  */
 export const colors: Record<
-  "background" | "secondaryBackground" | "text" | "secondaryText" | "separator",
+  | "background"
+  | "groupedBackground"
+  | "secondaryBackground"
+  | "text"
+  | "secondaryText"
+  | "tertiaryText"
+  | "mutedText"
+  | "fill"
+  | "subtleFill"
+  | "separator"
+  | "destructive",
   ColorValue
 > = {
   background: Color.ios.systemBackground,
+  groupedBackground: Color.ios.systemGroupedBackground,
   secondaryBackground: Color.ios.secondarySystemGroupedBackground,
   text: Color.ios.label,
   secondaryText: Color.ios.secondaryLabel,
+  tertiaryText: Color.ios.tertiaryLabel,
+  mutedText: Color.ios.systemGray,
+  fill: Color.ios.tertiarySystemFill,
+  subtleFill: Color.ios.quaternarySystemFill,
   separator: Color.ios.separator,
+  destructive: Color.ios.systemRed,
 };
 
 /**

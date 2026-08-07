@@ -4,8 +4,8 @@ import { useLanguageSwitch } from "@/i18n/switching";
 import { haptic } from "@/lib/haptics";
 import { useNotificationActions } from "@/lib/notification-actions";
 import { useAppState } from "@/lib/store";
-import { getNavigationTheme } from "@/theme";
-import { Color, router, Stack } from "expo-router";
+import { colors, getNavigationTheme } from "@/theme";
+import { router, Stack } from "expo-router";
 import { ThemeProvider } from "expo-router/react-navigation";
 import { StatusBar } from "expo-status-bar";
 import { PressablesConfig } from "pressto";
@@ -91,7 +91,7 @@ function AppStack() {
           // reminder) is reachable immediately instead of behind a manual drag.
           sheetAllowedDetents: [1],
           sheetCornerRadius: 28,
-          contentStyle: { backgroundColor: Color.ios.systemGroupedBackground },
+          contentStyle: { backgroundColor: colors.groupedBackground },
         }}
       />
     </Stack>
