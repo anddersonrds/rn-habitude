@@ -1,10 +1,5 @@
 import { Text } from "@/components/ui/text";
-import {
-  HABIT_COLORS,
-  HABIT_ICONS,
-  WEEKDAY_KEYS,
-} from "@/constants/habit-options";
-import { layout } from "@/constants/layout";
+import { HABIT_ICONS, WEEKDAY_KEYS } from "@/constants/habit-options";
 import { foregroundOnColor } from "@/theme/colors";
 import {
   DatePicker,
@@ -27,14 +22,7 @@ import { Color, Stack } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { PressableScale } from "pressto";
 import { useTranslation } from "react-i18next";
-import {
-  Keyboard,
-  Pressable,
-  Switch,
-  TextInput,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { Keyboard, Pressable, Switch, TextInput, View } from "react-native";
 import {
   KeyboardAwareScrollView,
   KeyboardStickyView,
@@ -44,40 +32,18 @@ import Animated, {
   FadeOutUp,
   LinearTransition,
 } from "react-native-reanimated";
+import { useColorGrid } from "./hooks/use-color-grid";
 import { useHabitFormModel } from "./hooks/use-habit-form-model";
-import {
-  COLOR_CARD_PADDING,
-  COLOR_GAP_MIN,
-  COLOR_RING,
-  styles,
-} from "./styles";
+import { styles } from "./styles";
 
 const CONDITIONAL_LAYOUT = LinearTransition.duration(200);
 const CONDITIONAL_ENTER = FadeInDown.duration(180);
 const CONDITIONAL_EXIT = FadeOutUp.duration(140);
 
-/**
- * How many swatches fit per row, and the gap that makes a full row span the
- * card exactly. Applying that same gap to a partial row is the whole point:
- * `justifyContent: "space-between"` spreads a partial row across the full
- * width, which is what pushed two leftover swatches to opposite edges.
- */
-function colorGridMetrics(windowWidth: number) {
-  const width = windowWidth - layout.screenPadding * 2 - COLOR_CARD_PADDING * 2;
-  const columns = Math.max(
-    1,
-    Math.floor((width + COLOR_GAP_MIN) / (COLOR_RING + COLOR_GAP_MIN)),
-  );
-  const gap =
-    columns > 1 ? (width - columns * COLOR_RING) / (columns - 1) : COLOR_GAP_MIN;
-
-  return { columns, gap };
-}
-
 export function HabitFormScreen() {
   const { t } = useTranslation(["habitForm", "common"]);
   const { t: tSchedule } = useTranslation("schedule");
-  const { width: windowWidth } = useWindowDimensions();
+  const { rows: colorRows, gap: colorGap } = useColorGrid();
   const {
     isEditing,
     name,
@@ -100,15 +66,6 @@ export function HabitFormScreen() {
     cancel,
     confirmDelete,
   } = useHabitFormModel();
-
-  // Explicit rows rather than `flexWrap`: the derived gap makes a full row
-  // exactly the container width, and whether flexbox wraps at exact equality
-  // is a floating point coin flip.
-  const { columns: colorColumns, gap: colorGap } = colorGridMetrics(windowWidth);
-  const colorRows = Array.from(
-    { length: Math.ceil(HABIT_COLORS.length / colorColumns) },
-    (_, row) => HABIT_COLORS.slice(row * colorColumns, (row + 1) * colorColumns),
-  );
 
   return (
     <>
