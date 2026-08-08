@@ -5,6 +5,7 @@ import {
   setLanguage,
 } from "@/i18n/i18next";
 import { switchLanguage } from "@/i18n/switching";
+import { alertNotificationsOff } from "@/lib/alerts";
 import { haptic } from "@/lib/haptics";
 import {
   ensureNotificationPermission,
@@ -115,10 +116,12 @@ export function useSettingsModel() {
     const granted = await ensureNotificationPermission();
     refreshPermission();
     if (!granted) {
-      Alert.alert(t("notificationsOffTitle"), t("notificationsOffBody"), [
-        { text: t("common:cancel"), style: "cancel" },
-        { text: t("openSettings"), onPress: openSystemSettings },
-      ]);
+      alertNotificationsOff({
+        title: t("notificationsOffTitle"),
+        body: t("notificationsOffBody"),
+        dismiss: t("common:cancel"),
+        openSettings: t("openSettings"),
+      });
       return;
     }
     await sendTestNotification();

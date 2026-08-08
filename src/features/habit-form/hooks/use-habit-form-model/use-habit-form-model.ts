@@ -3,13 +3,14 @@ import {
   DEFAULT_HABIT_COLOR,
   DEFAULT_HABIT_ICON,
 } from "@/constants/habit-options";
+import { alertNotificationsOff, confirmDeleteHabit } from "@/lib/alerts";
 import { haptic } from "@/lib/haptics";
 import { ensureNotificationPermission } from "@/lib/notifications";
 import { createHabit, deleteHabit, updateHabit, useAppState } from "@/lib/store";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Keyboard, Linking } from "react-native";
+import { Keyboard } from "react-native";
 import type { FrequencyChoice } from "./types";
 
 /** The habit form's two modes, as the screen asks about them. */
@@ -34,7 +35,8 @@ function dateToTime(date: Date): string {
  * every action the form can take, so the SwiftUI view stays a thin render layer.
  */
 export function useHabitFormModel() {
-  const { t } = useTranslation(["habitForm", "common"]);
+  const { t } = useTranslation("habitForm");
+  const { t: tCommon } = useTranslation("common");
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { habits } = useAppState();
   const editing = id ? habits.find((habit) => habit.id === id) : undefined;
@@ -128,33 +130,21 @@ export function useHabitFormModel() {
       return;
     }
 
-    Alert.alert(t("notificationsOffTitle"), t("notificationsOffBody"), [
-      { text: t("notNow"), style: "cancel" },
-      {
-        text: t("openSettings"),
-        onPress: () => void Linking.openURL("app-settings:"),
-      },
-    ]);
+    alertNotificationsOff({
+      title: t("notificationsOffTitle"),
+      body: t("notificationsOffBody"),
+      dismiss: t("notNow"),
+      openSettings: t("openSettings"),
+    });
   };
 
   const confirmDelete = () => {
     if (!editing) return;
     haptic.warning();
-    Alert.alert(
-      t("common:deleteHabitTitle", { name: editing.name }),
-      t("common:deleteHabitBody"),
-      [
-        { text: t("common:cancel"), style: "cancel" },
-        {
-          text: t("common:delete"),
-          style: "destructive",
-          onPress: () => {
-            deleteHabit(editing.id);
-            leaveForm();
-          },
-        },
-      ],
-    );
+    confirmDeleteHabit(editing.name, tCommon, () => {
+      deleteHabit(editing.id);
+      leaveForm();
+    });
   };
 
   return {

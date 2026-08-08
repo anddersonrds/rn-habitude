@@ -1,3 +1,4 @@
+import { confirmDeleteHabit } from "@/lib/alerts";
 import { formatFullDate, formatTime, todayKey, weekdayOf } from "@/lib/dates";
 import { haptic } from "@/lib/haptics";
 import { deleteHabit, toggleCompletion, useAppState } from "@/lib/store";
@@ -6,7 +7,6 @@ import { isScheduledOn, type Habit } from "@/lib/types";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert } from "react-native";
 import type { TodayItem } from "./types";
 
 /**
@@ -14,7 +14,8 @@ import type { TodayItem } from "./types";
  * the SwiftUI view stays a thin render layer.
  */
 export function useTodayModel() {
-  const { t, i18n } = useTranslation(["today", "common"]);
+  const { t, i18n } = useTranslation("today");
+  const { t: tCommon } = useTranslation("common");
   const state = useAppState();
   const [celebrating, setCelebrating] = useState(false);
 
@@ -75,18 +76,7 @@ export function useTodayModel() {
 
   const confirmDelete = (habit: Habit) => {
     haptic.warning();
-    Alert.alert(
-      t("common:deleteHabitTitle", { name: habit.name }),
-      t("common:deleteHabitBody"),
-      [
-        { text: t("common:cancel"), style: "cancel" },
-        {
-          text: t("common:delete"),
-          style: "destructive",
-          onPress: () => deleteHabit(habit.id),
-        },
-      ],
-    );
+    confirmDeleteHabit(habit.name, tCommon, () => deleteHabit(habit.id));
   };
 
   return {

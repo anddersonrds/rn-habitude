@@ -1,3 +1,4 @@
+import { confirmDeleteHabit } from "@/lib/alerts";
 import { todayKey } from "@/lib/dates";
 import { scheduleLabel } from "@/lib/habits";
 import { haptic } from "@/lib/haptics";
@@ -7,7 +8,6 @@ import type { Habit } from "@/lib/types";
 import { router } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert } from "react-native";
 import type { HabitRowModel } from "./types";
 
 /** Days of history shown in each row's inline heat strip. */
@@ -18,7 +18,8 @@ export const STRIP_DAYS = 21;
  * action the list can take, so the SwiftUI view stays a thin render layer.
  */
 export function useHabitsModel() {
-  const { t } = useTranslation(["habits", "common"]);
+  const { t } = useTranslation("habits");
+  const { t: tCommon } = useTranslation("common");
   const { t: tSchedule } = useTranslation("schedule");
   const state = useAppState();
   const [reordering, setReordering] = useState(false);
@@ -48,18 +49,7 @@ export function useHabitsModel() {
 
   const confirmDelete = (habit: Habit) => {
     haptic.warning();
-    Alert.alert(
-      t("common:deleteHabitTitle", { name: habit.name }),
-      t("common:deleteHabitBody"),
-      [
-        { text: t("common:cancel"), style: "cancel" },
-        {
-          text: t("common:delete"),
-          style: "destructive",
-          onPress: () => deleteHabit(habit.id),
-        },
-      ],
-    );
+    confirmDeleteHabit(habit.name, tCommon, () => deleteHabit(habit.id));
   };
 
   const toggleReordering = () => {
