@@ -1,6 +1,6 @@
 import { Celebration } from "@/components/celebration";
 import { EmptyState } from "@/components/empty-state";
-import { accent, success } from "@/theme";
+import { accent, listChange, success, tints } from "@/theme";
 import {
   Host,
   HStack,
@@ -32,7 +32,6 @@ import { HabitRow } from "./components/habit-row";
 import { useTodayModel } from "./hooks/use-today-model";
 import { styles } from "./styles";
 
-const LIST_CHANGE_ANIMATION = Animation.easeInOut({ duration: 0.22 });
 const PROGRESS_ANIMATION = Animation.spring({ duration: 0.55, bounce: 0.06 });
 const CONTENT_ENTER = {
   type: "timing",
@@ -84,13 +83,13 @@ export function TodayScreen() {
             <List
               modifiers={[
                 listStyle("insetGrouped"),
-                animation(LIST_CHANGE_ANIMATION, model.items.length),
+                animation(listChange, model.items.length),
               ]}
             >
               <Section title={model.dateLabel}>
                 {model.items.length === 0 ? (
                   <HStack spacing={12}>
-                    <Image systemName="moon.zzz.fill" color="#8E8E93" size={25} />
+                    <Image systemName="moon.zzz.fill" color={tints.gray} size={25} />
                     <VStack alignment="leading" spacing={2}>
                       <Text
                         modifiers={[

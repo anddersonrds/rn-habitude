@@ -1,5 +1,6 @@
 import { EmptyState } from "@/components/empty-state";
 import { formatCount } from "@/lib/numbers";
+import { listChange, tints } from "@/theme";
 import {
   Host,
   HStack,
@@ -25,7 +26,6 @@ import { useHabitsModel } from "./hooks/use-habits-model";
 import { styles } from "./styles";
 
 const EDIT_ANIMATION = Animation.spring({ duration: 0.35, bounce: 0.06 });
-const LIST_CHANGE_ANIMATION = Animation.easeInOut({ duration: 0.22 });
 
 /**
  * The whole screen is a native SwiftUI `List`. Reordering is `List.ForEach`'s
@@ -49,7 +49,7 @@ export function HabitsScreen() {
     confirmDelete,
     move,
   } = useHabitsModel();
-  const neutral = useColorScheme() === "dark" ? "#FFFFFF" : "#000000";
+  const neutral = useColorScheme() === "dark" ? tints.white : tints.black;
 
   if (!hasHabits) {
     return (
@@ -98,7 +98,7 @@ export function HabitsScreen() {
             so reordering gets its own mode rather than competing for it. */
             environment("editMode", reordering ? "active" : "inactive"),
             animation(EDIT_ANIMATION, reordering),
-            animation(LIST_CHANGE_ANIMATION, rows.length),
+            animation(listChange, rows.length),
           ]}
         >
           <Section

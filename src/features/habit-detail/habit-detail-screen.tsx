@@ -4,7 +4,7 @@ import { Stat } from "@/components/stat";
 import { Text } from "@/components/ui/text";
 import { formatCount, formatPercent } from "@/lib/numbers";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
-import { colors } from "@/theme";
+import { colors, tints } from "@/theme";
 import { Link, Stack } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { PressableScale } from "pressto";
@@ -157,7 +157,7 @@ export function HabitDetailScreen() {
             <Stat
               layout="row"
               symbol="trophy.fill"
-              color="#FFCC00"
+              color={tints.yellow}
               value={formatCount(streaks.best, i18n.language)}
               label={t("bestStreak")}
             />
@@ -165,7 +165,7 @@ export function HabitDetailScreen() {
             <Stat
               layout="row"
               symbol="chart.bar.fill"
-              color="#007AFF"
+              color={tints.blue}
               value={formatPercent(rate, i18n.language)}
               label={t("monthRate")}
             />
