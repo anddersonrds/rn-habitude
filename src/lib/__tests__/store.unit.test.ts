@@ -541,6 +541,49 @@ describe("notifying the app", () => {
     await unmount();
   });
 
+  it("should re-render only the subscriber whose slice changed", async () => {
+    const { store, testingLibrary } = freshStore();
+    const { act, renderHook } = testingLibrary;
+    const habit = store.createHabit(input());
+    await settle();
+    const renders = { onboarded: 0, completions: 0 };
+    const onboarded = await renderHook(() => {
+      renders.onboarded += 1;
+      return store.useAppState((state) => state.onboarded);
+    });
+    const completions = await renderHook(() => {
+      renders.completions += 1;
+      return store.useAppState((state) => state.completions);
+    });
+    const before = { ...renders };
+
+    await act(async () => {
+      store.toggleCompletion(habit.id, TODAY);
+    });
+
+    expect(renders.onboarded).toBe(before.onboarded);
+    expect(renders.completions).toBeGreaterThan(before.completions);
+    expect(completions.result.current[habit.id]).toEqual({ [TODAY]: true });
+    await onboarded.unmount();
+    await completions.unmount();
+  });
+
+  it("should hand a selector the state the mutation produced", async () => {
+    const { store, testingLibrary } = freshStore();
+    const { act, renderHook } = testingLibrary;
+    const { result, unmount } = await renderHook(() =>
+      store.useAppState((state) => state.habits.length),
+    );
+    expect(result.current).toBe(0);
+
+    await act(async () => {
+      store.createHabit(input());
+    });
+
+    expect(result.current).toBe(1);
+    await unmount();
+  });
+
   it("should stop notifying a subscriber that unmounted", async () => {
     const { store, testingLibrary } = freshStore();
     const { act, renderHook } = testingLibrary;

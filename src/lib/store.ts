@@ -78,8 +78,19 @@ export function getAppState(): AppState {
   return state;
 }
 
-export function useAppState(): AppState {
-  return useSyncExternalStore(subscribe, getAppState);
+export function useAppState(): AppState;
+export function useAppState<T>(selector: (state: AppState) => T): T;
+/*
+The comparison is `Object.is` on what the selector returns, so a selector that
+builds an object or an array inline hands back a fresh reference every render
+and loops. Select a slice, or memoise the derivation at the call site.
+*/
+export function useAppState<T>(
+  selector?: (state: AppState) => T,
+): AppState | T {
+  return useSyncExternalStore(subscribe, () =>
+    selector ? selector(state) : state,
+  );
 }
 
 function newId(): string {
