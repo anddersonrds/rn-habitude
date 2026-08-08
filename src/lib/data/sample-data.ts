@@ -94,7 +94,7 @@ export function seedSampleData(t: TFunction<"sampleData">): Habit[] {
   const created: Habit[] = [];
 
   db.withTransactionSync(() => {
-    // Replace any previous sample run.
+    /* Replace any previous sample run. */
     db.runSync(
       "DELETE FROM completions WHERE habit_id IN (SELECT id FROM habits WHERE id LIKE 'sample-%')",
     );
@@ -126,8 +126,8 @@ export function seedSampleData(t: TFunction<"sampleData">): Habit[] {
         ],
       );
 
-      // Streaky, autocorrelated history: doing it yesterday makes today more
-      // likely, missing makes another miss more likely. Reads human.
+      /* Autocorrelated rather than independent: yesterday's outcome shifts
+      today's odds, which is what makes the seeded history read human. */
       let didYesterday: boolean = true;
       for (let day = start; day <= today; day = addDays(day, 1)) {
         const weekday = new Date(`${day}T12:00:00`).getDay();
