@@ -6,12 +6,11 @@ Guidance for Claude Code working in this repository.
 Portuguese. This file carries the same rules in the form the tooling reads them,
 and points at those documents rather than restating them.
 
-- [docs/arquitetura.md](docs/arquitetura.md) - layers, import direction, folder
-  anatomy, the promotion rule, what lint enforces
-- [docs/convencoes.md](docs/convencoes.md) - naming, types, styles, tokens,
-  state, comments, the alias
-- [docs/testes.md](docs/testes.md) - test kinds, naming, snapshots, gates,
-  coverage
+| Document | Covers |
+| --- | --- |
+| [docs/arquitetura.md](docs/arquitetura.md) | Layers, import direction, folder anatomy, the promotion rule, what lint enforces |
+| [docs/convencoes.md](docs/convencoes.md) | Naming, types, styles, tokens, state, comments, the alias |
+| [docs/testes.md](docs/testes.md) | Test kinds, naming, snapshots, gates, coverage |
 
 ## What this is
 
@@ -36,24 +35,28 @@ bun run test:ci          # with coverage, as CI runs it
 Run the suite through the scripts, never `jest` directly: they pin the locale
 and the timezone, and the suite refuses to start without them.
 
-Before opening a pull request: `bun run typecheck && bun run lint && bun run test:ci`.
+Before opening a pull request:
+
+```bash
+bun run typecheck && bun run lint && bun run test:ci
+```
 
 ## Rules that are easy to get wrong
 
 **Layers import one way down.** `app/` → `features/` → `components/` →
-`theme/ lib/ i18n/ constants/ config/`. A feature never imports another feature.
-A shared component never imports a feature, the data layer, or `expo-router`.
-`lib/utils/` never imports `lib/data/` or `lib/native/`. The first three are
-lint rules; breaking them fails the build.
+`theme/ lib/ i18n/ constants/ config/`. A feature never imports another
+feature. A shared component never imports a feature, the data layer, or
+`expo-router`. `lib/utils/` never imports `lib/data/` or `lib/native/`. The
+first three are lint rules, and breaking them fails the build.
 
-**Nothing but routes and layouts goes under `src/app/`.** expo-router builds its
-table from a `require.context` over the whole directory, so a barrel or a types
-file placed there becomes a route with no default export. The screen itself
-lives in `src/features/`.
+**Nothing but routes and layouts goes under `src/app/`.** expo-router builds
+its table from a `require.context` over the whole directory, so a barrel or a
+types file placed there becomes a route with no default export. The screen
+itself lives in `src/features/`.
 
 **Every file under `src/` is kebab-case.** Exports keep their own convention:
-PascalCase for a component, camelCase for a hook. Rename with `git mv` - the
-default APFS volume is case-insensitive and a plain `mv` leaves a case-only
+PascalCase for a component, camelCase for a hook. Rename with `git mv`. The
+default APFS volume is case-insensitive, so a plain `mv` leaves a case-only
 rename invisible to git while breaking CI.
 
 **A component or a hook is a folder**, holding `index.ts`, the named file,
@@ -72,8 +75,8 @@ speak for itself, one line when possible, always `/* */` and never `//`.
 building an object or array inline loops forever. One selector per slice.
 
 **`Color` from `expo-router` is imported by `src/theme/colors.ts` and nothing
-else.** Lint can only enforce this under `src/components/`; everywhere else it
-is convention.
+else.** Lint can only enforce this under `src/components/`, and everywhere else
+it is convention.
 
 **A test moves with its module in the same commit**, so the suite is green at
 every commit rather than only at the end of a change.
@@ -103,8 +106,10 @@ AI-generated trailer to a commit or a pull request body.
 ## What no gate can see
 
 Four of the seven screens are `@expo/ui`, and the runner never renders SwiftUI.
-A screen can compile, pass the suite, and draw wrong. Reordering, notifications,
-the widget and the version shown in Settings are only verifiable on a device.
+A screen can compile, pass the suite, and draw wrong. Reordering,
+notifications, the widget and the version shown in Settings are only verifiable
+on a device.
+
 When checking the version, restart the dev server rather than reloading
 JavaScript: `Constants.expoConfig` comes from the manifest the dev server
 evaluated at startup.
