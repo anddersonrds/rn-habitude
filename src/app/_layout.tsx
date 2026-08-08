@@ -4,6 +4,7 @@ import { useLanguageSwitch } from "@/i18n/switching";
 import { haptic } from "@/lib/haptics";
 import { useNotificationActions } from "@/lib/notification-actions";
 import { useAppState } from "@/lib/store";
+import { routes } from "@/lib/utils/routes";
 import { colors, getNavigationTheme } from "@/theme";
 import { router, Stack } from "expo-router";
 import { ThemeProvider } from "expo-router/react-navigation";
@@ -54,7 +55,7 @@ function AppStack() {
     // Wait until the protected route switch has mounted the tabs, then present
     // the first habit form on top so it has a real route to return to.
     if (justFinishedOnboarding && habits.length === 0) {
-      router.push("/habit-form");
+      router.push(routes.habitForm());
     }
   }, [habits.length, onboarded]);
 

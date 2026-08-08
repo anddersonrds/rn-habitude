@@ -1,6 +1,7 @@
 import { confirmDeleteHabit } from "@/lib/alerts";
 import { formatFullDate, formatTime, todayKey, weekdayOf } from "@/lib/dates";
 import { haptic } from "@/lib/haptics";
+import { routes } from "@/lib/utils/routes";
 import { deleteHabit, toggleCompletion, useAppState } from "@/lib/store";
 import { computeStreaks } from "@/lib/streaks";
 import { isScheduledOn, type Habit } from "@/lib/types";
@@ -67,12 +68,12 @@ export function useTodayModel() {
 
   const addHabit = () => {
     haptic.tap();
-    router.push("/habit-form");
+    router.push(routes.habitForm());
   };
 
-  const editHabit = (habit: Habit) => router.push(`/habit-form?id=${habit.id}`);
+  const editHabit = (habit: Habit) => router.push(routes.habitForm(habit.id));
 
-  const showHistory = (habit: Habit) => router.push(`/habit/${habit.id}`);
+  const showHistory = (habit: Habit) => router.push(routes.habitDetail(habit.id));
 
   const confirmDelete = (habit: Habit) => {
     haptic.warning();

@@ -4,7 +4,8 @@ import { haptic } from "@/lib/haptics";
 import { toggleCompletion, useAppState } from "@/lib/store";
 import { completionRate, computeStreaks } from "@/lib/streaks";
 import { isScheduledOn } from "@/lib/types";
-import { router, useLocalSearchParams, type Href } from "expo-router";
+import { routes } from "@/lib/utils/routes";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -25,8 +26,6 @@ export function useHabitDetailModel() {
   const today = todayKey();
   const completed = state.completions[habit.id];
   const streaks = computeStreaks(habit, completed, today);
-  /* Annotated because the destination stops being a literal on the way out. */
-  const historyHref: Href = `/habit-history?id=${habit.id}`;
 
   const subtitle = [
     scheduleLabel(habit, tSchedule),
@@ -43,12 +42,12 @@ export function useHabitDetailModel() {
     rate: completionRate(habit, completed, 30, today),
     scheduledToday: isScheduledOn(habit, weekdayOf(today)),
     doneToday: completed?.[today] === true,
-    historyHref,
+    historyHref: routes.habitHistory(habit.id),
     toggleToday: () => {
       const nowDone = toggleCompletion(habit.id, today);
       if (nowDone) void haptic.checkIn();
       else haptic.tap();
     },
-    editHabit: () => router.push(`/habit-form?id=${habit.id}`),
+    editHabit: () => router.push(routes.habitForm(habit.id)),
   };
 }
