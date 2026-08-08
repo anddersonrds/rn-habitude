@@ -8,7 +8,7 @@ import {
   todayKey,
   weekdayInitials,
   weekdayOf,
-} from "@/lib/dates";
+} from "@/lib/utils/dates";
 import { freezeClock, restoreClock } from "@/test-utils/time";
 
 /*

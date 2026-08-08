@@ -1,5 +1,5 @@
 import { confirmDeleteHabit } from "@/lib/native/alerts";
-import { todayKey } from "@/lib/dates";
+import { todayKey } from "@/lib/utils/dates";
 import { scheduleLabel } from "@/lib/domain/habits";
 import { haptic } from "@/lib/native/haptics";
 import { routes } from "@/lib/utils/routes";

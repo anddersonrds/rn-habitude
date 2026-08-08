@@ -3,7 +3,7 @@ import HabitudeWidget, {
   type HabitudeWidgetProps,
   type WidgetHabitRow,
 } from "../../../widgets/HabitudeWidget";
-import { todayKey, weekdayOf } from "../dates";
+import { todayKey, weekdayOf } from "../utils/dates";
 import { computeStreaks, trailingDayStates } from "../domain/streaks";
 import { isScheduledOn, type AppState } from "../domain/types";
 

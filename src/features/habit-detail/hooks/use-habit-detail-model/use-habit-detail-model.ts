@@ -1,4 +1,4 @@
-import { formatTime, todayKey, weekdayOf } from "@/lib/dates";
+import { formatTime, todayKey, weekdayOf } from "@/lib/utils/dates";
 import { scheduleLabel } from "@/lib/domain/habits";
 import { haptic } from "@/lib/native/haptics";
 import { useHabitFromRoute } from "@/lib/hooks/use-habit-from-route";

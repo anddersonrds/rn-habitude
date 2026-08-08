@@ -1,4 +1,4 @@
-import { formatCount, formatPercent } from "@/lib/numbers";
+import { formatCount, formatPercent } from "@/lib/utils/numbers";
 
 /*
 The runner is pinned to `en_US` (see `test-utils/time.ts`), so every case that

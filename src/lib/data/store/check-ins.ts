@@ -1,4 +1,4 @@
-import { weekdayOf } from "../../dates";
+import { weekdayOf } from "../../utils/dates";
 import { db } from "../db";
 import { isScheduledOn } from "../../domain/types";
 import { emit, getAppState } from "./state";

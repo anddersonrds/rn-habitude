@@ -1,5 +1,5 @@
 import { confirmDeleteHabit } from "@/lib/native/alerts";
-import { formatFullDate, formatTime, todayKey, weekdayOf } from "@/lib/dates";
+import { formatFullDate, formatTime, todayKey, weekdayOf } from "@/lib/utils/dates";
 import { haptic } from "@/lib/native/haptics";
 import { routes } from "@/lib/utils/routes";
 import { deleteHabit, toggleCompletion, useAppState } from "@/lib/data/store";

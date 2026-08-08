@@ -1,4 +1,4 @@
-import { todayKey } from "@/lib/dates";
+import { todayKey } from "@/lib/utils/dates";
 import { useHabitFromRoute } from "@/lib/hooks/use-habit-from-route";
 import { useAppState } from "@/lib/data/store";
 import { completionRate, computeStreaks } from "@/lib/domain/streaks";

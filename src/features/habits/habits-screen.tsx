@@ -1,5 +1,5 @@
 import { EmptyState } from "@/components/empty-state";
-import { formatCount } from "@/lib/numbers";
+import { formatCount } from "@/lib/utils/numbers";
 import { listChange, tints } from "@/theme";
 import {
   Host,

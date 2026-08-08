@@ -2,7 +2,7 @@ import { HeatGraph } from "@/components/heat-graph";
 import { useHabitHeat } from "@/components/heat-graph/hooks/use-habit-heat";
 import { Stat } from "@/components/stat";
 import { Text } from "@/components/ui/text";
-import { formatCount, formatPercent } from "@/lib/numbers";
+import { formatCount, formatPercent } from "@/lib/utils/numbers";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
 import { colors, tints } from "@/theme";
 import { Link, Stack } from "expo-router";

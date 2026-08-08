@@ -1,4 +1,4 @@
-import { dateKey, parseKey } from "@/lib/dates";
+import { dateKey, parseKey } from "@/lib/utils/dates";
 import {
   completionRate,
   computeStreaks,

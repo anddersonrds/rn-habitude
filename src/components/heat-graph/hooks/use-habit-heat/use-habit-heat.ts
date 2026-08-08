@@ -1,5 +1,5 @@
 import { weekStartOf } from "@/i18n/i18next";
-import { todayKey, weekdayInitials } from "@/lib/dates";
+import { todayKey, weekdayInitials } from "@/lib/utils/dates";
 import { heatStatusOfCell, type HeatStatus } from "@/lib/domain/heat";
 import { heatCells, heatMonthLabels } from "@/lib/domain/streaks";
 import type { Habit } from "@/lib/domain/types";

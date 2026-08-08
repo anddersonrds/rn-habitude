@@ -3,7 +3,7 @@ the database module applies its schema at import, so each case has to reload it
 rather than close over one instance.
 */
 import i18n from "@/i18n/i18next";
-import { addDays, weekdayOf } from "@/lib/dates";
+import { addDays, weekdayOf } from "@/lib/utils/dates";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock } from "@/test-utils/time";
 
