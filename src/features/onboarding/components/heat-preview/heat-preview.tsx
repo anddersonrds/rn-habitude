@@ -1,5 +1,5 @@
 import { HeatGraph } from "@/components/heat-graph";
-import type { HeatStatus } from "@/lib/heat";
+import type { HeatStatus } from "@/lib/domain/heat";
 import { accent } from "@/theme";
 
 const WEEKS = 9;

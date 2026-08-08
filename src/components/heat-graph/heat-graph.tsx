@@ -1,5 +1,5 @@
 import { Text } from "@/components/ui/text";
-import { heatAppearance, type HeatPalette } from "@/lib/heat";
+import { heatAppearance, type HeatPalette } from "@/lib/domain/heat";
 import { colors } from "@/theme";
 import { useRef } from "react";
 import { ScrollView, View } from "react-native";

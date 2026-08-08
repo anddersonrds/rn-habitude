@@ -9,7 +9,7 @@ import {
   deleteAllData,
   getAppState,
 } from "@/lib/store";
-import type { HabitInput } from "@/lib/types";
+import type { HabitInput } from "@/lib/domain/types";
 import { symbolView } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";

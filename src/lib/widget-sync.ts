@@ -4,8 +4,8 @@ import HabitudeWidget, {
   type WidgetHabitRow,
 } from "../../widgets/HabitudeWidget";
 import { todayKey, weekdayOf } from "./dates";
-import { computeStreaks, trailingDayStates } from "./streaks";
-import { isScheduledOn, type AppState } from "./types";
+import { computeStreaks, trailingDayStates } from "./domain/streaks";
+import { isScheduledOn, type AppState } from "./domain/types";
 
 /**
  * Builds without `HABITUDE_WIDGET=1` ship no widget extension, so the sync is

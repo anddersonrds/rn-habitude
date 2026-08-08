@@ -4,7 +4,7 @@ import {
   parseKey,
   todayKey,
   weekdayOf,
-} from "./dates";
+} from "../dates";
 import { isScheduledOn, type Habit } from "./types";
 
 export type Streaks = { current: number; best: number };

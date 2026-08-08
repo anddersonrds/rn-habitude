@@ -3,7 +3,7 @@ the store loads its state at import, so every case reloads it against its own
 database, and the hook and the router have to come from that same registry to be
 the ones the hook actually calls.
 */
-import type { HabitInput } from "@/lib/types";
+import type { HabitInput } from "@/lib/domain/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 /*

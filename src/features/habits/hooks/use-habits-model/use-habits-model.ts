@@ -1,11 +1,11 @@
 import { confirmDeleteHabit } from "@/lib/alerts";
 import { todayKey } from "@/lib/dates";
-import { scheduleLabel } from "@/lib/habits";
+import { scheduleLabel } from "@/lib/domain/habits";
 import { haptic } from "@/lib/haptics";
 import { routes } from "@/lib/utils/routes";
 import { deleteHabit, reorderHabits, useAppState } from "@/lib/store";
-import { computeStreaks, trailingDayStates } from "@/lib/streaks";
-import type { Habit } from "@/lib/types";
+import { computeStreaks, trailingDayStates } from "@/lib/domain/streaks";
+import type { Habit } from "@/lib/domain/types";
 import { router } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

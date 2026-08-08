@@ -8,7 +8,7 @@ import {
   createHabit,
   deleteAllData,
 } from "@/lib/store";
-import type { HabitInput } from "@/lib/types";
+import type { HabitInput } from "@/lib/domain/types";
 import { renderWithProviders } from "@/test-utils/render";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 import { colors } from "@/theme";

@@ -1,10 +1,10 @@
 import { formatTime, todayKey, weekdayOf } from "@/lib/dates";
-import { scheduleLabel } from "@/lib/habits";
+import { scheduleLabel } from "@/lib/domain/habits";
 import { haptic } from "@/lib/haptics";
 import { useHabitFromRoute } from "@/lib/hooks/use-habit-from-route";
 import { toggleCompletion, useAppState } from "@/lib/store";
-import { completionRate, computeStreaks } from "@/lib/streaks";
-import { isScheduledOn } from "@/lib/types";
+import { completionRate, computeStreaks } from "@/lib/domain/streaks";
+import { isScheduledOn } from "@/lib/domain/types";
 import { routes } from "@/lib/utils/routes";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";

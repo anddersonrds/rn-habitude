@@ -1,6 +1,6 @@
 import i18n from "@/i18n/i18next";
-import { scheduleLabel } from "@/lib/habits";
-import type { Habit } from "@/lib/types";
+import { scheduleLabel } from "@/lib/domain/habits";
+import type { Habit } from "@/lib/domain/types";
 import { makeHabit } from "@/test-utils/factories";
 
 function habit(weekdays: number[]): Habit {

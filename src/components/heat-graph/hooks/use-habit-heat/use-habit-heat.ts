@@ -1,8 +1,8 @@
 import { weekStartOf } from "@/i18n/i18next";
 import { todayKey, weekdayInitials } from "@/lib/dates";
-import { heatStatusOfCell, type HeatStatus } from "@/lib/heat";
-import { heatCells, heatMonthLabels } from "@/lib/streaks";
-import type { Habit } from "@/lib/types";
+import { heatStatusOfCell, type HeatStatus } from "@/lib/domain/heat";
+import { heatCells, heatMonthLabels } from "@/lib/domain/streaks";
+import type { Habit } from "@/lib/domain/types";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import type { HabitHeat } from "./types";

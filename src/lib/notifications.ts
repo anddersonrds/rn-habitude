@@ -1,5 +1,5 @@
 import * as Notifications from "expo-notifications";
-import { isDaily, type Habit } from "./types";
+import { isDaily, type Habit } from "./domain/types";
 
 /** Category attached to habit reminders so they carry an action button. */
 export const HABIT_REMINDER_CATEGORY = "habitReminder";

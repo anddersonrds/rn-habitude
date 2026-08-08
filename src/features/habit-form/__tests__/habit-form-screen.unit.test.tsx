@@ -9,7 +9,7 @@ import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
 import ptBR from "@/i18n/locales/pt-br";
 import { createHabit, deleteAllData, getAppState } from "@/lib/store";
-import type { HabitInput } from "@/lib/types";
+import type { HabitInput } from "@/lib/domain/types";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
 import {
   chooseOption,

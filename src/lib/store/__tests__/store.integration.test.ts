@@ -3,7 +3,7 @@ the store loads its state at import, so each case has to reload it rather than
 close over one instance.
 */
 import i18n from "@/i18n/i18next";
-import type { HabitInput } from "@/lib/types";
+import type { HabitInput } from "@/lib/domain/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 

@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { AppState as RNAppState } from "react-native";
 import { db, getSetting } from "../db";
-import type { AppState, CompletionMap, Habit } from "../types";
+import type { AppState, CompletionMap, Habit } from "../domain/types";
 import { syncWidgetFromState } from "../widget-sync";
 
 type HabitRow = {

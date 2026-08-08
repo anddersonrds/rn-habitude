@@ -1,7 +1,7 @@
 import { todayKey } from "../dates";
 import { db } from "../db";
 import { cancelReminders, scheduleHabitReminders } from "../notifications";
-import type { Habit, HabitInput } from "../types";
+import type { Habit, HabitInput } from "../domain/types";
 import { emit, getAppState } from "./state";
 
 function newId(): string {

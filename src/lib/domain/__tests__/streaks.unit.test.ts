@@ -5,7 +5,7 @@ import {
   heatCells,
   heatMonthLabels,
   trailingDayStates,
-} from "@/lib/streaks";
+} from "@/lib/domain/streaks";
 import { makeHabit } from "@/test-utils/factories";
 import { freezeClock, restoreClock } from "@/test-utils/time";
 

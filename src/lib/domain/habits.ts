@@ -1,5 +1,5 @@
 import { WEEKDAY_KEYS } from "@/constants/habit-options";
-import { isDaily, type Habit } from "@/lib/types";
+import { isDaily, type Habit } from "@/lib/domain/types";
 import type { TFunction } from "i18next";
 
 /**

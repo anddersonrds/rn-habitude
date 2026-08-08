@@ -4,7 +4,7 @@ database, and the hook, the router, the permission check and the haptics have to
 come from that same registry to be the ones the hook actually calls.
 */
 import en from "@/i18n/locales/en";
-import type { HabitInput } from "@/lib/types";
+import type { HabitInput } from "@/lib/domain/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 /*
