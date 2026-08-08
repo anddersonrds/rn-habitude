@@ -1,0 +1,92 @@
+import { useSyncExternalStore } from "react";
+import { AppState as RNAppState } from "react-native";
+import { db, getSetting } from "../db";
+import type { AppState, CompletionMap, Habit } from "../types";
+import { syncWidgetFromState } from "../widget-sync";
+
+type HabitRow = {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  weekdays: string;
+  reminder_time: string | null;
+  created_at: string;
+  notification_ids: string;
+};
+
+function rowToHabit(row: HabitRow): Habit {
+  return {
+    id: row.id,
+    name: row.name,
+    icon: row.icon,
+    color: row.color,
+    weekdays: JSON.parse(row.weekdays),
+    reminderTime: row.reminder_time,
+    createdAt: row.created_at,
+    notificationIds: JSON.parse(row.notification_ids),
+  };
+}
+
+function loadState(): AppState {
+  const habitRows = db.getAllSync<HabitRow>(
+    "SELECT * FROM habits ORDER BY sort_order, created_at, name",
+  );
+  const completionRows = db.getAllSync<{ habit_id: string; date: string }>(
+    "SELECT habit_id, date FROM completions",
+  );
+  const completions: CompletionMap = {};
+  for (const row of completionRows) {
+    (completions[row.habit_id] ??= {})[row.date] = true;
+  }
+  return {
+    habits: habitRows.map(rowToHabit),
+    completions,
+    onboarded: getSetting("onboarded") === "1",
+  };
+}
+
+let state: AppState = loadState();
+const listeners = new Set<() => void>();
+
+/*
+Every domain writes through this one function, so the store stays one listener
+set and one snapshot however many files write to the database.
+*/
+export function emit(): void {
+  state = loadState();
+  for (const listener of listeners) listener();
+  syncWidgetFromState(state);
+}
+
+function subscribe(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
+
+export function getAppState(): AppState {
+  return state;
+}
+
+export function useAppState(): AppState;
+export function useAppState<T>(selector: (state: AppState) => T): T;
+/*
+The comparison is `Object.is` on what the selector returns, so a selector that
+builds an object or an array inline hands back a fresh reference every render
+and loops. Select a slice, or memoise the derivation at the call site.
+*/
+export function useAppState<T>(
+  selector?: (state: AppState) => T,
+): AppState | T {
+  return useSyncExternalStore(subscribe, () =>
+    selector ? selector(state) : state,
+  );
+}
+
+// Push the initial widget snapshot before any route renders.
+emit();
+
+// Re-emit on foreground so the widget's "today" stays fresh across midnight.
+RNAppState.addEventListener("change", (status) => {
+  if (status === "active") emit();
+});
