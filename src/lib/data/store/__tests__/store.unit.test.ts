@@ -31,7 +31,7 @@ const sampleNames = i18n.getFixedT("en", "sampleData");
 const TODAY = "2026-07-29";
 const MONDAY = 1;
 
-type StoreModule = typeof import("@/lib/store");
+type StoreModule = typeof import("@/lib/data/store");
 type WidgetModule = typeof import("@/../widgets/HabitudeWidget");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 
@@ -49,7 +49,7 @@ type Loaded = {
 
 /** Loads the store into whatever module registry is current. */
 function requireStore(): Loaded {
-  const store: StoreModule = require("@/lib/store");
+  const store: StoreModule = require("@/lib/data/store");
   const widget: WidgetModule = require("@/../widgets/HabitudeWidget");
   return {
     store,

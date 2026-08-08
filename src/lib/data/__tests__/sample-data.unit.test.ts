@@ -19,16 +19,16 @@ const inEnglish = i18n.getFixedT("en", "sampleData");
 const inPortuguese = i18n.getFixedT("pt-BR", "sampleData");
 
 type Loaded = {
-  seedSampleData: typeof import("@/lib/sample-data").seedSampleData;
-  db: typeof import("@/lib/db").db;
+  seedSampleData: typeof import("@/lib/data/sample-data").seedSampleData;
+  db: typeof import("@/lib/data/db").db;
 };
 
 function freshSampleData(): Loaded {
   resetDatabase();
   jest.resetModules();
   return {
-    seedSampleData: require("@/lib/sample-data").seedSampleData,
-    db: require("@/lib/db").db,
+    seedSampleData: require("@/lib/data/sample-data").seedSampleData,
+    db: require("@/lib/data/db").db,
   };
 }
 

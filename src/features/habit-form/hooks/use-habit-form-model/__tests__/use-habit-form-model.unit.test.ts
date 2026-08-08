@@ -64,7 +64,7 @@ const WEEKDAYS_ONLY = [1, 2, 3, 4, 5];
 const MONDAY = 1;
 const TUESDAY = 2;
 
-type StoreModule = typeof import("@/lib/store");
+type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/habit-form/hooks/use-habit-form-model");
 type HapticsModule = typeof import("@/lib/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
@@ -93,7 +93,7 @@ function load(): Loaded {
   const i18n = require("@/i18n/i18next") as typeof import("@/i18n/i18next");
   void i18n.default.changeLanguage("en");
   return {
-    store: require("@/lib/store"),
+    store: require("@/lib/data/store"),
     useHabitFormModel: require("@/features/habit-form/hooks/use-habit-form-model")
       .useHabitFormModel,
     haptic: require("@/lib/haptics").haptic,

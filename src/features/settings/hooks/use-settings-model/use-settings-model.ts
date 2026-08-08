@@ -17,7 +17,7 @@ import {
   loadSampleData,
   resetOnboarding,
   useAppState,
-} from "@/lib/store";
+} from "@/lib/data/store";
 import * as Application from "expo-application";
 import Constants from "expo-constants";
 import type * as Notifications from "expo-notifications";

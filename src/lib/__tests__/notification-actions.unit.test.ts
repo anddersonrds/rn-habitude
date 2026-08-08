@@ -1,6 +1,6 @@
 import { MARK_DONE_ACTION } from "@/lib/notifications";
 import { useNotificationActions } from "@/lib/notification-actions";
-import { completeHabit } from "@/lib/store";
+import { completeHabit } from "@/lib/data/store";
 import { freezeClock, restoreClock } from "@/test-utils/time";
 import { renderHook } from "@testing-library/react-native";
 import * as Notifications from "expo-notifications";
@@ -14,7 +14,7 @@ jest.mock("expo-notifications", () => ({
 }));
 
 /* The store is the boundary this hook writes through; its own tests own the SQL. */
-jest.mock("@/lib/store", () => ({ completeHabit: jest.fn() }));
+jest.mock("@/lib/data/store", () => ({ completeHabit: jest.fn() }));
 
 const notifications = jest.mocked(Notifications);
 const complete = jest.mocked(completeHabit);

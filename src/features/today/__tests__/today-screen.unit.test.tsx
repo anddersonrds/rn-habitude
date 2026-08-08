@@ -7,7 +7,7 @@ import {
   createHabit,
   deleteAllData,
   getAppState,
-} from "@/lib/store";
+} from "@/lib/data/store";
 import type { Habit, HabitInput } from "@/lib/domain/types";
 import { accent, success } from "@/theme";
 import { pressButton, tapNative } from "@/test-utils/native-events";

@@ -2,7 +2,7 @@ import { confirmDeleteHabit } from "@/lib/alerts";
 import { formatFullDate, formatTime, todayKey, weekdayOf } from "@/lib/dates";
 import { haptic } from "@/lib/haptics";
 import { routes } from "@/lib/utils/routes";
-import { deleteHabit, toggleCompletion, useAppState } from "@/lib/store";
+import { deleteHabit, toggleCompletion, useAppState } from "@/lib/data/store";
 import { computeStreaks } from "@/lib/domain/streaks";
 import { isScheduledOn, type Habit } from "@/lib/domain/types";
 import { router } from "expo-router";

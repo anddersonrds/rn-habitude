@@ -31,7 +31,7 @@ const YESTERDAY = "2026-07-28";
 const TWO_DAYS_AGO = "2026-07-27";
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
 
-type StoreModule = typeof import("@/lib/store");
+type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/habit-history/hooks/use-habit-history-model");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 
@@ -48,7 +48,7 @@ function load(): Loaded {
   jest.resetModules();
   const routing = require("expo-router");
   return {
-    store: require("@/lib/store"),
+    store: require("@/lib/data/store"),
     useHabitHistoryModel: require("@/features/habit-history/hooks/use-habit-history-model")
       .useHabitHistoryModel,
     router: routing.router,

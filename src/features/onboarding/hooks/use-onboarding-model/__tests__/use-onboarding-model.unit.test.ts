@@ -73,7 +73,7 @@ const ALLOWED = permissionState(true, true);
 const REFUSED = permissionState(false, true);
 const REFUSED_FOR_GOOD = permissionState(false, false);
 
-type StoreModule = typeof import("@/lib/store");
+type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/onboarding/hooks/use-onboarding-model");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 
@@ -85,7 +85,7 @@ function load() {
   const i18n = require("@/i18n/i18next") as typeof import("@/i18n/i18next");
   void i18n.default.changeLanguage("en");
   return {
-    store: require("@/lib/store") as StoreModule,
+    store: require("@/lib/data/store") as StoreModule,
     useOnboardingModel: (
       require("@/features/onboarding/hooks/use-onboarding-model") as ModelModule
     ).useOnboardingModel,

@@ -48,7 +48,7 @@ const TWO_DAYS_AGO = "2026-07-27";
 const MONDAY = [1];
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
 
-type StoreModule = typeof import("@/lib/store");
+type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/habit-detail/hooks/use-habit-detail-model");
 type HapticsModule = typeof import("@/lib/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
@@ -71,7 +71,7 @@ function load(language = "en"): Loaded {
   void i18n.default.changeLanguage(language);
   const routing = require("expo-router");
   return {
-    store: require("@/lib/store"),
+    store: require("@/lib/data/store"),
     useHabitDetailModel: require("@/features/habit-detail/hooks/use-habit-detail-model")
       .useHabitDetailModel,
     haptic: require("@/lib/haptics").haptic,

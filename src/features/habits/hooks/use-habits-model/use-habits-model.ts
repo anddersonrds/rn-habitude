@@ -3,7 +3,7 @@ import { todayKey } from "@/lib/dates";
 import { scheduleLabel } from "@/lib/domain/habits";
 import { haptic } from "@/lib/haptics";
 import { routes } from "@/lib/utils/routes";
-import { deleteHabit, reorderHabits, useAppState } from "@/lib/store";
+import { deleteHabit, reorderHabits, useAppState } from "@/lib/data/store";
 import { computeStreaks, trailingDayStates } from "@/lib/domain/streaks";
 import type { Habit } from "@/lib/domain/types";
 import { router } from "expo-router";

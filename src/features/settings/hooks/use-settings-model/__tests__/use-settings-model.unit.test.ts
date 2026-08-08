@@ -104,7 +104,7 @@ const GRANTED: Permission = { granted: true, canAskAgain: false };
 const NOT_ASKED: Permission = { granted: false, canAskAgain: true };
 const DENIED: Permission = { granted: false, canAskAgain: false };
 
-type StoreModule = typeof import("@/lib/store");
+type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/settings/hooks/use-settings-model");
 type HapticsModule = typeof import("@/lib/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
@@ -142,7 +142,7 @@ function load(): Loaded {
     i18n,
     switching: require("@/i18n/switching"),
     reanimated: require("react-native-reanimated"),
-    store: require("@/lib/store"),
+    store: require("@/lib/data/store"),
     useSettingsModel: require("@/features/settings/hooks/use-settings-model")
       .useSettingsModel,
     haptic: require("@/lib/haptics").haptic,

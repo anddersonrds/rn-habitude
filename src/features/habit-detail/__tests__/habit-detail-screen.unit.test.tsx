@@ -8,7 +8,7 @@ import {
   createHabit,
   deleteAllData,
   getAppState,
-} from "@/lib/store";
+} from "@/lib/data/store";
 import type { HabitInput } from "@/lib/domain/types";
 import { symbolView } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";

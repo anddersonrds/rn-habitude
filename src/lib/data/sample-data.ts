@@ -1,7 +1,7 @@
 import type { TFunction } from "i18next";
-import { addDays, todayKey } from "./dates";
+import { addDays, todayKey } from "../dates";
 import { db } from "./db";
-import { isScheduledOn, type Habit } from "./domain/types";
+import { isScheduledOn, type Habit } from "../domain/types";
 
 /** Deterministic PRNG so "Load sample data" always paints the same story. */
 function mulberry32(seed: number): () => number {

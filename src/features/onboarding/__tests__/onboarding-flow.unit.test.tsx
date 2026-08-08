@@ -25,7 +25,7 @@ jest.mock("react-native-reanimated", () => {
 });
 
 /* The flow is what is being rendered; where onboarding is recorded is not. */
-jest.mock("@/lib/store", () => ({ setOnboarded: jest.fn() }));
+jest.mock("@/lib/data/store", () => ({ setOnboarded: jest.fn() }));
 
 jest.mock("@/lib/notifications", () => ({
   getNotificationPermission: jest.fn(async () => UNDETERMINED),
@@ -44,7 +44,7 @@ const { useReducedMotion } = jest.requireMock<{ useReducedMotion: jest.Mock }>(
   "react-native-reanimated",
 );
 const { setOnboarded } = jest.requireMock<{ setOnboarded: jest.Mock }>(
-  "@/lib/store",
+  "@/lib/data/store",
 );
 const notifications = jest.requireMock<{
   getNotificationPermission: jest.Mock;

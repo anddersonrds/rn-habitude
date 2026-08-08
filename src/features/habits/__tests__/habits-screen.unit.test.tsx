@@ -2,7 +2,7 @@ import { HabitsScreen } from "@/features/habits";
 import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
 import ptBR from "@/i18n/locales/pt-br";
-import { completeHabit, createHabit, deleteAllData, getAppState } from "@/lib/store";
+import { completeHabit, createHabit, deleteAllData, getAppState } from "@/lib/data/store";
 import type { Habit, HabitInput } from "@/lib/domain/types";
 import { moveRow, pressButton, tapNative } from "@/test-utils/native-events";
 import { modifier, nativeView, nativeViews } from "@/test-utils/native-views";

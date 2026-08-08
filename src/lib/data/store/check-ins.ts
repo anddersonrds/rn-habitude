@@ -1,6 +1,6 @@
-import { weekdayOf } from "../dates";
+import { weekdayOf } from "../../dates";
 import { db } from "../db";
-import { isScheduledOn } from "../domain/types";
+import { isScheduledOn } from "../../domain/types";
 import { emit, getAppState } from "./state";
 
 /** Returns true when the habit ends up completed. */

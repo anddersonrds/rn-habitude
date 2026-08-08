@@ -56,7 +56,7 @@ const YESTERDAY = "2026-07-28";
 const MONDAY = [1];
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
 
-type StoreModule = typeof import("@/lib/store");
+type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/today/hooks/use-today-model");
 type HapticsModule = typeof import("@/lib/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
@@ -80,7 +80,7 @@ function load(language = "en"): Loaded {
   const i18n = require("@/i18n/i18next") as typeof import("@/i18n/i18next");
   void i18n.default.changeLanguage(language);
   return {
-    store: require("@/lib/store"),
+    store: require("@/lib/data/store"),
     useTodayModel: require("@/features/today/hooks/use-today-model")
       .useTodayModel,
     haptic: require("@/lib/haptics").haptic,

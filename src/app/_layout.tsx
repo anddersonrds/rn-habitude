@@ -3,7 +3,7 @@ import "@/i18n/i18next";
 import { useLanguageSwitch } from "@/i18n/switching";
 import { haptic } from "@/lib/haptics";
 import { useNotificationActions } from "@/lib/notification-actions";
-import { useAppState } from "@/lib/store";
+import { useAppState } from "@/lib/data/store";
 import { routes } from "@/lib/utils/routes";
 import { colors, getNavigationTheme } from "@/theme";
 import { router, Stack } from "expo-router";

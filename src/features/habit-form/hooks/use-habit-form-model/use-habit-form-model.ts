@@ -6,7 +6,7 @@ import {
 import { alertNotificationsOff, confirmDeleteHabit } from "@/lib/alerts";
 import { haptic } from "@/lib/haptics";
 import { ensureNotificationPermission } from "@/lib/notifications";
-import { createHabit, deleteHabit, updateHabit, useAppState } from "@/lib/store";
+import { createHabit, deleteHabit, updateHabit, useAppState } from "@/lib/data/store";
 import { routes } from "@/lib/utils/routes";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";

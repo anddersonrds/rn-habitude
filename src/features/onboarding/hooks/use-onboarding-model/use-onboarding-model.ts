@@ -3,7 +3,7 @@ import {
   ensureNotificationPermission,
   getNotificationPermission,
 } from "@/lib/notifications";
-import { setOnboarded } from "@/lib/store";
+import { setOnboarded } from "@/lib/data/store";
 import type * as Notifications from "expo-notifications";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";

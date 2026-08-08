@@ -68,7 +68,7 @@ const MISSED = 1;
 const DONE = 2;
 const PENDING = 3;
 
-type StoreModule = typeof import("@/lib/store");
+type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/habits/hooks/use-habits-model");
 type HapticsModule = typeof import("@/lib/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
@@ -92,7 +92,7 @@ function load(): Loaded {
   const i18n = require("@/i18n/i18next") as typeof import("@/i18n/i18next");
   void i18n.default.changeLanguage("en");
   return {
-    store: require("@/lib/store"),
+    store: require("@/lib/data/store"),
     useHabitsModel: require("@/features/habits/hooks/use-habits-model")
       .useHabitsModel,
     haptic: require("@/lib/haptics").haptic,

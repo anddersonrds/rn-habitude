@@ -1,6 +1,6 @@
 import { todayKey } from "@/lib/dates";
 import { useHabitFromRoute } from "@/lib/hooks/use-habit-from-route";
-import { useAppState } from "@/lib/store";
+import { useAppState } from "@/lib/data/store";
 import { completionRate, computeStreaks } from "@/lib/domain/streaks";
 
 /** Null once the habit is gone, which is also when it sends the screen back. */
