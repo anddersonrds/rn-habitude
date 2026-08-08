@@ -22,19 +22,20 @@ export function useHabitsModel() {
   const { t } = useTranslation("habits");
   const { t: tCommon } = useTranslation("common");
   const { t: tSchedule } = useTranslation("schedule");
-  const state = useAppState();
+  const habits = useAppState((state) => state.habits);
+  const completions = useAppState((state) => state.completions);
   const [reordering, setReordering] = useState(false);
   const today = todayKey();
 
-  const rows: HabitRowModel[] = state.habits.map((habit) => ({
+  const rows: HabitRowModel[] = habits.map((habit) => ({
     habit,
-    states: trailingDayStates(habit, state.completions[habit.id], STRIP_DAYS, today),
-    streak: computeStreaks(habit, state.completions[habit.id], today).current,
+    states: trailingDayStates(habit, completions[habit.id], STRIP_DAYS, today),
+    streak: computeStreaks(habit, completions[habit.id], today).current,
     schedule: scheduleLabel(habit, tSchedule),
   }));
 
   const bestStreak = rows.reduce((best, row) => Math.max(best, row.streak), 0);
-  const totalCheckIns = Object.values(state.completions).reduce(
+  const totalCheckIns = Object.values(completions).reduce(
     (total, days) => total + Object.keys(days).length,
     0,
   );
@@ -64,7 +65,7 @@ export function useHabitsModel() {
    * many of them sat before it.
    */
   const move = (from: number[], to: number) => {
-    const ids = state.habits.map((habit) => habit.id);
+    const ids = habits.map((habit) => habit.id);
     const moving = from.map((index) => ids[index]);
     const remaining = ids.filter((_, index) => !from.includes(index));
     const destination = to - from.filter((index) => index < to).length;
@@ -75,10 +76,10 @@ export function useHabitsModel() {
 
   return {
     rows,
-    hasHabits: state.habits.length > 0,
+    hasHabits: habits.length > 0,
     /** One habit cannot be put in a different order than itself. */
-    canReorder: state.habits.length > 1,
-    countLabel: t("count", { count: state.habits.length }),
+    canReorder: habits.length > 1,
+    countLabel: t("count", { count: habits.length }),
     bestStreak,
     totalCheckIns,
     reordering,

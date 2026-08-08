@@ -13,13 +13,14 @@ import { useTranslation } from "react-i18next";
 export function useHabitDetailModel() {
   const { i18n } = useTranslation();
   const { t: tSchedule } = useTranslation("schedule");
-  const state = useAppState();
-  const habit = useHabitFromRoute(state.habits);
+  const habits = useAppState((state) => state.habits);
+  const completions = useAppState((state) => state.completions);
+  const habit = useHabitFromRoute(habits);
 
   if (!habit) return null;
 
   const today = todayKey();
-  const completed = state.completions[habit.id];
+  const completed = completions[habit.id];
   const streaks = computeStreaks(habit, completed, today);
 
   const subtitle = [

@@ -39,7 +39,7 @@ export function useHabitFormModel() {
   const { t } = useTranslation("habitForm");
   const { t: tCommon } = useTranslation("common");
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const { habits } = useAppState();
+  const habits = useAppState((state) => state.habits);
   const editing = id ? habits.find((habit) => habit.id === id) : undefined;
 
   const [name, setName] = useState(editing?.name ?? "");

@@ -12,7 +12,7 @@ const FEATURES = [
   'onboarding',
 ];
 
-const DATA_LAYER = ['./src/lib/store.ts', './src/lib/db.ts'];
+const DATA_LAYER = ['./src/lib/store', './src/lib/db.ts'];
 
 module.exports = defineConfig([
   expoConfig,
