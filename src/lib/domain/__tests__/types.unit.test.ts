@@ -1,4 +1,4 @@
-import { isDaily, isScheduledOn } from "@/lib/types";
+import { isDaily, isScheduledOn } from "@/lib/domain/types";
 import { makeHabit } from "@/test-utils/factories";
 
 const WEEKDAYS_ONLY = [1, 2, 3, 4, 5];

@@ -8,7 +8,7 @@ import {
   registerNotificationCategories,
   scheduleHabitReminders,
   sendTestNotification,
-} from "@/lib/notifications";
+} from "@/lib/native/notifications";
 import { makeHabit } from "@/test-utils/factories";
 import * as Notifications from "expo-notifications";
 

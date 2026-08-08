@@ -1,10 +1,10 @@
-import { confirmDeleteHabit } from "@/lib/alerts";
-import { formatFullDate, formatTime, todayKey, weekdayOf } from "@/lib/dates";
-import { haptic } from "@/lib/haptics";
+import { confirmDeleteHabit } from "@/lib/native/alerts";
+import { formatFullDate, formatTime, todayKey, weekdayOf } from "@/lib/utils/dates";
+import { haptic } from "@/lib/native/haptics";
 import { routes } from "@/lib/utils/routes";
-import { deleteHabit, toggleCompletion, useAppState } from "@/lib/store";
-import { computeStreaks } from "@/lib/streaks";
-import { isScheduledOn, type Habit } from "@/lib/types";
+import { deleteHabit, toggleCompletion, useAppState } from "@/lib/data/store";
+import { computeStreaks } from "@/lib/domain/streaks";
+import { isScheduledOn, type Habit } from "@/lib/domain/types";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";

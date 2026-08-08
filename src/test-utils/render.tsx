@@ -1,4 +1,4 @@
-import { haptic } from "@/lib/haptics";
+import { haptic } from "@/lib/native/haptics";
 import { getNavigationTheme } from "@/theme";
 import { render } from "@testing-library/react-native";
 import { ThemeProvider } from "expo-router/react-navigation";

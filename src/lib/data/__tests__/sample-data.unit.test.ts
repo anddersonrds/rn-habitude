@@ -3,7 +3,7 @@ the database module applies its schema at import, so each case has to reload it
 rather than close over one instance.
 */
 import i18n from "@/i18n/i18next";
-import { addDays, weekdayOf } from "@/lib/dates";
+import { addDays, weekdayOf } from "@/lib/utils/dates";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock } from "@/test-utils/time";
 
@@ -19,16 +19,16 @@ const inEnglish = i18n.getFixedT("en", "sampleData");
 const inPortuguese = i18n.getFixedT("pt-BR", "sampleData");
 
 type Loaded = {
-  seedSampleData: typeof import("@/lib/sample-data").seedSampleData;
-  db: typeof import("@/lib/db").db;
+  seedSampleData: typeof import("@/lib/data/sample-data").seedSampleData;
+  db: typeof import("@/lib/data/db").db;
 };
 
 function freshSampleData(): Loaded {
   resetDatabase();
   jest.resetModules();
   return {
-    seedSampleData: require("@/lib/sample-data").seedSampleData,
-    db: require("@/lib/db").db,
+    seedSampleData: require("@/lib/data/sample-data").seedSampleData,
+    db: require("@/lib/data/db").db,
   };
 }
 

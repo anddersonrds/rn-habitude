@@ -1,5 +1,5 @@
 import { HeatGraph } from "@/components/heat-graph";
-import type { HeatStatus } from "@/lib/heat";
+import type { HeatStatus } from "@/lib/domain/heat";
 import { renderWithProviders } from "@/test-utils/render";
 import { colors } from "@/theme";
 import { StyleSheet, type ViewStyle } from "react-native";

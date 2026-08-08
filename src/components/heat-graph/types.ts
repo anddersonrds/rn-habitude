@@ -1,4 +1,4 @@
-import type { HeatStatus } from "@/lib/heat";
+import type { HeatStatus } from "@/lib/domain/heat";
 
 /** `week` is the column the month starts on. */
 export type MonthLabel = { week: number; label: string };

@@ -1,9 +1,9 @@
 /* First: the language is resolved at import, before any screen is evaluated. */
 import "@/i18n/i18next";
 import { useLanguageSwitch } from "@/i18n/switching";
-import { haptic } from "@/lib/haptics";
-import { useNotificationActions } from "@/lib/notification-actions";
-import { useAppState } from "@/lib/store";
+import { haptic } from "@/lib/native/haptics";
+import { useNotificationActions } from "@/lib/native/notification-actions";
+import { useAppState } from "@/lib/data/store";
 import { routes } from "@/lib/utils/routes";
 import { colors, getNavigationTheme } from "@/theme";
 import { router, Stack } from "expo-router";

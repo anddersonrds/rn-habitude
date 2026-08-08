@@ -1,5 +1,5 @@
 import i18n from "@/i18n/i18next";
-import { alertNotificationsOff, confirmDeleteHabit } from "@/lib/alerts";
+import { alertNotificationsOff, confirmDeleteHabit } from "@/lib/native/alerts";
 import { Alert, Linking } from "react-native";
 
 type AlertButtons = { text: string; style?: string; onPress?: () => void }[];

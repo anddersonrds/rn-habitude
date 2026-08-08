@@ -1,9 +1,9 @@
-import { haptic } from "@/lib/haptics";
+import { haptic } from "@/lib/native/haptics";
 import {
   ensureNotificationPermission,
   getNotificationPermission,
-} from "@/lib/notifications";
-import { setOnboarded } from "@/lib/store";
+} from "@/lib/native/notifications";
+import { setOnboarded } from "@/lib/data/store";
 import type * as Notifications from "expo-notifications";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";

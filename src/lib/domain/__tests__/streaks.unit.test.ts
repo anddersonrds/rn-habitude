@@ -1,11 +1,11 @@
-import { dateKey, parseKey } from "@/lib/dates";
+import { dateKey, parseKey } from "@/lib/utils/dates";
 import {
   completionRate,
   computeStreaks,
   heatCells,
   heatMonthLabels,
   trailingDayStates,
-} from "@/lib/streaks";
+} from "@/lib/domain/streaks";
 import { makeHabit } from "@/test-utils/factories";
 import { freezeClock, restoreClock } from "@/test-utils/time";
 

@@ -1,4 +1,4 @@
-import { formatCount } from "@/lib/numbers";
+import { formatCount } from "@/lib/utils/numbers";
 import {
   Button,
   Form,

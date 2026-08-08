@@ -7,8 +7,8 @@ import {
   completeHabit,
   createHabit,
   deleteAllData,
-} from "@/lib/store";
-import type { HabitInput } from "@/lib/types";
+} from "@/lib/data/store";
+import type { HabitInput } from "@/lib/domain/types";
 import { renderWithProviders } from "@/test-utils/render";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 import { colors } from "@/theme";
@@ -16,7 +16,7 @@ import { StyleSheet } from "react-native";
 import type { TestInstance } from "test-renderer";
 
 /* Reminders are the store's business, and their own tests cover them. */
-jest.mock("@/lib/notifications", () => ({
+jest.mock("@/lib/native/notifications", () => ({
   scheduleHabitReminders: jest.fn(async () => [] as string[]),
   cancelReminders: jest.fn(async () => {}),
   cancelAllReminders: jest.fn(async () => {}),

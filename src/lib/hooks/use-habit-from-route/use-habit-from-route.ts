@@ -1,4 +1,4 @@
-import type { Habit } from "@/lib/types";
+import type { Habit } from "@/lib/domain/types";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 

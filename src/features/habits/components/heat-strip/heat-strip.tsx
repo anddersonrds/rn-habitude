@@ -1,4 +1,4 @@
-import { heatAppearance, heatStatusOfDayState } from "@/lib/heat";
+import { heatAppearance, heatStatusOfDayState } from "@/lib/domain/heat";
 import { HStack, RoundedRectangle } from "@expo/ui/swift-ui";
 import { foregroundStyle, frame, opacity } from "@expo/ui/swift-ui/modifiers";
 import type { Props } from "./types";

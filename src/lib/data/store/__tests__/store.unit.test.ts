@@ -4,7 +4,7 @@ has to reload it rather than close over one instance.
 */
 import type { HabitudeWidgetProps } from "@/../widgets/HabitudeWidget";
 import i18n from "@/i18n/i18next";
-import type { HabitInput } from "@/lib/types";
+import type { HabitInput } from "@/lib/domain/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 /*
@@ -19,7 +19,7 @@ The store's contract with the reminder layer is "schedule this, cancel that".
 What the scheduling itself does to `expo-notifications` belongs to that module's
 own tests, and the round trip through it is covered by the integration test.
 */
-jest.mock("@/lib/notifications", () => ({
+jest.mock("@/lib/native/notifications", () => ({
   scheduleHabitReminders: jest.fn(async () => [] as string[]),
   cancelReminders: jest.fn(async () => {}),
   cancelAllReminders: jest.fn(async () => {}),
@@ -31,7 +31,7 @@ const sampleNames = i18n.getFixedT("en", "sampleData");
 const TODAY = "2026-07-29";
 const MONDAY = 1;
 
-type StoreModule = typeof import("@/lib/store");
+type StoreModule = typeof import("@/lib/data/store");
 type WidgetModule = typeof import("@/../widgets/HabitudeWidget");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 
@@ -49,7 +49,7 @@ type Loaded = {
 
 /** Loads the store into whatever module registry is current. */
 function requireStore(): Loaded {
-  const store: StoreModule = require("@/lib/store");
+  const store: StoreModule = require("@/lib/data/store");
   const widget: WidgetModule = require("@/../widgets/HabitudeWidget");
   return {
     store,
@@ -420,7 +420,7 @@ describe("deleteAllData", () => {
 
   it("should cancel every scheduled reminder", async () => {
     const { store } = freshStore();
-    const { cancelAllReminders } = require("@/lib/notifications");
+    const { cancelAllReminders } = require("@/lib/native/notifications");
     await settle();
 
     await store.deleteAllData();
@@ -456,7 +456,7 @@ describe("loadSampleData", () => {
 
   it("should cancel the reminders the previous sample run had scheduled", async () => {
     const { store } = freshStore();
-    const notifications = require("@/lib/notifications");
+    const notifications = require("@/lib/native/notifications");
     notifications.scheduleHabitReminders.mockResolvedValue(["reminder-1"]);
     store.loadSampleData(sampleNames);
     await settle();
@@ -629,7 +629,7 @@ describe("the references a reload hands back", () => {
 
   it("should give the habit a new object when the reminder ids changed", async () => {
     const { store } = freshStore();
-    const notifications = require("@/lib/notifications");
+    const notifications = require("@/lib/native/notifications");
     const habit = store.createHabit(input({ reminderTime: "07:30" }));
     await settle();
     const before = store.getAppState().habits[0];

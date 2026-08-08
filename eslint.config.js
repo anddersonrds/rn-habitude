@@ -12,7 +12,7 @@ const FEATURES = [
   'onboarding',
 ];
 
-const DATA_LAYER = ['./src/lib/store', './src/lib/db.ts'];
+const DATA_LAYER = ['./src/lib/data'];
 
 module.exports = defineConfig([
   expoConfig,
@@ -44,6 +44,12 @@ module.exports = defineConfig([
               from: ['./src/features', ...DATA_LAYER],
               message:
                 'A shared component takes props. It never reaches up into a feature nor down into the store.',
+            },
+            {
+              target: './src/lib/utils',
+              from: [...DATA_LAYER, './src/lib/native'],
+              message:
+                'lib/utils/ is pure. A helper that needs the database or the platform belongs in lib/data/ or lib/native/.',
             },
           ],
         },

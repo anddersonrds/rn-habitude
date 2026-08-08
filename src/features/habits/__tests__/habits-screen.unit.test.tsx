@@ -2,8 +2,8 @@ import { HabitsScreen } from "@/features/habits";
 import i18n from "@/i18n/i18next";
 import en from "@/i18n/locales/en";
 import ptBR from "@/i18n/locales/pt-br";
-import { completeHabit, createHabit, deleteAllData, getAppState } from "@/lib/store";
-import type { Habit, HabitInput } from "@/lib/types";
+import { completeHabit, createHabit, deleteAllData, getAppState } from "@/lib/data/store";
+import type { Habit, HabitInput } from "@/lib/domain/types";
 import { moveRow, pressButton, tapNative } from "@/test-utils/native-events";
 import { modifier, nativeView, nativeViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
@@ -13,7 +13,7 @@ import { Alert } from "react-native";
 import type { TestInstance } from "test-renderer";
 
 /* Reminders are the store's business, and their own tests cover them. */
-jest.mock("@/lib/notifications", () => ({
+jest.mock("@/lib/native/notifications", () => ({
   scheduleHabitReminders: jest.fn(async () => [] as string[]),
   cancelReminders: jest.fn(async () => {}),
   cancelAllReminders: jest.fn(async () => {}),

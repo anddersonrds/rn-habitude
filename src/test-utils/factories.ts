@@ -1,4 +1,4 @@
-import type { AppState, CompletionMap, Habit } from "@/lib/types";
+import type { AppState, CompletionMap, Habit } from "@/lib/domain/types";
 
 const EVERY_WEEKDAY = [0, 1, 2, 3, 4, 5, 6];
 

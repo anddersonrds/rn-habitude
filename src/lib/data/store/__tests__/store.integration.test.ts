@@ -3,7 +3,7 @@ the store loads its state at import, so each case has to reload it rather than
 close over one instance.
 */
 import i18n from "@/i18n/i18next";
-import type { HabitInput } from "@/lib/types";
+import type { HabitInput } from "@/lib/domain/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 
@@ -33,13 +33,13 @@ const sampleNames = i18n.getFixedT("en", "sampleData");
 
 const TODAY = "2026-07-29";
 
-type StoreModule = typeof import("@/lib/store");
+type StoreModule = typeof import("@/lib/data/store");
 
 /** Loads the store, and the reminder layer under it, against an empty database. */
 function freshStore(): StoreModule {
   resetDatabase();
   jest.resetModules();
-  return require("@/lib/store");
+  return require("@/lib/data/store");
 }
 
 /** Lets the fire-and-forget reminder refresh settle before the case ends. */

@@ -1,5 +1,5 @@
 import { useHabitFromRoute } from "@/lib/hooks/use-habit-from-route";
-import type { Habit } from "@/lib/types";
+import type { Habit } from "@/lib/domain/types";
 import { makeHabit } from "@/test-utils/factories";
 import { renderHook } from "@testing-library/react-native";
 import { router, useLocalSearchParams } from "expo-router";

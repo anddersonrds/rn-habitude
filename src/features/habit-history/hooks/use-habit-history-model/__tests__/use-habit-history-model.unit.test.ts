@@ -3,7 +3,7 @@ the store loads its state at import, so every case reloads it against its own
 database, and the hook and the router have to come from that same registry to be
 the ones the hook actually calls.
 */
-import type { HabitInput } from "@/lib/types";
+import type { HabitInput } from "@/lib/domain/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 /*
@@ -14,7 +14,7 @@ the store; see `load`.
 import "@testing-library/react-native";
 
 /* Reminders are the store's business, and their own tests cover them. */
-jest.mock("@/lib/notifications", () => ({
+jest.mock("@/lib/native/notifications", () => ({
   scheduleHabitReminders: jest.fn(async () => [] as string[]),
   cancelReminders: jest.fn(async () => {}),
   cancelAllReminders: jest.fn(async () => {}),
@@ -31,7 +31,7 @@ const YESTERDAY = "2026-07-28";
 const TWO_DAYS_AGO = "2026-07-27";
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
 
-type StoreModule = typeof import("@/lib/store");
+type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/habit-history/hooks/use-habit-history-model");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 
@@ -48,7 +48,7 @@ function load(): Loaded {
   jest.resetModules();
   const routing = require("expo-router");
   return {
-    store: require("@/lib/store"),
+    store: require("@/lib/data/store"),
     useHabitHistoryModel: require("@/features/habit-history/hooks/use-habit-history-model")
       .useHabitHistoryModel,
     router: routing.router,

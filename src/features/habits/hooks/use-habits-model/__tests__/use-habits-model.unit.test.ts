@@ -4,7 +4,7 @@ database, and the hook, the router and the haptics have to come from that same
 registry to be the ones the hook actually calls.
 */
 import en from "@/i18n/locales/en";
-import type { HabitInput } from "@/lib/types";
+import type { HabitInput } from "@/lib/domain/types";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 /*
@@ -15,13 +15,13 @@ the store; see `load`.
 import "@testing-library/react-native";
 
 /* Reminders are the store's business, and their own tests cover them. */
-jest.mock("@/lib/notifications", () => ({
+jest.mock("@/lib/native/notifications", () => ({
   scheduleHabitReminders: jest.fn(async () => [] as string[]),
   cancelReminders: jest.fn(async () => {}),
   cancelAllReminders: jest.fn(async () => {}),
 }));
 
-jest.mock("@/lib/haptics", () => ({
+jest.mock("@/lib/native/haptics", () => ({
   haptic: {
     selection: jest.fn(),
     tap: jest.fn(),
@@ -68,9 +68,9 @@ const MISSED = 1;
 const DONE = 2;
 const PENDING = 3;
 
-type StoreModule = typeof import("@/lib/store");
+type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/habits/hooks/use-habits-model");
-type HapticsModule = typeof import("@/lib/haptics");
+type HapticsModule = typeof import("@/lib/native/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 type AlertButtons = { text: string; style?: string; onPress?: () => void }[];
 
@@ -92,10 +92,10 @@ function load(): Loaded {
   const i18n = require("@/i18n/i18next") as typeof import("@/i18n/i18next");
   void i18n.default.changeLanguage("en");
   return {
-    store: require("@/lib/store"),
+    store: require("@/lib/data/store"),
     useHabitsModel: require("@/features/habits/hooks/use-habits-model")
       .useHabitsModel,
-    haptic: require("@/lib/haptics").haptic,
+    haptic: require("@/lib/native/haptics").haptic,
     push: require("expo-router").router.push,
     alert: jest.spyOn(Alert, "alert").mockImplementation(() => {}) as jest.Mock,
     testingLibrary: require("@testing-library/react-native/pure"),

@@ -4,13 +4,13 @@ close over one instance.
 */
 import { resetDatabase } from "@/test-utils/sqlite";
 
-type DbModule = typeof import("@/lib/db");
+type DbModule = typeof import("@/lib/data/db");
 
 /** An empty database with the schema freshly applied by the module itself. */
 function freshDb(): DbModule {
   resetDatabase();
   jest.resetModules();
-  return require("@/lib/db");
+  return require("@/lib/data/db");
 }
 
 function tableNames(db: DbModule): string[] {

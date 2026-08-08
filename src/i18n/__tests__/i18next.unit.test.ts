@@ -7,7 +7,7 @@ import type { AppStateStatus } from "react-native";
 jest.mock("expo-localization", () => ({ getLocales: jest.fn(() => []) }));
 
 type I18nModule = typeof import("@/i18n/i18next");
-type Database = typeof import("@/lib/db");
+type Database = typeof import("@/lib/data/db");
 
 type Loaded = I18nModule & {
   i18next: I18nModule["default"];
@@ -38,7 +38,7 @@ function load({
   const localization = require("expo-localization") as { getLocales: jest.Mock };
   localization.getLocales.mockReturnValue(preferences);
 
-  const db = require("@/lib/db") as Database;
+  const db = require("@/lib/data/db") as Database;
   if (stored !== undefined) db.setSetting("language", stored);
 
   /* Spied before the import, since the module subscribes while it loads. */

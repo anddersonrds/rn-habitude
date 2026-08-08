@@ -1,6 +1,6 @@
 import type { TFunction } from "i18next";
 import { db } from "../db";
-import { cancelAllReminders, cancelReminders } from "../notifications";
+import { cancelAllReminders, cancelReminders } from "../../native/notifications";
 import { seedSampleData } from "../sample-data";
 import { refreshReminders } from "./habits";
 import { emit, getAppState } from "./state";

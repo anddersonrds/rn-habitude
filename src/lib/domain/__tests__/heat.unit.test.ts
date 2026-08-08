@@ -4,8 +4,8 @@ import {
   heatStatusOfDayState,
   type HeatPalette,
   type HeatStatus,
-} from "@/lib/heat";
-import type { HeatCell } from "@/lib/streaks";
+} from "@/lib/domain/heat";
+import type { HeatCell } from "@/lib/domain/streaks";
 
 const TODAY = "2026-07-29";
 const ACCENT = "#FF9500";

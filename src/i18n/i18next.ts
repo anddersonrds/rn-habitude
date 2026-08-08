@@ -20,7 +20,7 @@ import ko from "@/i18n/locales/ko";
 import ptBR from "@/i18n/locales/pt-br";
 import zhHans from "@/i18n/locales/zh-hans";
 import type { Locale } from "@/i18n/types";
-import { getSetting, setSetting } from "@/lib/db";
+import { getSetting, setSetting } from "@/lib/data/db";
 import { getLocales } from "expo-localization";
 import i18next, { changeLanguage, init, use as registerPlugin } from "i18next";
 import { initReactI18next } from "react-i18next";
