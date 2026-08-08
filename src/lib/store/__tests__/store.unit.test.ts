@@ -599,6 +599,177 @@ describe("notifying the app", () => {
   });
 });
 
+describe("the references a reload hands back", () => {
+  /*
+  One edit per field the comparison reads. A field left out of it is a field
+  whose change would leave a stale row on screen with nothing to report it.
+  */
+  const edits: [string, Partial<HabitInput>][] = [
+    ["name", { name: "Walk further" }],
+    ["icon", { icon: "figure.run" }],
+    ["colour", { color: "#FF9500" }],
+    ["weekdays", { weekdays: [MONDAY] }],
+    ["reminder time", { reminderTime: "21:00" }],
+  ];
+
+  it.each(edits)(
+    "should give the habit a new object when the %s changed",
+    async (_field, edit) => {
+      const { store } = freshStore();
+      const habit = store.createHabit(input());
+      await settle();
+      const before = store.getAppState().habits[0];
+
+      store.updateHabit(habit.id, input(edit));
+      await settle();
+
+      expect(store.getAppState().habits[0]).not.toBe(before);
+    },
+  );
+
+  it("should give the habit a new object when the reminder ids changed", async () => {
+    const { store } = freshStore();
+    const notifications = require("@/lib/notifications");
+    const habit = store.createHabit(input({ reminderTime: "07:30" }));
+    await settle();
+    const before = store.getAppState().habits[0];
+    notifications.scheduleHabitReminders.mockResolvedValueOnce(["reminder-1"]);
+
+    store.updateHabit(habit.id, input({ reminderTime: "07:30" }));
+    await settle();
+
+    const after = store.getAppState().habits[0];
+    expect(after.notificationIds).toEqual(["reminder-1"]);
+    expect(after).not.toBe(before);
+  });
+
+  it("should keep the habit when an edit rewrote every field with what it held", async () => {
+    const { store } = freshStore();
+    const habit = store.createHabit(input());
+    await settle();
+    const before = store.getAppState().habits[0];
+
+    store.updateHabit(habit.id, input());
+    await settle();
+
+    expect(store.getAppState().habits[0]).toBe(before);
+  });
+
+  it("should leave the habits an edit did not touch at their own object", async () => {
+    const { store } = freshStore();
+    const edited = store.createHabit(input({ name: "Edited" }));
+    store.createHabit(input({ name: "Untouched" }));
+    await settle();
+    const [beforeEdited, beforeUntouched] = store.getAppState().habits;
+
+    store.updateHabit(edited.id, input({ name: "Renamed" }));
+    await settle();
+
+    const [afterEdited, afterUntouched] = store.getAppState().habits;
+    expect(afterEdited).not.toBe(beforeEdited);
+    expect(afterEdited.name).toBe("Renamed");
+    expect(afterUntouched).toBe(beforeUntouched);
+  });
+
+  it("should keep the habits array when the mutation touched no habit", async () => {
+    const { store } = freshStore();
+    const habit = store.createHabit(input());
+    await settle();
+    const before = store.getAppState().habits;
+
+    store.toggleCompletion(habit.id, TODAY);
+
+    expect(store.getAppState().habits).toBe(before);
+  });
+
+  it("should give a new habits array when a habit was created or deleted", async () => {
+    const { store } = freshStore();
+    store.createHabit(input({ name: "Kept" }));
+    await settle();
+    const before = store.getAppState().habits;
+
+    const added = store.createHabit(input({ name: "Added" }));
+    await settle();
+    const grown = store.getAppState().habits;
+    store.deleteHabit(added.id);
+    await settle();
+
+    expect(grown).not.toBe(before);
+    expect(grown[0]).toBe(before[0]);
+    expect(store.getAppState().habits).not.toBe(grown);
+    expect(store.getAppState().habits.map((habit) => habit.name)).toEqual([
+      "Kept",
+    ]);
+  });
+
+  it("should give a new habits array when the same habits were reordered", async () => {
+    const { store } = freshStore();
+    const first = store.createHabit(input({ name: "First" }));
+    const second = store.createHabit(input({ name: "Second" }));
+    await settle();
+    const before = store.getAppState().habits;
+
+    store.reorderHabits([second.id, first.id]);
+
+    const after = store.getAppState().habits;
+    expect(after).not.toBe(before);
+    expect(after.map((habit) => habit.name)).toEqual(["Second", "First"]);
+    expect(after[0]).toBe(before[1]);
+  });
+
+  it("should give a new completion map for a check-in added and removed", async () => {
+    const { store } = freshStore();
+    const habit = store.createHabit(input());
+    await settle();
+    const empty = store.getAppState().completions;
+
+    store.toggleCompletion(habit.id, TODAY);
+    const added = store.getAppState().completions;
+    store.toggleCompletion(habit.id, TODAY);
+    const removed = store.getAppState().completions;
+
+    expect(added).not.toBe(empty);
+    expect(added[habit.id]).toEqual({ [TODAY]: true });
+    expect(removed).not.toBe(added);
+    expect(removed[habit.id]).toBeUndefined();
+  });
+
+  it("should keep the completions of a habit the check-in did not touch", async () => {
+    const { store } = freshStore();
+    const checked = store.createHabit(input({ name: "Checked" }));
+    const other = store.createHabit(input({ name: "Other" }));
+    store.toggleCompletion(other.id, TODAY);
+    await settle();
+    const before = store.getAppState().completions[other.id];
+
+    store.toggleCompletion(checked.id, TODAY);
+
+    const after = store.getAppState().completions;
+    expect(after[other.id]).toBe(before);
+    expect(after[checked.id]).toEqual({ [TODAY]: true });
+  });
+
+  it("should not re-render a subscriber selecting the habits on a check-in", async () => {
+    const { store, testingLibrary } = freshStore();
+    const { act, renderHook } = testingLibrary;
+    const habit = store.createHabit(input());
+    await settle();
+    let renders = 0;
+    const { unmount } = await renderHook(() => {
+      renders += 1;
+      return store.useAppState((state) => state.habits);
+    });
+    const before = renders;
+
+    await act(async () => {
+      store.toggleCompletion(habit.id, TODAY);
+    });
+
+    expect(renders).toBe(before);
+    await unmount();
+  });
+});
+
 describe("the widget snapshot", () => {
   it("should be pushed once at import, before any screen renders", async () => {
     const { snapshots } = freshStore();
