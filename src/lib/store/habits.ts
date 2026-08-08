@@ -8,12 +8,13 @@ function newId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
-/** Re-schedules a habit's reminders and persists the new notification ids. */
 export async function refreshReminders(habit: Habit): Promise<void> {
   try {
     const ids = await scheduleHabitReminders(habit);
-    // Scheduling is asynchronous. If the habit was deleted while the OS request
-    // was in flight, immediately clean up the now-orphaned reminders.
+    /*
+    Scheduling is asynchronous. If the habit was deleted while the OS request
+    was in flight, immediately clean up the now-orphaned reminders.
+    */
     if (!getAppState().habits.some((candidate) => candidate.id === habit.id)) {
       await cancelReminders(ids);
       return;
@@ -86,7 +87,7 @@ export function deleteHabit(id: string): void {
   emit();
 }
 
-/** Persists a new habit order. `orderedIds` must contain every habit id. */
+/** `orderedIds` must contain every habit id. */
 export function reorderHabits(orderedIds: string[]): void {
   db.withTransactionSync(() => {
     orderedIds.forEach((id, index) => {

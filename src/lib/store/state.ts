@@ -75,10 +75,10 @@ export function useAppState<T>(
   );
 }
 
-// Push the initial widget snapshot before any route renders.
+/* Pushes the initial widget snapshot before any route renders. */
 emit();
 
-// Re-emit on foreground so the widget's "today" stays fresh across midnight.
+/* The widget's "today" would otherwise go stale across midnight. */
 RNAppState.addEventListener("change", (status) => {
   if (status === "active") emit();
 });

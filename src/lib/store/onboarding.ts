@@ -6,7 +6,6 @@ export function setOnboarded(): void {
   emit();
 }
 
-/** Flips the onboarded flag off so the root layout shows the flow again. */
 export function resetOnboarding(): void {
   setSetting("onboarded", "0");
   emit();
