@@ -3,7 +3,7 @@ import i18n from "@/i18n/i18next";
 import { makeHabit } from "@/test-utils/factories";
 import { renderWithProviders } from "@/test-utils/render";
 import { freezeClock, restoreClock } from "@/test-utils/time";
-import { Color } from "expo-router";
+import { colors } from "@/theme";
 import { StyleSheet } from "react-native";
 import type { TestInstance } from "test-renderer";
 
@@ -19,8 +19,8 @@ const HABIT_COLOR = "#FF9500";
 
 const DONE = HABIT_COLOR;
 const TODAY_PENDING = `${HABIT_COLOR}55`;
-const MISSED = Color.ios.tertiarySystemFill;
-const UNSCHEDULED = Color.ios.quaternarySystemFill;
+const MISSED = colors.fill;
+const UNSCHEDULED = colors.subtleFill;
 const BLANK = "transparent";
 
 /* Cells carry no text and no name; their square shape is what marks them. */

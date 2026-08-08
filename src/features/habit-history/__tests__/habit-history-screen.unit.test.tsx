@@ -11,7 +11,7 @@ import {
 import type { HabitInput } from "@/lib/types";
 import { renderWithProviders } from "@/test-utils/render";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
-import { Color } from "expo-router";
+import { colors } from "@/theme";
 import { StyleSheet } from "react-native";
 import type { TestInstance } from "test-renderer";
 
@@ -50,7 +50,7 @@ const HABIT_COLOR = "#FF9500";
 const CELL_SIZE = 12;
 const DONE = HABIT_COLOR;
 const PENDING = `${HABIT_COLOR}55`;
-const MISSED = Color.ios.tertiarySystemFill;
+const MISSED = colors.fill;
 const BLANK = "transparent";
 
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
@@ -201,8 +201,8 @@ describe("the habit being shown", () => {
         .map((swatch) => StyleSheet.flatten(swatch.props.style).backgroundColor),
     ).toEqual([
       "#34C759",
-      Color.ios.tertiarySystemFill,
-      Color.ios.quaternarySystemFill,
+      colors.fill,
+      colors.subtleFill,
     ]);
   });
 });

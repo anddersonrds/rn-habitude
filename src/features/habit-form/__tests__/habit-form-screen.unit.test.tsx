@@ -10,7 +10,7 @@ import en from "@/i18n/locales/en";
 import ptBR from "@/i18n/locales/pt-br";
 import { createHabit, deleteAllData, getAppState } from "@/lib/store";
 import type { HabitInput } from "@/lib/types";
-import { foregroundOnColor } from "@/theme/colors";
+import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
 import {
   chooseOption,
   pickDate,

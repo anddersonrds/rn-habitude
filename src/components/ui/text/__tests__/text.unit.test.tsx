@@ -1,6 +1,6 @@
-import { appFontFamily, Text } from "@/components/ui/text";
+import { Text } from "@/components/ui/text";
 import { renderWithProviders } from "@/test-utils/render";
-import { Color } from "expo-router";
+import { appFontFamily, colors } from "@/theme";
 import type { ReactElement } from "react";
 import { StyleSheet } from "react-native";
 
@@ -85,19 +85,19 @@ describe("Text", () => {
   it("should use the primary label color by default", async () => {
     const style = await styleOf(<Text>Primary</Text>, "Primary");
 
-    expect(style.color).toEqual(Color.ios.label);
+    expect(style.color).toEqual(colors.text);
   });
 
   it("should drop to the secondary label color when asked", async () => {
     const style = await styleOf(<Text secondary>Secondary</Text>, "Secondary");
 
-    expect(style.color).toEqual(Color.ios.secondaryLabel);
+    expect(style.color).toEqual(colors.secondaryText);
   });
 
   it("should drop to the tertiary label color when asked", async () => {
     const style = await styleOf(<Text tertiary>Tertiary</Text>, "Tertiary");
 
-    expect(style.color).toEqual(Color.ios.tertiaryLabel);
+    expect(style.color).toEqual(colors.tertiaryText);
   });
 
   it("should take the tertiary label color when both are set", async () => {
@@ -108,7 +108,7 @@ describe("Text", () => {
       "Both",
     );
 
-    expect(style.color).toEqual(Color.ios.tertiaryLabel);
+    expect(style.color).toEqual(colors.tertiaryText);
   });
 
   it("should let a caller override the variant", async () => {

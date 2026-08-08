@@ -1,5 +1,4 @@
-import { appFontFamily } from "@/components/ui/text";
-import { Color } from "expo-router";
+import { appFontFamily, colors } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -14,7 +13,7 @@ export const styles = StyleSheet.create({
     borderCurve: "continuous",
     padding: 16,
     gap: 20,
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
+    backgroundColor: colors.secondaryBackground,
     boxShadow: "0 18px 44px rgba(0, 0, 0, 0.10)",
   },
   cardHeader: {
@@ -39,13 +38,13 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
     letterSpacing: -0.4,
-    color: Color.ios.label,
+    color: colors.text,
   },
   cardSubtitle: {
     fontFamily: appFontFamily,
     fontSize: 15,
     fontWeight: "600",
-    color: Color.ios.secondaryLabel,
+    color: colors.secondaryText,
   },
   cardCheck: {
     width: 30,

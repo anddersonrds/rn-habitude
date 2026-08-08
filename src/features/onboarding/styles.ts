@@ -1,11 +1,10 @@
-import { layout } from "@/constants/layout";
-import { Color } from "expo-router";
+import { colors, layout } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.ios.systemBackground,
+    backgroundColor: colors.background,
   },
   header: {
     height: 24,
@@ -26,7 +25,7 @@ export const styles = StyleSheet.create({
     borderRadius: 99,
   },
   stepCount: {
-    color: Color.ios.systemGray,
+    color: colors.mutedText,
     fontVariant: ["tabular-nums"],
   },
   scrollContent: {

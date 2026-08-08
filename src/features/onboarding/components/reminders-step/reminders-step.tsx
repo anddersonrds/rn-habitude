@@ -1,5 +1,6 @@
 import { Text } from "@/components/ui/text";
-import { accent, foregroundOnColor } from "@/theme/colors";
+import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
+import { accent } from "@/theme";
 import { SymbolView } from "expo-symbols";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";

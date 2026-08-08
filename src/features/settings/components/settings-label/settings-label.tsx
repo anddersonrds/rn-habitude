@@ -1,4 +1,4 @@
-import { accent, colors } from "@/theme/colors";
+import { accent, colors } from "@/theme";
 import { Image, Label, Text } from "@expo/ui/swift-ui";
 import { font, foregroundStyle } from "@expo/ui/swift-ui/modifiers";
 import type { Props } from "./types";

@@ -1,6 +1,4 @@
-import { appFontFamily } from "@/components/ui/text";
-import { layout } from "@/constants/layout";
-import { Color } from "expo-router";
+import { appFontFamily, colors, layout } from "@/theme";
 import { StyleSheet } from "react-native";
 
 /** Swatch diameter in the color grid. */
@@ -22,7 +20,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
+    backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
     borderCurve: "continuous",
     paddingHorizontal: 12,
@@ -41,7 +39,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     fontFamily: appFontFamily,
     fontSize: 17,
-    color: Color.ios.label,
+    color: colors.text,
     paddingVertical: 7,
   },
   sectionLabel: {
@@ -51,7 +49,7 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
   },
   card: {
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
+    backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
     borderCurve: "continuous",
     paddingHorizontal: 16,
@@ -69,7 +67,7 @@ export const styles = StyleSheet.create({
   },
   separator: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: Color.ios.separator,
+    backgroundColor: colors.separator,
   },
   weekdayRow: {
     flexDirection: "row",
@@ -84,7 +82,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   validationText: {
-    color: Color.ios.systemRed,
+    color: colors.destructive,
     paddingTop: 10,
   },
   cardRow: {
@@ -102,7 +100,7 @@ export const styles = StyleSheet.create({
     flexShrink: 1,
   },
   iconCard: {
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
+    backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
     borderCurve: "continuous",
     padding: 14,
@@ -122,7 +120,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   colorCard: {
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
+    backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
     borderCurve: "continuous",
     padding: COLOR_CARD_PADDING,
@@ -155,7 +153,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: layout.cardRadius,
     borderCurve: "continuous",
-    backgroundColor: Color.ios.secondarySystemGroupedBackground,
+    backgroundColor: colors.secondaryBackground,
   },
   keyboardAccessory: {
     position: "absolute",

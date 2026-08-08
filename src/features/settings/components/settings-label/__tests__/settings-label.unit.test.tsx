@@ -1,7 +1,7 @@
 import { SettingsLabel } from "@/features/settings/components/settings-label";
 import { modifier, nativeView } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
-import { accent, colors } from "@/theme/colors";
+import { accent, colors } from "@/theme";
 import { Host } from "@expo/ui/swift-ui";
 import type { TestInstance } from "test-renderer";
 

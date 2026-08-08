@@ -1,5 +1,4 @@
-import { accent } from "@/theme/colors";
-import { Color } from "expo-router";
+import { accent, colors } from "@/theme";
 import { View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 import { styles } from "./styles";
@@ -32,7 +31,7 @@ export function HeatPreview() {
                 {
                   backgroundColor: filled
                     ? accent
-                    : (Color.ios.tertiarySystemFill as string),
+                    : (colors.fill as string),
                 },
               ]}
             />

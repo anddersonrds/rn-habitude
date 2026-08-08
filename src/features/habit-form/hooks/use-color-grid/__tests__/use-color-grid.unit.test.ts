@@ -1,7 +1,7 @@
 import { HABIT_COLORS } from "@/constants/habit-options";
 import { useColorGrid } from "@/features/habit-form/hooks/use-color-grid";
 import { COLOR_CARD_PADDING, COLOR_RING } from "@/features/habit-form/styles";
-import { layout } from "@/constants/layout";
+import { layout } from "@/theme";
 import { renderHook } from "@testing-library/react-native";
 import { Dimensions } from "react-native";
 

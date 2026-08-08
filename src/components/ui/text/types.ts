@@ -1,15 +1,7 @@
+import type { typography } from "@/theme";
 import type { TextProps } from "react-native";
 
-export type Variant =
-  | "largeTitle"
-  | "title"
-  | "title2"
-  | "title3"
-  | "headline"
-  | "body"
-  | "subheadline"
-  | "footnote"
-  | "caption";
+export type Variant = keyof typeof typography;
 
 export type Props = TextProps & {
   variant?: Variant;

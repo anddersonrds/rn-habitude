@@ -1,5 +1,5 @@
 import { haptic } from "@/lib/haptics";
-import { getNavigationTheme } from "@/theme/colors";
+import { getNavigationTheme } from "@/theme";
 import { render } from "@testing-library/react-native";
 import { ThemeProvider } from "expo-router/react-navigation";
 import { PressablesConfig } from "pressto";

@@ -1,7 +1,6 @@
 import { ProgressDots } from "@/features/onboarding/components/progress-dots";
 import { renderWithProviders } from "@/test-utils/render";
-import { accent } from "@/theme/colors";
-import { Color } from "expo-router";
+import { accent, colors } from "@/theme";
 import { StyleSheet } from "react-native";
 import type { TestInstance } from "test-renderer";
 
@@ -49,7 +48,7 @@ describe("ProgressDots", () => {
     expect(dots(container).map((dot) => dot.color)).toEqual([
       accent,
       accent,
-      Color.ios.tertiarySystemFill,
+      colors.fill,
     ]);
   });
 
@@ -60,8 +59,8 @@ describe("ProgressDots", () => {
 
     expect(dots(container).map((dot) => dot.color)).toEqual([
       accent,
-      Color.ios.tertiarySystemFill,
-      Color.ios.tertiarySystemFill,
+      colors.fill,
+      colors.fill,
     ]);
   });
 });

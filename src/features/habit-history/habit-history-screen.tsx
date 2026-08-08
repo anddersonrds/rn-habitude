@@ -1,7 +1,8 @@
 import { HeatMap } from "@/components/heat-map";
 import { Text } from "@/components/ui/text";
 import { formatCount, formatPercent } from "@/lib/numbers";
-import { Color, Stack } from "expo-router";
+import { colors } from "@/theme";
+import { Stack } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
@@ -59,11 +60,11 @@ export function HabitHistoryScreen() {
           <View style={styles.legend}>
             <LegendSwatch color={habit.color} label={t("legendDone")} />
             <LegendSwatch
-              color={Color.ios.tertiarySystemFill as string}
+              color={colors.fill as string}
               label={t("legendMissed")}
             />
             <LegendSwatch
-              color={Color.ios.quaternarySystemFill as string}
+              color={colors.subtleFill as string}
               label={t("legendRest")}
             />
           </View>

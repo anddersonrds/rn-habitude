@@ -2,7 +2,7 @@ import { EmptyState } from "@/components/empty-state";
 import { haptic } from "@/lib/haptics";
 import { symbolView, symbolViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
-import { accent } from "@/theme/colors";
+import { accent } from "@/theme";
 import { fireEvent } from "@testing-library/react-native";
 
 /*
