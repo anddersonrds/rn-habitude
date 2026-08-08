@@ -4,7 +4,6 @@ import { View } from "react-native";
 import { styles } from "./styles";
 import type { Props } from "./types";
 
-/** A metric with its label, in whichever of the two arrangements is asked for. */
 export function Stat(props: Props) {
   const { value, label } = props;
 

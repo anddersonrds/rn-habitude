@@ -44,7 +44,7 @@ describe("the columns", () => {
     const heat = await renderHeat(3, { "2026-07-16": true });
 
     expect(heat.columns[0]).toEqual([
-      /* The week before the habit existed, up to the day it began. */
+      /* The habit began on the 15th, a Wednesday. */
       "empty",
       "empty",
       "empty",

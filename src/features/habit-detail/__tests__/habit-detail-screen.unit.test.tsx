@@ -209,8 +209,6 @@ describe("the habit being shown", () => {
     expect(symbolView(container, "book.fill").props.tintColor).toBe("#34C759");
   });
 
-  /* The card is sized around this grid, so the shared renderer has to keep
-  drawing the eighteen weeks of 11pt cells the screen was built for. */
   it("should draw eighteen weeks of history in the card", async () => {
     const habit = seedHabit();
 

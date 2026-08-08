@@ -15,14 +15,8 @@ function weekdayRows(language: string, weekStart: number): string[] {
   );
 }
 
-/**
- * A habit's history as the grid draws it, in the app's language: the columns
- * of days, the months above them and the weekday initials beside them.
- *
- * The habit is optional because a screen loses it the moment it is deleted,
- * and a hook cannot be the thing that stops being called. Without one there is
- * nothing to draw.
- */
+/* The habit is optional because a screen loses it the moment it is deleted,
+and a hook cannot be the thing that stops being called. */
 export function useHabitHeat(
   habit: Habit | undefined,
   completed: Record<string, true> | undefined,

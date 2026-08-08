@@ -7,17 +7,11 @@ import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 import { styles } from "./styles";
 import type { Props } from "./types";
 
-/* The two system fills a grid drawn in React Native tints its days with. */
 const SURFACE = {
   missed: { color: colors.fill as string, opacity: 1 },
   unscheduled: { color: colors.subtleFill as string, opacity: 1 },
 };
 
-/**
- * The app's heat grid: the habit's history, the onboarding artwork, and
- * whatever else draws days as a matrix of rounded cells. Geometry, labels and
- * the fade are props, so one renderer serves grids that look nothing alike.
- */
 export function HeatGraph({
   columns,
   accent,
@@ -61,8 +55,8 @@ export function HeatGraph({
             {column.map((status, weekday) => {
               const { color, opacity } = heatAppearance(status, palette);
               return (
-                /* Animated whether or not it animates: the alternative is a
-                second element type in a file that may declare one component. */
+                /* Animated even when it does not animate: a plain `View` for
+                the other case is a second component in this file. */
                 <Animated.View
                   key={weekday}
                   entering={
@@ -81,8 +75,8 @@ export function HeatGraph({
                       borderRadius: radius ?? (cellSize ?? 0) * 0.28,
                       backgroundColor: color,
                     },
-                    /* A full opacity is the absence of one. Carrying the key at
-                    all is what a fade, which animates opacity, would fight. */
+                    /* Reanimated fights any style key the fade also drives,
+                    `opacity: undefined` included, so it is left out. */
                     opacity < 1 && { opacity },
                   ]}
                 />

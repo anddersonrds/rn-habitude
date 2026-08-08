@@ -6,7 +6,7 @@ import type { TestInstance } from "test-renderer";
 
 const row = { layout: "row", symbol: "trophy.fill", color: "#FFCC00" } as const;
 
-/* The arrangement is the layout of whatever holds the value and the label. */
+/* Whatever holds the value and the label is what carries the arrangement. */
 function arrangement(container: TestInstance) {
   const [held] = container.queryAll(
     (node) => StyleSheet.flatten(node.props.style)?.gap != null,

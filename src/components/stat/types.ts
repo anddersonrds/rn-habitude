@@ -1,17 +1,15 @@
 import type { SFSymbol } from "expo-symbols";
 
-/**
- * A metric and what it counts, in the two arrangements the app shows one in:
- * a column that shares a row with its siblings, or a row of its own led by an
- * icon. The arrangement carries the type sizes with it.
- */
+/* The arrangement carries the type sizes with it. */
 export type Props =
   | {
+      /** The number over its label, sharing the width with its siblings. */
       layout?: "column";
       value: string;
       label: string;
     }
   | {
+      /** The label between an icon and the number. */
       layout: "row";
       value: string;
       label: string;

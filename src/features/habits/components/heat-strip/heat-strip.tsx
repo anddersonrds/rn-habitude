@@ -4,11 +4,9 @@ import { foregroundStyle, frame, opacity } from "@expo/ui/swift-ui/modifiers";
 import type { Props } from "./types";
 
 /**
- * The habit's recent consistency, drawn natively so the row stays SwiftUI.
- *
- * This is the one heat graph that cannot come from `components/heat-graph/`:
- * it renders inside a SwiftUI `List` row, which no React Native view can enter.
- * What it does share is the rule that turns a day into a color and an opacity.
+ * The one heat graph that cannot come from `components/heat-graph/`: it renders
+ * inside a SwiftUI `List` row, which no React Native view can enter. What it
+ * does share is the rule that turns a day into a color and an opacity.
  */
 export function HeatStrip({ states, color, neutral }: Props) {
   const palette = {

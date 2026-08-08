@@ -14,7 +14,7 @@ import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { useHabitDetailModel } from "./hooks/use-habit-detail-model";
 import { styles } from "./styles";
 
-/** Eighteen weeks: what fits the card without scrolling. */
+/** What fits the card without scrolling. */
 const DETAIL_WEEKS = 18;
 
 export function HabitDetailScreen() {

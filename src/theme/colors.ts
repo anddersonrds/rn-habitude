@@ -54,16 +54,15 @@ export const success = "#34C759";
 
 /**
  * Apple's system palette as hex. A SwiftUI modifier, an `@expo/ui` tint and a
- * shadow all take a plain string, so the semantic `colors` above cannot cross
- * into them; these are the values that do. `accent` and `success` are two more,
- * kept apart because they carry a meaning rather than a hue.
+ * shadow take a plain string, so the semantic `colors` above cannot cross into
+ * them; these are the values that do.
  */
 export const tints = {
-  /** `systemGray`: an off switch, a rest day, a habit nothing is due on. */
+  /** `systemGray`. */
   gray: "#8E8E93",
-  /** `systemBlue`: the editing affordance, and the rate it leads to. */
+  /** `systemBlue`. */
   blue: "#007AFF",
-  /** `systemYellow`: the best streak's trophy. */
+  /** `systemYellow`. */
   yellow: "#FFCC00",
   black: "#000000",
   white: "#FFFFFF",

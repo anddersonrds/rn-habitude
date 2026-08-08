@@ -45,7 +45,7 @@ export function useTodayModel() {
   const allDone = items.length > 0 && doneCount === items.length;
   const progress = items.length === 0 ? 1 : doneCount / items.length;
 
-  // Celebrate the transition into a fully complete day, once per transition.
+  /* Once per transition into a complete day, not once per render of one. */
   const wasAllDone = useRef(allDone);
   useEffect(() => {
     if (allDone && !wasAllDone.current) {
@@ -57,8 +57,8 @@ export function useTodayModel() {
 
   const toggle = (habit: Habit) => {
     const nowDone = toggleCompletion(habit.id, today);
-    // The celebration owns the haptic for the last check-in of the day, so a
-    // single tap never fires two overlapping patterns.
+    /* The celebration owns the last check-in's haptic, so one tap never fires
+    two patterns. */
     const isFinalCheckIn =
       nowDone && doneCount + 1 === items.length && items.length > 0;
     if (isFinalCheckIn) return;

@@ -5,7 +5,6 @@ import { colors } from "@/theme";
 import { StyleSheet, type ViewStyle } from "react-native";
 import type { TestInstance } from "test-renderer";
 
-/* Reduce Motion is what decides whether the cells fade in at all. */
 jest.mock("react-native-reanimated", () => {
   const actual = jest.requireActual("react-native-reanimated");
   return { __esModule: true, ...actual, useReducedMotion: jest.fn(() => false) };
@@ -46,7 +45,6 @@ function labelPositions(container: TestInstance) {
     }));
 }
 
-/** A week of one status, so a case says what it draws in one line. */
 function week(...statuses: HeatStatus[]): HeatStatus[] {
   return statuses;
 }
@@ -262,8 +260,7 @@ describe("scrolling", () => {
 describe("the fade", () => {
   const columns = [week("done", "done"), week("done", "done")];
 
-  /* `delayV` is Reanimated's own field on a builder, and the stagger is
-  nothing but that number: a cell's place in the grid, in milliseconds. */
+  /* `delayV` is Reanimated's own field on the builder. */
   function fadeDelays(container: TestInstance): number[] {
     return container
       .queryAll((node) => node.props.entering != null)

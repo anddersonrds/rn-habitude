@@ -11,7 +11,6 @@ export const styles = StyleSheet.create({
   grid: {
     flexDirection: "row",
   },
-  /* Cells with no size of their own: the columns divide the width between them. */
   sharedGrid: {
     justifyContent: "space-between",
   },
