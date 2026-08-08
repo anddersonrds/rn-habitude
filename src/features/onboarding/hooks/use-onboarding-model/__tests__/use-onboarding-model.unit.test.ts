@@ -41,8 +41,8 @@ const mockHaptic = {
 
 const mockUseReducedMotion = jest.fn(() => false);
 
-jest.mock("@/lib/notifications", () => mockNotifications);
-jest.mock("@/lib/haptics", () => ({ haptic: mockHaptic }));
+jest.mock("@/lib/native/notifications", () => mockNotifications);
+jest.mock("@/lib/native/haptics", () => ({ haptic: mockHaptic }));
 /* The hook reads one hook out of Reanimated and renders nothing. */
 jest.mock("react-native-reanimated", () => ({
   __esModule: true,

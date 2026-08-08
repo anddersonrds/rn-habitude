@@ -1,5 +1,5 @@
-import { haptic } from "@/lib/haptics";
-import { useTabBarHidden } from "@/lib/tab-bar";
+import { haptic } from "@/lib/native/haptics";
+import { useTabBarHidden } from "@/lib/native/tab-bar";
 import { accent } from "@/theme";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useTranslation } from "react-i18next";

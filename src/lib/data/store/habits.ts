@@ -1,6 +1,6 @@
 import { todayKey } from "../../dates";
 import { db } from "../db";
-import { cancelReminders, scheduleHabitReminders } from "../../notifications";
+import { cancelReminders, scheduleHabitReminders } from "../../native/notifications";
 import type { Habit, HabitInput } from "../../domain/types";
 import { emit, getAppState } from "./state";
 

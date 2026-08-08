@@ -19,7 +19,7 @@ The store's contract with the reminder layer is "schedule this, cancel that".
 What the scheduling itself does to `expo-notifications` belongs to that module's
 own tests, and the round trip through it is covered by the integration test.
 */
-jest.mock("@/lib/notifications", () => ({
+jest.mock("@/lib/native/notifications", () => ({
   scheduleHabitReminders: jest.fn(async () => [] as string[]),
   cancelReminders: jest.fn(async () => {}),
   cancelAllReminders: jest.fn(async () => {}),
@@ -420,7 +420,7 @@ describe("deleteAllData", () => {
 
   it("should cancel every scheduled reminder", async () => {
     const { store } = freshStore();
-    const { cancelAllReminders } = require("@/lib/notifications");
+    const { cancelAllReminders } = require("@/lib/native/notifications");
     await settle();
 
     await store.deleteAllData();
@@ -456,7 +456,7 @@ describe("loadSampleData", () => {
 
   it("should cancel the reminders the previous sample run had scheduled", async () => {
     const { store } = freshStore();
-    const notifications = require("@/lib/notifications");
+    const notifications = require("@/lib/native/notifications");
     notifications.scheduleHabitReminders.mockResolvedValue(["reminder-1"]);
     store.loadSampleData(sampleNames);
     await settle();
@@ -629,7 +629,7 @@ describe("the references a reload hands back", () => {
 
   it("should give the habit a new object when the reminder ids changed", async () => {
     const { store } = freshStore();
-    const notifications = require("@/lib/notifications");
+    const notifications = require("@/lib/native/notifications");
     const habit = store.createHabit(input({ reminderTime: "07:30" }));
     await settle();
     const before = store.getAppState().habits[0];

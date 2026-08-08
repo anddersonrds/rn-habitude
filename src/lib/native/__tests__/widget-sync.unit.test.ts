@@ -24,12 +24,12 @@ jest.mock("@/../widgets/HabitudeWidget", () => ({
 const TODAY = "2026-07-29";
 const SUNDAY_ONLY = [0];
 
-type WidgetSyncModule = typeof import("@/lib/widget-sync");
+type WidgetSyncModule = typeof import("@/lib/native/widget-sync");
 
 /** Reloads the module, which is what resets its warn-once latch. */
 function freshWidgetSync(): WidgetSyncModule {
   jest.resetModules();
-  return require("@/lib/widget-sync");
+  return require("@/lib/native/widget-sync");
 }
 
 function lastSnapshot(): HabitudeWidgetProps {

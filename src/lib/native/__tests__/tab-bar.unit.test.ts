@@ -2,7 +2,7 @@
 `import * as React` is a copy of the module's exports, and a spy on a copy is
 never called. See `captureSubscription`.
 */
-import { setTabBarHidden, useTabBarHidden } from "@/lib/tab-bar";
+import { setTabBarHidden, useTabBarHidden } from "@/lib/native/tab-bar";
 import { act, renderHook } from "@testing-library/react-native";
 
 async function subscriber() {

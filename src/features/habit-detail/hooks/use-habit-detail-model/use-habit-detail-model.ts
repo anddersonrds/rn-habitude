@@ -1,6 +1,6 @@
 import { formatTime, todayKey, weekdayOf } from "@/lib/dates";
 import { scheduleLabel } from "@/lib/domain/habits";
-import { haptic } from "@/lib/haptics";
+import { haptic } from "@/lib/native/haptics";
 import { useHabitFromRoute } from "@/lib/hooks/use-habit-from-route";
 import { toggleCompletion, useAppState } from "@/lib/data/store";
 import { completionRate, computeStreaks } from "@/lib/domain/streaks";

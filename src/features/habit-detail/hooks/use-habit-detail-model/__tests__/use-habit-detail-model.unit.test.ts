@@ -15,13 +15,13 @@ the store; see `load`.
 import "@testing-library/react-native";
 
 /* Reminders are the store's business, and their own tests cover them. */
-jest.mock("@/lib/notifications", () => ({
+jest.mock("@/lib/native/notifications", () => ({
   scheduleHabitReminders: jest.fn(async () => [] as string[]),
   cancelReminders: jest.fn(async () => {}),
   cancelAllReminders: jest.fn(async () => {}),
 }));
 
-jest.mock("@/lib/haptics", () => ({
+jest.mock("@/lib/native/haptics", () => ({
   haptic: {
     selection: jest.fn(),
     tap: jest.fn(),
@@ -50,7 +50,7 @@ const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
 
 type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/habit-detail/hooks/use-habit-detail-model");
-type HapticsModule = typeof import("@/lib/haptics");
+type HapticsModule = typeof import("@/lib/native/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 
 type Loaded = {
@@ -74,7 +74,7 @@ function load(language = "en"): Loaded {
     store: require("@/lib/data/store"),
     useHabitDetailModel: require("@/features/habit-detail/hooks/use-habit-detail-model")
       .useHabitDetailModel,
-    haptic: require("@/lib/haptics").haptic,
+    haptic: require("@/lib/native/haptics").haptic,
     router: routing.router,
     params: routing.useLocalSearchParams,
     testingLibrary: require("@testing-library/react-native/pure"),

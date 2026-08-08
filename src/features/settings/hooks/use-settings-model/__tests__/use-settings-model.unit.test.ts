@@ -14,7 +14,7 @@ the store; see `load`.
 */
 import "@testing-library/react-native";
 
-jest.mock("@/lib/notifications", () => ({
+jest.mock("@/lib/native/notifications", () => ({
   /* Reminders are the store's business, and their own tests cover them. */
   scheduleHabitReminders: jest.fn(async () => [] as string[]),
   cancelReminders: jest.fn(async () => {}),
@@ -24,7 +24,7 @@ jest.mock("@/lib/notifications", () => ({
   sendTestNotification: jest.fn(async () => {}),
 }));
 
-jest.mock("@/lib/haptics", () => ({
+jest.mock("@/lib/native/haptics", () => ({
   haptic: {
     selection: jest.fn(),
     tap: jest.fn(),
@@ -106,7 +106,7 @@ const DENIED: Permission = { granted: false, canAskAgain: false };
 
 type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/settings/hooks/use-settings-model");
-type HapticsModule = typeof import("@/lib/haptics");
+type HapticsModule = typeof import("@/lib/native/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 type AlertButtons = { text: string; style?: string; onPress?: () => void }[];
 
@@ -130,7 +130,7 @@ function load(): Loaded {
   jest.resetModules();
   const { Alert, Linking } =
     require("react-native") as typeof import("react-native");
-  const notifications = require("@/lib/notifications");
+  const notifications = require("@/lib/native/notifications");
   /*
   Pinned rather than inherited: the hook reads its settings through this registry,
   and a change to how the device is resolved must not rewrite what these cases
@@ -145,7 +145,7 @@ function load(): Loaded {
     store: require("@/lib/data/store"),
     useSettingsModel: require("@/features/settings/hooks/use-settings-model")
       .useSettingsModel,
-    haptic: require("@/lib/haptics").haptic,
+    haptic: require("@/lib/native/haptics").haptic,
     getPermission: notifications.getNotificationPermission,
     ensurePermission: notifications.ensureNotificationPermission,
     sendTestNotification: notifications.sendTestNotification,

@@ -1,7 +1,7 @@
-import { confirmDeleteHabit } from "@/lib/alerts";
+import { confirmDeleteHabit } from "@/lib/native/alerts";
 import { todayKey } from "@/lib/dates";
 import { scheduleLabel } from "@/lib/domain/habits";
-import { haptic } from "@/lib/haptics";
+import { haptic } from "@/lib/native/haptics";
 import { routes } from "@/lib/utils/routes";
 import { deleteHabit, reorderHabits, useAppState } from "@/lib/data/store";
 import { computeStreaks, trailingDayStates } from "@/lib/domain/streaks";

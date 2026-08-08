@@ -1,8 +1,8 @@
 import * as Notifications from "expo-notifications";
 import { useEffect } from "react";
-import { todayKey } from "./dates";
+import { todayKey } from "../dates";
 import { MARK_DONE_ACTION, registerNotificationCategories } from "./notifications";
-import { completeHabit } from "./data/store";
+import { completeHabit } from "../data/store";
 
 /** Handles the "Check in" action on a reminder notification. */
 function handleResponse(

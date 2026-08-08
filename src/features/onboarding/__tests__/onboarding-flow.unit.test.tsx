@@ -27,7 +27,7 @@ jest.mock("react-native-reanimated", () => {
 /* The flow is what is being rendered; where onboarding is recorded is not. */
 jest.mock("@/lib/data/store", () => ({ setOnboarded: jest.fn() }));
 
-jest.mock("@/lib/notifications", () => ({
+jest.mock("@/lib/native/notifications", () => ({
   getNotificationPermission: jest.fn(async () => UNDETERMINED),
   ensureNotificationPermission: jest.fn(async () => true),
 }));
@@ -49,7 +49,7 @@ const { setOnboarded } = jest.requireMock<{ setOnboarded: jest.Mock }>(
 const notifications = jest.requireMock<{
   getNotificationPermission: jest.Mock;
   ensureNotificationPermission: jest.Mock;
-}>("@/lib/notifications");
+}>("@/lib/native/notifications");
 
 const DOT_HEIGHT = 7;
 const CURRENT_DOT_WIDTH = 24;

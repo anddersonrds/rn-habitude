@@ -1,5 +1,5 @@
 import { EmptyState } from "@/components/empty-state";
-import { haptic } from "@/lib/haptics";
+import { haptic } from "@/lib/native/haptics";
 import { symbolView, symbolViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
 import { accent } from "@/theme";
@@ -9,7 +9,7 @@ import { fireEvent } from "@testing-library/react-native";
 The provider fires a selection haptic on every press. Mocking the module is
 what makes the difference between that one and a component's own visible.
 */
-jest.mock("@/lib/haptics", () => ({
+jest.mock("@/lib/native/haptics", () => ({
   haptic: {
     selection: jest.fn(),
     tap: jest.fn(),

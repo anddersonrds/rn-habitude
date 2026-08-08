@@ -5,13 +5,13 @@ import {
   setLanguage,
 } from "@/i18n/i18next";
 import { switchLanguage } from "@/i18n/switching";
-import { alertNotificationsOff } from "@/lib/alerts";
-import { haptic } from "@/lib/haptics";
+import { alertNotificationsOff } from "@/lib/native/alerts";
+import { haptic } from "@/lib/native/haptics";
 import {
   ensureNotificationPermission,
   getNotificationPermission,
   sendTestNotification,
-} from "@/lib/notifications";
+} from "@/lib/native/notifications";
 import {
   deleteAllData,
   loadSampleData,

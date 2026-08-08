@@ -1,5 +1,5 @@
-import { MARK_DONE_ACTION } from "@/lib/notifications";
-import { useNotificationActions } from "@/lib/notification-actions";
+import { MARK_DONE_ACTION } from "@/lib/native/notifications";
+import { useNotificationActions } from "@/lib/native/notification-actions";
 import { completeHabit } from "@/lib/data/store";
 import { freezeClock, restoreClock } from "@/test-utils/time";
 import { renderHook } from "@testing-library/react-native";

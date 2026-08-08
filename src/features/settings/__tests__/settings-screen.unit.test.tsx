@@ -16,7 +16,7 @@ import { Alert } from "react-native";
 import type { TestInstance } from "test-renderer";
 
 /* Reminders are the store's business, and their own tests cover them. */
-jest.mock("@/lib/notifications", () => ({
+jest.mock("@/lib/native/notifications", () => ({
   scheduleHabitReminders: jest.fn(async () => [] as string[]),
   cancelReminders: jest.fn(async () => {}),
   cancelAllReminders: jest.fn(async () => {}),
@@ -41,7 +41,7 @@ jest.mock("expo-router", () =>
 const notifications = jest.requireMock<{
   getNotificationPermission: jest.Mock;
   sendTestNotification: jest.Mock;
-}>("@/lib/notifications");
+}>("@/lib/native/notifications");
 
 const settings = en.translations.settings;
 const language = en.translations.language;

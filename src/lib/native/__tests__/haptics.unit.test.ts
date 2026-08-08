@@ -1,4 +1,4 @@
-import { haptic } from "@/lib/haptics";
+import { haptic } from "@/lib/native/haptics";
 import * as Haptics from "expo-haptics";
 
 jest.mock("expo-haptics", () => ({
