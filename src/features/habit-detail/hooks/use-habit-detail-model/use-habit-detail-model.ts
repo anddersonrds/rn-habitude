@@ -1,25 +1,20 @@
 import { formatTime, todayKey, weekdayOf } from "@/lib/dates";
 import { scheduleLabel } from "@/lib/habits";
 import { haptic } from "@/lib/haptics";
+import { useHabitFromRoute } from "@/lib/hooks/use-habit-from-route";
 import { toggleCompletion, useAppState } from "@/lib/store";
 import { completionRate, computeStreaks } from "@/lib/streaks";
 import { isScheduledOn } from "@/lib/types";
 import { routes } from "@/lib/utils/routes";
-import { router, useLocalSearchParams } from "expo-router";
-import { useEffect } from "react";
+import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 
 /** Null once the habit is gone, which is also when it sends the screen back. */
 export function useHabitDetailModel() {
   const { i18n } = useTranslation();
   const { t: tSchedule } = useTranslation("schedule");
-  const { id } = useLocalSearchParams<{ id: string }>();
   const state = useAppState();
-  const habit = state.habits.find((candidate) => candidate.id === id);
-
-  useEffect(() => {
-    if (!habit && router.canGoBack()) router.back();
-  }, [habit]);
+  const habit = useHabitFromRoute(state.habits);
 
   if (!habit) return null;
 
