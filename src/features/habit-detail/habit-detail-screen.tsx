@@ -1,5 +1,6 @@
 import { HeatGraph } from "@/components/heat-graph";
 import { useHabitHeat } from "@/components/heat-graph/hooks/use-habit-heat";
+import { Stat } from "@/components/stat";
 import { Text } from "@/components/ui/text";
 import { formatCount, formatPercent } from "@/lib/numbers";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
@@ -10,7 +11,6 @@ import { PressableScale } from "pressto";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, View } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
-import { SecondaryStat } from "./components/secondary-stat";
 import { useHabitDetailModel } from "./hooks/use-habit-detail-model";
 import { styles } from "./styles";
 
@@ -154,14 +154,16 @@ export function HabitDetailScreen() {
           </View>
           <View style={styles.statsDivider} />
           <View style={styles.secondaryStats}>
-            <SecondaryStat
+            <Stat
+              layout="row"
               symbol="trophy.fill"
               color="#FFCC00"
               value={formatCount(streaks.best, i18n.language)}
               label={t("bestStreak")}
             />
             <View style={styles.secondaryDivider} />
-            <SecondaryStat
+            <Stat
+              layout="row"
               symbol="chart.bar.fill"
               color="#007AFF"
               value={formatPercent(rate, i18n.language)}

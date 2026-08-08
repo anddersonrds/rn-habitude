@@ -1,5 +1,6 @@
 import { HeatGraph } from "@/components/heat-graph";
 import { useHabitHeat } from "@/components/heat-graph/hooks/use-habit-heat";
+import { Stat } from "@/components/stat";
 import { Text } from "@/components/ui/text";
 import { formatCount, formatPercent } from "@/lib/numbers";
 import { colors } from "@/theme";
@@ -8,7 +9,6 @@ import { SymbolView, type SFSymbol } from "expo-symbols";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { LegendSwatch } from "./components/legend-swatch";
-import { Stat } from "./components/stat";
 import { useHabitHistoryModel } from "./hooks/use-habit-history-model";
 import { styles } from "./styles";
 
