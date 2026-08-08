@@ -47,7 +47,8 @@ const TWO_DAYS_AGO = "2026-07-27";
 const HABIT_COLOR = "#FF9500";
 const CELL_SIZE = 11;
 const DONE = HABIT_COLOR;
-const PENDING = `${HABIT_COLOR}55`;
+/* A day still open is the habit's own colour, faded rather than tinted. */
+const PENDING = `${HABIT_COLOR} at 0.3`;
 
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
 const MONDAY = [1];
@@ -70,7 +71,12 @@ function cellColors(container: TestInstance): string[] {
       const style = StyleSheet.flatten(node.props.style);
       return style?.width === CELL_SIZE && style?.height === CELL_SIZE;
     })
-    .map((cell) => StyleSheet.flatten(cell.props.style).backgroundColor);
+    .map((cell) => {
+      const { backgroundColor, opacity } = StyleSheet.flatten(cell.props.style);
+      return opacity == null || opacity === 1
+        ? backgroundColor
+        : `${backgroundColor} at ${opacity}`;
+    });
 }
 
 /** Every line the screen drew, so "nothing" is assertable as nothing. */
@@ -201,6 +207,16 @@ describe("the habit being shown", () => {
     const { container } = await renderDetail(habit.id);
 
     expect(symbolView(container, "book.fill").props.tintColor).toBe("#34C759");
+  });
+
+  /* The card is sized around this grid, so the shared renderer has to keep
+  drawing the eighteen weeks of 11pt cells the screen was built for. */
+  it("should draw eighteen weeks of history in the card", async () => {
+    const habit = seedHabit();
+
+    const { container } = await renderDetail(habit.id);
+
+    expect(cellColors(container)).toHaveLength(18 * 7);
   });
 });
 

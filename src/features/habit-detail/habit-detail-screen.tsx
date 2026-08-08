@@ -1,4 +1,5 @@
-import { HeatMap } from "@/components/heat-map";
+import { HeatGraph } from "@/components/heat-graph";
+import { useHabitHeat } from "@/components/heat-graph/hooks/use-habit-heat";
 import { Text } from "@/components/ui/text";
 import { formatCount, formatPercent } from "@/lib/numbers";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
@@ -13,15 +14,18 @@ import { SecondaryStat } from "./components/secondary-stat";
 import { useHabitDetailModel } from "./hooks/use-habit-detail-model";
 import { styles } from "./styles";
 
+/** Eighteen weeks: what fits the card without scrolling. */
+const DETAIL_WEEKS = 18;
+
 export function HabitDetailScreen() {
   const { t, i18n } = useTranslation("habitDetail");
   const model = useHabitDetailModel();
+  const heat = useHabitHeat(model?.habit, model?.completed, DETAIL_WEEKS);
 
   if (!model) return null;
 
   const {
     habit,
-    completed,
     subtitle,
     streaks,
     rate,
@@ -190,10 +194,9 @@ export function HabitDetailScreen() {
                     tintColor={colors.tertiaryText}
                   />
                 </View>
-                <HeatMap
-                  habit={habit}
-                  completed={completed}
-                  weeks={18}
+                <HeatGraph
+                  columns={heat.columns}
+                  accent={habit.color}
                   cellSize={11}
                   gap={3}
                 />

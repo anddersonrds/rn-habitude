@@ -49,7 +49,8 @@ const HISTORY_CELLS = 364;
 const HABIT_COLOR = "#FF9500";
 const CELL_SIZE = 12;
 const DONE = HABIT_COLOR;
-const PENDING = `${HABIT_COLOR}55`;
+/* A day still open is the habit's own colour, faded rather than tinted. */
+const PENDING = `${HABIT_COLOR} at 0.3`;
 const MISSED = colors.fill;
 const BLANK = "transparent";
 
@@ -73,7 +74,12 @@ function cellColors(container: TestInstance): string[] {
       const style = StyleSheet.flatten(node.props.style);
       return style?.width === CELL_SIZE && style?.height === CELL_SIZE;
     })
-    .map((cell) => StyleSheet.flatten(cell.props.style).backgroundColor);
+    .map((cell) => {
+      const { backgroundColor, opacity } = StyleSheet.flatten(cell.props.style);
+      return opacity == null || opacity === 1
+        ? backgroundColor
+        : `${backgroundColor} at ${opacity}`;
+    });
 }
 
 /* Month labels are the only absolutely positioned thing the grid draws. */
