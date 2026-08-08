@@ -49,10 +49,6 @@ function loadState(): AppState {
 let state: AppState = loadState();
 const listeners = new Set<() => void>();
 
-/*
-Every domain writes through this one function, so the store stays one listener
-set and one snapshot however many files write to the database.
-*/
 export function emit(): void {
   state = loadState();
   for (const listener of listeners) listener();
@@ -70,11 +66,7 @@ export function getAppState(): AppState {
 
 export function useAppState(): AppState;
 export function useAppState<T>(selector: (state: AppState) => T): T;
-/*
-The comparison is `Object.is` on what the selector returns, so a selector that
-builds an object or an array inline hands back a fresh reference every render
-and loops. Select a slice, or memoise the derivation at the call site.
-*/
+/* Compared with `Object.is`, so a selector building an object inline loops. */
 export function useAppState<T>(
   selector?: (state: AppState) => T,
 ): AppState | T {
