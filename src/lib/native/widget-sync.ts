@@ -48,7 +48,8 @@ export function syncWidgetFromState(state: AppState): void {
     };
     HabitudeWidget.updateSnapshot(props);
   } catch (error) {
-    // Widget sync must never break app flows.
+    /* Swallowed rather than rethrown: a widget that cannot update must not
+    take a check-in down with it. */
     if (!warnedAboutSync) {
       warnedAboutSync = true;
       console.warn("Widget sync unavailable:", error);
