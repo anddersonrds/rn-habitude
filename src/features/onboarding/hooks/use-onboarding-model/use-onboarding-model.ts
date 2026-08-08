@@ -110,7 +110,7 @@ export function useOnboardingModel() {
       return;
     }
 
-    // Last step: ask once, then finish either way.
+    /* Asks once, and finishes either way. */
     if (!granted && !cannotAsk) {
       setRequesting(true);
       try {
