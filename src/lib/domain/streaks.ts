@@ -21,8 +21,8 @@ export function computeStreaks(
 ): Streaks {
   const done = completed ?? {};
 
-  // Earliest relevant day: habit creation, or the oldest completion when
-  // sample data back-fills history earlier than created_at.
+  /* Sample data back-fills history earlier than `createdAt`, so the oldest
+  completion can precede the habit. */
   let start = habit.createdAt;
   for (const key of Object.keys(done)) {
     if (key < start) start = key;
@@ -39,7 +39,6 @@ export function computeStreaks(
       run += 1;
       if (run > best) best = run;
     } else if (day === today) {
-      // Today is still in progress; don't reset the running streak.
       break;
     } else {
       run = 0;
@@ -80,7 +79,8 @@ export function heatCells(
     if (key < firstTracked) firstTracked = key;
   }
 
-  // The last column is the week containing endDate; the grid ends on its last day.
+  /* The last column is the week holding `endDate`, so the grid runs to that
+  week's last day rather than to `endDate`. */
   const dayInWeek = (weekdayOf(endDate) - weekStart + 7) % 7;
   const gridEnd = addDays(endDate, 6 - dayInWeek);
   const gridStart = addDays(gridEnd, -(weeks * 7 - 1));
@@ -124,7 +124,7 @@ export function heatMonthLabels(
       lastMonth = month;
     }
   }
-  // Drop a first label that would collide with the second one.
+  /* Drop a first label that would collide with the second one. */
   if (labels.length >= 2 && labels[1].week - labels[0].week < 2) labels.shift();
   return labels;
 }
