@@ -8,4 +8,16 @@ export const styles = StyleSheet.create({
   weekdayColumn: {
     marginRight: 6,
   },
+  grid: {
+    flexDirection: "row",
+  },
+  sharedGrid: {
+    justifyContent: "space-between",
+  },
+  sharedColumn: {
+    flex: 1,
+  },
+  cell: {
+    borderCurve: "continuous",
+  },
 });

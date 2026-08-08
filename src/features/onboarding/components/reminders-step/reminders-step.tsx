@@ -1,6 +1,6 @@
 import { Text } from "@/components/ui/text";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
-import { accent } from "@/theme";
+import { accent, success } from "@/theme";
 import { SymbolView } from "expo-symbols";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
@@ -68,7 +68,7 @@ export function RemindersStep({ allowed }: Props) {
           entering={reduceMotion ? undefined : FadeInUp.duration(220)}
           style={styles.allowedBadge}
         >
-          <SymbolView name="checkmark.circle.fill" size={20} tintColor="#34C759" />
+          <SymbolView name="checkmark.circle.fill" size={20} tintColor={success} />
           <Text variant="subheadline">{t("permissionAllowed")}</Text>
         </Animated.View>
       )}

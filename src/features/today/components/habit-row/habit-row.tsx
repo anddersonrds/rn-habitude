@@ -1,4 +1,4 @@
-import { accent, success } from "@/theme";
+import { accent, success, tints } from "@/theme";
 import {
   Button,
   HStack,
@@ -82,7 +82,7 @@ export function HabitRow({
         <Spacer />
         <Image
           systemName={done ? "checkmark.circle.fill" : "circle"}
-          color={done ? habit.color : "#8E8E93"}
+          color={done ? habit.color : tints.gray}
           size={26}
           modifiers={[
             opacity(done ? 1 : 0.5),
@@ -114,13 +114,13 @@ export function HabitRow({
           label={t("common:edit")}
           systemImage="pencil"
           onPress={onEdit}
-          modifiers={[tint("#8E8E93")]}
+          modifiers={[tint(tints.gray)]}
         />
         <Button
           label={t("history")}
           systemImage="chart.bar.fill"
           onPress={onHistory}
-          modifiers={[tint("#007AFF")]}
+          modifiers={[tint(tints.blue)]}
         />
       </SwipeActions.Actions>
     </SwipeActions>

@@ -1,18 +1,12 @@
 import { todayKey } from "@/lib/dates";
+import { useHabitFromRoute } from "@/lib/hooks/use-habit-from-route";
 import { useAppState } from "@/lib/store";
 import { completionRate, computeStreaks } from "@/lib/streaks";
-import { router, useLocalSearchParams } from "expo-router";
-import { useEffect } from "react";
 
 /** Null once the habit is gone, which is also when it sends the screen back. */
 export function useHabitHistoryModel() {
-  const { id } = useLocalSearchParams<{ id: string }>();
   const state = useAppState();
-  const habit = state.habits.find((candidate) => candidate.id === id);
-
-  useEffect(() => {
-    if (!habit && router.canGoBack()) router.back();
-  }, [habit]);
+  const habit = useHabitFromRoute(state.habits);
 
   if (!habit) return null;
 

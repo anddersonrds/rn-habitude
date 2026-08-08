@@ -1,12 +1,13 @@
+import { confirmDeleteHabit } from "@/lib/alerts";
 import { formatFullDate, formatTime, todayKey, weekdayOf } from "@/lib/dates";
 import { haptic } from "@/lib/haptics";
+import { routes } from "@/lib/utils/routes";
 import { deleteHabit, toggleCompletion, useAppState } from "@/lib/store";
 import { computeStreaks } from "@/lib/streaks";
 import { isScheduledOn, type Habit } from "@/lib/types";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert } from "react-native";
 import type { TodayItem } from "./types";
 
 /**
@@ -14,7 +15,8 @@ import type { TodayItem } from "./types";
  * the SwiftUI view stays a thin render layer.
  */
 export function useTodayModel() {
-  const { t, i18n } = useTranslation(["today", "common"]);
+  const { t, i18n } = useTranslation("today");
+  const { t: tCommon } = useTranslation("common");
   const state = useAppState();
   const [celebrating, setCelebrating] = useState(false);
 
@@ -43,7 +45,7 @@ export function useTodayModel() {
   const allDone = items.length > 0 && doneCount === items.length;
   const progress = items.length === 0 ? 1 : doneCount / items.length;
 
-  // Celebrate the transition into a fully complete day, once per transition.
+  /* Once per transition into a complete day, not once per render of one. */
   const wasAllDone = useRef(allDone);
   useEffect(() => {
     if (allDone && !wasAllDone.current) {
@@ -55,8 +57,8 @@ export function useTodayModel() {
 
   const toggle = (habit: Habit) => {
     const nowDone = toggleCompletion(habit.id, today);
-    // The celebration owns the haptic for the last check-in of the day, so a
-    // single tap never fires two overlapping patterns.
+    /* The celebration owns the last check-in's haptic, so one tap never fires
+    two patterns. */
     const isFinalCheckIn =
       nowDone && doneCount + 1 === items.length && items.length > 0;
     if (isFinalCheckIn) return;
@@ -66,27 +68,16 @@ export function useTodayModel() {
 
   const addHabit = () => {
     haptic.tap();
-    router.push("/habit-form");
+    router.push(routes.habitForm());
   };
 
-  const editHabit = (habit: Habit) => router.push(`/habit-form?id=${habit.id}`);
+  const editHabit = (habit: Habit) => router.push(routes.habitForm(habit.id));
 
-  const showHistory = (habit: Habit) => router.push(`/habit/${habit.id}`);
+  const showHistory = (habit: Habit) => router.push(routes.habitDetail(habit.id));
 
   const confirmDelete = (habit: Habit) => {
     haptic.warning();
-    Alert.alert(
-      t("common:deleteHabitTitle", { name: habit.name }),
-      t("common:deleteHabitBody"),
-      [
-        { text: t("common:cancel"), style: "cancel" },
-        {
-          text: t("common:delete"),
-          style: "destructive",
-          onPress: () => deleteHabit(habit.id),
-        },
-      ],
-    );
+    confirmDeleteHabit(habit.name, tCommon, () => deleteHabit(habit.id));
   };
 
   return {

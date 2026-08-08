@@ -1,27 +1,31 @@
-import { HeatMap } from "@/components/heat-map";
+import { HeatGraph } from "@/components/heat-graph";
+import { useHabitHeat } from "@/components/heat-graph/hooks/use-habit-heat";
+import { Stat } from "@/components/stat";
 import { Text } from "@/components/ui/text";
 import { formatCount, formatPercent } from "@/lib/numbers";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
-import { colors } from "@/theme";
+import { colors, tints } from "@/theme";
 import { Link, Stack } from "expo-router";
 import { SymbolView, type SFSymbol } from "expo-symbols";
 import { PressableScale } from "pressto";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, View } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
-import { SecondaryStat } from "./components/secondary-stat";
 import { useHabitDetailModel } from "./hooks/use-habit-detail-model";
 import { styles } from "./styles";
+
+/** What fits the card without scrolling. */
+const DETAIL_WEEKS = 18;
 
 export function HabitDetailScreen() {
   const { t, i18n } = useTranslation("habitDetail");
   const model = useHabitDetailModel();
+  const heat = useHabitHeat(model?.habit, model?.completed, DETAIL_WEEKS);
 
   if (!model) return null;
 
   const {
     habit,
-    completed,
     subtitle,
     streaks,
     rate,
@@ -150,16 +154,18 @@ export function HabitDetailScreen() {
           </View>
           <View style={styles.statsDivider} />
           <View style={styles.secondaryStats}>
-            <SecondaryStat
+            <Stat
+              layout="row"
               symbol="trophy.fill"
-              color="#FFCC00"
+              color={tints.yellow}
               value={formatCount(streaks.best, i18n.language)}
               label={t("bestStreak")}
             />
             <View style={styles.secondaryDivider} />
-            <SecondaryStat
+            <Stat
+              layout="row"
               symbol="chart.bar.fill"
-              color="#007AFF"
+              color={tints.blue}
               value={formatPercent(rate, i18n.language)}
               label={t("monthRate")}
             />
@@ -190,10 +196,9 @@ export function HabitDetailScreen() {
                     tintColor={colors.tertiaryText}
                   />
                 </View>
-                <HeatMap
-                  habit={habit}
-                  completed={completed}
-                  weeks={18}
+                <HeatGraph
+                  columns={heat.columns}
+                  accent={habit.color}
                   cellSize={11}
                   gap={3}
                 />

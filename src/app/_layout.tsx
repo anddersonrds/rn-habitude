@@ -4,6 +4,7 @@ import { useLanguageSwitch } from "@/i18n/switching";
 import { haptic } from "@/lib/haptics";
 import { useNotificationActions } from "@/lib/notification-actions";
 import { useAppState } from "@/lib/store";
+import { routes } from "@/lib/utils/routes";
 import { colors, getNavigationTheme } from "@/theme";
 import { router, Stack } from "expo-router";
 import { ThemeProvider } from "expo-router/react-navigation";
@@ -16,9 +17,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { useReducedMotion } from "react-native-reanimated";
 
-// A cold-start deep link (tapping the home screen widget) needs the tab
-// navigator mounted beneath it. Expo Router uses this anchor to build that
-// history entry.
+/* A cold-start deep link needs the tab navigator mounted beneath it, and this
+is the anchor Expo Router builds that history entry from. */
 export const unstable_settings = {
   initialRouteName: "(tabs)",
 };
@@ -51,10 +51,10 @@ function AppStack() {
     const justFinishedOnboarding = !wasOnboarded.current && onboarded;
     wasOnboarded.current = onboarded;
 
-    // Wait until the protected route switch has mounted the tabs, then present
-    // the first habit form on top so it has a real route to return to.
+    /* Waits for the protected switch to mount the tabs, so the form has a
+    route to return to. */
     if (justFinishedOnboarding && habits.length === 0) {
-      router.push("/habit-form");
+      router.push(routes.habitForm());
     }
   }, [habits.length, onboarded]);
 
@@ -87,8 +87,7 @@ function AppStack() {
         options={{
           headerShown: true,
           presentation: "formSheet",
-          // Opens fully expanded: the whole form (icon grid, color, frequency,
-          // reminder) is reachable immediately instead of behind a manual drag.
+          /* Fully expanded: the whole form is reachable without a drag. */
           sheetAllowedDetents: [1],
           sheetCornerRadius: 28,
           contentStyle: { backgroundColor: colors.groupedBackground },

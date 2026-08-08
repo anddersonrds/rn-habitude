@@ -51,3 +51,19 @@ export const accent = "#32ADE6";
  * habit is checked in.
  */
 export const success = "#34C759";
+
+/**
+ * Apple's system palette as hex. A SwiftUI modifier, an `@expo/ui` tint and a
+ * shadow take a plain string, so the semantic `colors` above cannot cross into
+ * them; these are the values that do.
+ */
+export const tints = {
+  /** `systemGray`. */
+  gray: "#8E8E93",
+  /** `systemBlue`. */
+  blue: "#007AFF",
+  /** `systemYellow`. */
+  yellow: "#FFCC00",
+  black: "#000000",
+  white: "#FFFFFF",
+} as const;

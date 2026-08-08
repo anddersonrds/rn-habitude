@@ -1,4 +1,6 @@
-import { HeatMap } from "@/components/heat-map";
+import { HeatGraph } from "@/components/heat-graph";
+import { useHabitHeat } from "@/components/heat-graph/hooks/use-habit-heat";
+import { Stat } from "@/components/stat";
 import { Text } from "@/components/ui/text";
 import { formatCount, formatPercent } from "@/lib/numbers";
 import { colors } from "@/theme";
@@ -7,7 +9,6 @@ import { SymbolView, type SFSymbol } from "expo-symbols";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { LegendSwatch } from "./components/legend-swatch";
-import { Stat } from "./components/stat";
 import { useHabitHistoryModel } from "./hooks/use-habit-history-model";
 import { styles } from "./styles";
 
@@ -17,10 +18,11 @@ const HISTORY_WEEKS = 52;
 export function HabitHistoryScreen() {
   const { t, i18n } = useTranslation("history");
   const model = useHabitHistoryModel();
+  const heat = useHabitHeat(model?.habit, model?.completed, HISTORY_WEEKS);
 
   if (!model) return null;
 
-  const { habit, completed, streaks, totalDone, yearRate } = model;
+  const { habit, streaks, totalDone, yearRate } = model;
 
   return (
     <>
@@ -47,13 +49,13 @@ export function HabitHistoryScreen() {
             </View>
           </View>
 
-          <HeatMap
-            habit={habit}
-            completed={completed}
-            weeks={HISTORY_WEEKS}
+          <HeatGraph
+            columns={heat.columns}
+            accent={habit.color}
             cellSize={12}
             gap={3}
-            labels
+            monthLabels={heat.monthLabels}
+            weekdayLabels={heat.weekdayLabels}
             scrollable
           />
 

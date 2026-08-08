@@ -1,26 +1,36 @@
+import { heatAppearance, heatStatusOfDayState } from "@/lib/heat";
 import { HStack, RoundedRectangle } from "@expo/ui/swift-ui";
-import {
-  foregroundStyle,
-  frame,
-  opacity,
-} from "@expo/ui/swift-ui/modifiers";
+import { foregroundStyle, frame, opacity } from "@expo/ui/swift-ui/modifiers";
 import type { Props } from "./types";
 
-/** The habit's recent consistency, drawn natively so the row stays SwiftUI. */
+/**
+ * The one heat graph that cannot come from `components/heat-graph/`: it renders
+ * inside a SwiftUI `List` row, which no React Native view can enter. What it
+ * does share is the rule that turns a day into a color and an opacity.
+ */
 export function HeatStrip({ states, color, neutral }: Props) {
+  const palette = {
+    accent: color,
+    missed: { color: neutral, opacity: 0.14 },
+    unscheduled: { color: neutral, opacity: 0.06 },
+  };
+
   return (
     <HStack spacing={2} modifiers={[frame({ width: 76 })]}>
-      {states.map((state, index) => (
-        <RoundedRectangle
-          key={index}
-          cornerRadius={1.5}
-          modifiers={[
-            frame({ height: 16 }),
-            foregroundStyle(state === 2 || state === 3 ? color : neutral),
-            opacity(state === 2 ? 1 : state === 3 ? 0.3 : state === 1 ? 0.14 : 0.06),
-          ]}
-        />
-      ))}
+      {states.map((state, index) => {
+        const cell = heatAppearance(heatStatusOfDayState(state), palette);
+        return (
+          <RoundedRectangle
+            key={index}
+            cornerRadius={1.5}
+            modifiers={[
+              frame({ height: 16 }),
+              foregroundStyle(cell.color),
+              opacity(cell.opacity),
+            ]}
+          />
+        );
+      })}
     </HStack>
   );
 }

@@ -1,3 +1,5 @@
+import { tints } from "@/theme";
+
 /**
  * Returns the higher-contrast foreground for a six-digit hex color.
  *
@@ -7,7 +9,7 @@
  */
 export function foregroundOnColor(background: string): "#000000" | "#FFFFFF" {
   const match = background.match(/^#([\dA-F]{2})([\dA-F]{2})([\dA-F]{2})$/i);
-  if (!match) return "#FFFFFF";
+  if (!match) return tints.white;
 
   const channels = match.slice(1).map((channel) => {
     const value = Number.parseInt(channel, 16) / 255;
@@ -18,5 +20,5 @@ export function foregroundOnColor(background: string): "#000000" | "#FFFFFF" {
   const blackContrast = (luminance + 0.05) / 0.05;
   const whiteContrast = 1.05 / (luminance + 0.05);
 
-  return blackContrast >= whiteContrast ? "#000000" : "#FFFFFF";
+  return blackContrast >= whiteContrast ? tints.black : tints.white;
 }
