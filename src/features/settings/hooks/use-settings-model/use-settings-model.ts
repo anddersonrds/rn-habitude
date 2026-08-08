@@ -46,7 +46,13 @@ export function useSettingsModel() {
   const { t } = useTranslation(["settings", "common", "language"]);
   const { t: tSampleData } = useTranslation("sampleData");
   const reduceMotion = !!useReducedMotion();
-  const { habits, completions } = useAppState();
+  const habitCount = useAppState((state) => state.habits.length);
+  const totalCheckIns = useAppState((state) =>
+    Object.values(state.completions).reduce(
+      (total, days) => total + Object.keys(days).length,
+      0,
+    ),
+  );
   const [permission, setPermission] =
     useState<Notifications.NotificationPermissionsStatus | null>(null);
   const [language, setActiveLanguage] = useState(getLanguagePreference);
@@ -135,7 +141,7 @@ export function useSettingsModel() {
       haptic.success();
     };
     /* On an empty list the samples can't crowd out anything the user made. */
-    if (habits.length === 0) {
+    if (habitCount === 0) {
       run();
       return;
     }
@@ -170,12 +176,9 @@ export function useSettingsModel() {
       permission != null && !permission.granted && permission.canAskAgain,
     canOpenSettings:
       permission != null && !permission.granted && !permission.canAskAgain,
-    habitCount: habits.length,
-    totalCheckIns: Object.values(completions).reduce(
-      (total, days) => total + Object.keys(days).length,
-      0,
-    ),
-    hasHabits: habits.length > 0,
+    habitCount,
+    totalCheckIns,
+    hasHabits: habitCount > 0,
     version,
     languages,
     language,

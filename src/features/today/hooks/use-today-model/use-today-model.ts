@@ -17,20 +17,21 @@ import type { TodayItem } from "./types";
 export function useTodayModel() {
   const { t, i18n } = useTranslation("today");
   const { t: tCommon } = useTranslation("common");
-  const state = useAppState();
+  const habits = useAppState((state) => state.habits);
+  const completions = useAppState((state) => state.completions);
   const [celebrating, setCelebrating] = useState(false);
 
   const today = todayKey();
   const weekday = weekdayOf(today);
   const dateLabel = formatFullDate(today, i18n.language);
 
-  const todayHabits = state.habits.filter(
+  const todayHabits = habits.filter(
     (habit) => isScheduledOn(habit, weekday) && habit.createdAt <= today,
   );
 
   const items: TodayItem[] = todayHabits.map((habit) => {
-    const done = state.completions[habit.id]?.[today] === true;
-    const streak = computeStreaks(habit, state.completions[habit.id], today)
+    const done = completions[habit.id]?.[today] === true;
+    const streak = computeStreaks(habit, completions[habit.id], today)
       .current;
     const subtitle = [
       streak > 0 ? t("streak", { count: streak }) : null,
@@ -83,7 +84,7 @@ export function useTodayModel() {
   return {
     dateLabel,
     items,
-    hasHabits: state.habits.length > 0,
+    hasHabits: habits.length > 0,
     doneCount,
     allDone,
     progress,

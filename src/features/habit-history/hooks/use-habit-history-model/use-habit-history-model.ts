@@ -5,13 +5,14 @@ import { completionRate, computeStreaks } from "@/lib/streaks";
 
 /** Null once the habit is gone, which is also when it sends the screen back. */
 export function useHabitHistoryModel() {
-  const state = useAppState();
-  const habit = useHabitFromRoute(state.habits);
+  const habits = useAppState((state) => state.habits);
+  const completions = useAppState((state) => state.completions);
+  const habit = useHabitFromRoute(habits);
 
   if (!habit) return null;
 
   const today = todayKey();
-  const completed = state.completions[habit.id];
+  const completed = completions[habit.id];
 
   return {
     habit,

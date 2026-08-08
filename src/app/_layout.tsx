@@ -44,7 +44,8 @@ function LanguageFade({ children }: { children: ReactNode }) {
 }
 
 function AppStack() {
-  const { habits, onboarded } = useAppState();
+  const habitCount = useAppState((state) => state.habits.length);
+  const onboarded = useAppState((state) => state.onboarded);
   const wasOnboarded = useRef(onboarded);
 
   useEffect(() => {
@@ -53,10 +54,10 @@ function AppStack() {
 
     /* Waits for the protected switch to mount the tabs, so the form has a
     route to return to. */
-    if (justFinishedOnboarding && habits.length === 0) {
+    if (justFinishedOnboarding && habitCount === 0) {
       router.push(routes.habitForm());
     }
-  }, [habits.length, onboarded]);
+  }, [habitCount, onboarded]);
 
   return (
     <Stack>
