@@ -20,15 +20,15 @@ export default function TabLayout() {
     >
       <NativeTabs.Trigger name="(today)">
         <NativeTabs.Trigger.Label>{t("today")}</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf="checklist" />
+        <NativeTabs.Trigger.Icon sf="checklist" md="checklist" />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="habits">
         <NativeTabs.Trigger.Label>{t("habits")}</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf="square.grid.2x2.fill" />
+        <NativeTabs.Trigger.Icon sf="square.grid.2x2.fill" md="grid_view" />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="settings">
         <NativeTabs.Trigger.Label>{t("settings")}</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf="gearshape.fill" />
+        <NativeTabs.Trigger.Icon sf="gearshape.fill" md="settings" />
       </NativeTabs.Trigger>
     </NativeTabs>
   );
