@@ -7,7 +7,7 @@
     "scheme": "habitude",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "platforms": ["ios"],
+    "platforms": ["ios", "android"],
     "ios": {
       "bundleIdentifier": "com.anddersonrds.habitude",
       "supportsTablet": false,
@@ -16,6 +16,26 @@
         "ITSAppUsesNonExemptEncryption": false
       },
       "buildNumber": "1"
+    },
+    "android": {
+      "package": "com.anddersonrds.habitude",
+      "versionCode": 1,
+      /* The habit database is a local SQLite file with no account behind it.
+      Android's automatic backup would restore it onto another device through a
+      path no code expects, so it is off. */
+      "allowBackup": false,
+      "softwareKeyboardLayoutMode": "resize",
+      "predictiveBackGestureEnabled": true,
+      /* Only the one nothing else adds. `POST_NOTIFICATIONS` is left to the
+      `expo-notifications` plugin, and the three Expo declares by default -
+      `INTERNET` and the two external-storage reads - arrive without being
+      listed here. Declaring a permission twice is how the list drifts. */
+      "permissions": ["android.permission.SCHEDULE_EXACT_ALARM"],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon-foreground.png",
+        "monochromeImage": "./assets/images/adaptive-icon-monochrome.png",
+        "backgroundColor": "#FFFFFF"
+      }
     },
     "plugins": [
       "expo-router",
