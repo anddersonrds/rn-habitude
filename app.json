@@ -7,7 +7,7 @@
     "scheme": "habitude",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "platforms": ["ios"],
+    "platforms": ["ios", "android"],
     "ios": {
       "bundleIdentifier": "com.anddersonrds.habitude",
       "supportsTablet": false,
@@ -16,6 +16,22 @@
         "ITSAppUsesNonExemptEncryption": false
       },
       "buildNumber": "1"
+    },
+    "android": {
+      "package": "com.anddersonrds.habitude",
+      "versionCode": 1,
+      /* Off: a restore would put the local SQLite file on another device. */
+      "allowBackup": false,
+      "softwareKeyboardLayoutMode": "resize",
+      "predictiveBackGestureEnabled": true,
+      /* The only one no module declares. `POST_NOTIFICATIONS` arrives from
+      `expo-notifications`' own manifest, merged at build time. */
+      "permissions": ["android.permission.SCHEDULE_EXACT_ALARM"],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon-foreground.png",
+        "monochromeImage": "./assets/images/adaptive-icon-monochrome.png",
+        "backgroundColor": "#FFFFFF"
+      }
     },
     "plugins": [
       "expo-router",
