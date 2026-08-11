@@ -7,6 +7,8 @@
     "ios": "expo run:ios",
     "ios:device": "expo run:ios --device",
     "ios:widget": "HABITUDE_WIDGET=1 expo run:ios",
+    "android": "expo run:android",
+    "android:device": "expo run:android --device",
     "prebuild:widget": "HABITUDE_WIDGET=1 expo prebuild --platform ios --clean",
     "postinstall": "lefthook install",
     "lint": "eslint . --max-warnings 0",
