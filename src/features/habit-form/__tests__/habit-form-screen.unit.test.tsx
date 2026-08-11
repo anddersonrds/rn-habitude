@@ -92,10 +92,19 @@ function frequencyPicker(container: TestInstance): TestInstance {
   return found;
 }
 
+/* The switch reaches the tree under a different host name on each platform. */
 function reminderSwitch(container: TestInstance): TestInstance {
-  const [found] = container.queryAll((node) => node.type === "RCTSwitch");
+  const [found] = container.queryAll(
+    (node) => node.type === "RCTSwitch" || node.type === "AndroidSwitch",
+  );
   if (!found) throw new Error("The form draws no switch.");
   return found;
+}
+
+/* And it carries its state under a different prop on each of them. */
+function reminderIsOn(container: TestInstance): boolean {
+  const { value, on } = reminderSwitch(container).props;
+  return value ?? on;
 }
 
 /* The time picker is the one native view carrying a date to show. */
@@ -143,7 +152,7 @@ describe("the form a new habit opens on", () => {
 
     expect(getByLabelText(habitForm.nameLabel).props.value).toBe("");
     expect(frequencyPicker(container).props.selection).toBe("daily");
-    expect(reminderSwitch(container).props.value).toBe(false);
+    expect(reminderIsOn(container)).toBe(false);
     expect(queryByText(habitForm.time)).toBeNull();
   });
 
@@ -235,7 +244,7 @@ describe("the form an existing habit opens on", () => {
 
     const { container, getByText } = await renderForm(habit.id);
 
-    expect(reminderSwitch(container).props.value).toBe(true);
+    expect(reminderIsOn(container)).toBe(true);
     expect(getByText(habitForm.time)).toBeTruthy();
     const shown = new Date(timePicker(container).props.selection);
     expect([shown.getHours(), shown.getMinutes()]).toEqual([7, 30]);

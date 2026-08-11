@@ -1,37 +1,65 @@
+const androidPreset = require("jest-expo/android/jest-preset");
 const iosPreset = require("jest-expo/ios/jest-preset");
 
-/*
-The platform presets rebuild the babel-jest entry and keep only `caller`,
-dropping the preset the bare `jest-expo` config resolves. Without this, nothing
-strips TypeScript.
-*/
 const BABEL_TRANSFORM = "\\.[jt]sx?$";
-const [, babelOptions] = iosPreset.transform[BABEL_TRANSFORM];
+
+/**
+ * One project per platform, so an `.android.tsx` file is resolved and executed
+ * by the Android run instead of being counted by `collectCoverageFrom` and
+ * never run. The presets carry their own `displayName`, which is what labels
+ * each line of the report.
+ */
+function platformProject(preset, setupFilesAfterEnv = []) {
+  /*
+  The platform presets rebuild the babel-jest entry and keep only `caller`,
+  dropping the preset the bare `jest-expo` config resolves. Without this, nothing
+  strips TypeScript.
+  */
+  const [, babelOptions] = preset.transform[BABEL_TRANSFORM];
+  /* A watch plugin belongs to the run, not to a project inside it, and jest
+  rejects the key here with a warning on every invocation. */
+  const { watchPlugins, ...rest } = preset;
+
+  return {
+    ...rest,
+    transform: {
+      ...preset.transform,
+      [BABEL_TRANSFORM]: [
+        "babel-jest",
+        { ...babelOptions, presets: [require.resolve("expo/internal/babel-preset")] },
+      ],
+    },
+    setupFiles: [
+      ...preset.setupFiles,
+      require.resolve("react-native-gesture-handler/jestSetup.js"),
+    ],
+    /* `@formatjs` publishes ESM only, and the preset transforms nothing under
+    `node_modules` but the packages it names. */
+    transformIgnorePatterns: preset.transformIgnorePatterns.map((pattern) =>
+      pattern.replace("(?!(", "(?!(@formatjs|"),
+    ),
+    setupFilesAfterEnv: ["<rootDir>/jest.setup.ts", ...setupFilesAfterEnv],
+    moduleNameMapper: {
+      "^@/assets/(.*)$": "<rootDir>/assets/$1",
+      "^@/(.*)$": "<rootDir>/src/$1",
+    },
+  };
+}
 
 /** @type {import('jest').Config} */
 module.exports = {
-  preset: "jest-expo/ios",
-  transform: {
-    ...iosPreset.transform,
-    [BABEL_TRANSFORM]: [
-      "babel-jest",
-      { ...babelOptions, presets: [require.resolve("expo/internal/babel-preset")] },
-    ],
-  },
-  setupFiles: [
-    ...iosPreset.setupFiles,
-    require.resolve("react-native-gesture-handler/jestSetup.js"),
+  watchPlugins: iosPreset.watchPlugins,
+  /*
+  Two projects give each worker twice the suites to hold, and a worker that grows
+  past this dies inside `node:sqlite` with a SIGSEGV rather than an out-of-memory
+  error - two runs in three before this line. Recycling by memory keeps the
+  parallelism a worker cap would cost.
+  */
+  workerIdleMemoryLimit: "512MB",
+  projects: [
+    platformProject(iosPreset),
+    platformProject(androidPreset, ["<rootDir>/jest.setup.android.ts"]),
   ],
-  /* `@formatjs` publishes ESM only, and the preset transforms nothing under
-  `node_modules` but the packages it names. */
-  transformIgnorePatterns: iosPreset.transformIgnorePatterns.map((pattern) =>
-    pattern.replace("(?!(", "(?!(@formatjs|"),
-  ),
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
-  moduleNameMapper: {
-    "^@/assets/(.*)$": "<rootDir>/assets/$1",
-    "^@/(.*)$": "<rootDir>/src/$1",
-  },
   collectCoverageFrom: [
     "src/**/*.{ts,tsx}",
     "!src/test-utils/**",
@@ -47,7 +75,11 @@ module.exports = {
     "!src/app/habit-history.tsx",
     "!src/app/habit/\\[id\\].tsx",
   ],
-  /* Each threshold is switched on by the work that covers its scope. */
+  /*
+  Root rather than per project, so a tier measures the union of both runs: a
+  shared module is executed twice and a platform file once, and the numbers
+  below mean what they meant on one platform.
+  */
   coverageThreshold: {
     global: { statements: 70 },
     "./src/lib/": { statements: 90, branches: 85 },
