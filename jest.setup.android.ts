@@ -8,8 +8,15 @@ import type { SymbolViewProps } from "expo-symbols";
 A Material 3 palette is generated natively. The stand-in derives a colour from
 the role and the appearance asked for, so the values are valid, distinct and
 stable, which is all a screen reading `colors` needs.
+
+It stands in at the native module rather than at `@expo/ui/jetpack-compose`,
+because `<Host>` seeds its palette by calling `getMaterialColors` inside that
+module: an export replaced from outside leaves that call reaching the real
+native one, and a Host renders no further than the `TypeError` it throws.
 */
-jest.mock("@expo/ui/jetpack-compose", () => {
+jest.mock("expo", () => {
+  const actual = jest.requireActual<typeof import("expo")>("expo");
+
   function roleColor(role: string, scheme: string): string {
     const seed = `${role}/${scheme}`;
     let hash = 0;
@@ -20,11 +27,17 @@ jest.mock("@expo/ui/jetpack-compose", () => {
   }
 
   return {
-    ...jest.requireActual<typeof import("@expo/ui/jetpack-compose")>(
-      "@expo/ui/jetpack-compose",
-    ),
-    getMaterialColors: ({ scheme = "light" }: MaterialColorsOptions = {}) =>
-      new Proxy({}, { get: (_target, role: string) => roleColor(role, scheme) }),
+    ...actual,
+    requireNativeModule: (name: string) => {
+      const module = actual.requireNativeModule(name);
+      if (name !== "ExpoUI") return module;
+
+      return {
+        ...module,
+        getMaterialColors: ({ scheme = "light" }: MaterialColorsOptions = {}) =>
+          new Proxy({}, { get: (_target, role: string) => roleColor(role, scheme) }),
+      };
+    },
   };
 });
 
