@@ -59,6 +59,16 @@ export const styles = StyleSheet.create({
     gap: 9,
     paddingVertical: 14,
   },
+  chipRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  chip: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: layout.ctaRadius,
+    borderCurve: "continuous",
+  },
   pickerHost: {
     height: 34,
   },
@@ -98,6 +108,25 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     flexShrink: 1,
+  },
+  timeInput: {
+    fontFamily: appFontFamily,
+    fontSize: 17,
+    color: colors.text,
+    backgroundColor: colors.fill,
+    borderRadius: layout.cardRadius,
+    borderCurve: "continuous",
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    textAlign: "center",
+    minWidth: 96,
+  },
+  headerAction: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  headerActionOff: {
+    opacity: 0.4,
   },
   iconCard: {
     backgroundColor: colors.secondaryBackground,
