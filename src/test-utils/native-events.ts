@@ -38,6 +38,38 @@ export function pressButton(target: TestInstance): Promise<void> {
   return dispatch(target, "onButtonPress");
 }
 
+/**
+ * A Compose gesture arrives on the same prop a SwiftUI one does, but carries the
+ * modifier's name and its arguments as a payload rather than keying on the prop.
+ */
+function dispatchCompose(
+  target: TestInstance,
+  modifierType: string,
+  params: Record<string, unknown> = {},
+): Promise<void> {
+  return dispatch(target, "onGlobalEvent", {
+    nativeEvent: { payload: [modifierType, params] },
+  });
+}
+
+/** Clicks a Compose view, through whichever click modifier it carries. */
+export function clickCompose(target: TestInstance): Promise<void> {
+  const carried = (target.props.modifiers ?? []) as { $type: string }[];
+  return carried.some((entry) => entry.$type === "combinedClickable")
+    ? dispatchCompose(target, "combinedClickable", { event: "click" })
+    : dispatchCompose(target, "clickable");
+}
+
+/** Long-presses a Compose view carrying a `combinedClickable` modifier. */
+export function longPressCompose(target: TestInstance): Promise<void> {
+  return dispatchCompose(target, "combinedClickable", { event: "longClick" });
+}
+
+/** Presses a Compose button, which names its event differently from SwiftUI's. */
+export function pressComposeButton(target: TestInstance): Promise<void> {
+  return dispatch(target, "onButtonPressed");
+}
+
 /** Types into a text field, replacing its contents. */
 export function typeInto(target: TestInstance, text: string): Promise<void> {
   return dispatch(target, "onChangeText", text);
