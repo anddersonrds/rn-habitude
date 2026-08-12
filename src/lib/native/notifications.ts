@@ -26,13 +26,17 @@ export async function ensureNotificationChannel(): Promise<void> {
   });
 }
 
-/** Registers the action buttons shown on reminder notifications. */
+/**
+ * Registers the action buttons shown on reminder notifications. Android opens
+ * the app to run them: the completion guard is JavaScript and no background
+ * task is registered, so an action handled in place would check nothing in.
+ */
 export async function registerNotificationCategories(): Promise<void> {
   await Notifications.setNotificationCategoryAsync(HABIT_REMINDER_CATEGORY, [
     {
       identifier: MARK_DONE_ACTION,
       buttonTitle: "Check in",
-      options: { opensAppToForeground: false },
+      options: { opensAppToForeground: Platform.OS === "android" },
     },
   ]);
 }

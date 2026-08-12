@@ -2,6 +2,7 @@ import {
   HABIT_REMINDER_CHANNEL,
   ensureNotificationChannel,
   ensureNotificationPermission,
+  registerNotificationCategories,
   scheduleHabitReminders,
   sendTestNotification,
 } from "@/lib/native/notifications";
@@ -110,6 +111,16 @@ describe("scheduleHabitReminders", () => {
     const [scheduleCall] =
       notifications.scheduleNotificationAsync.mock.invocationCallOrder;
     expect(channelCall).toBeLessThan(scheduleCall);
+  });
+});
+
+describe("registerNotificationCategories", () => {
+  it("should open the app for the check in action, because the guard is JavaScript", async () => {
+    await registerNotificationCategories();
+
+    const [, [action]] =
+      notifications.setNotificationCategoryAsync.mock.calls[0];
+    expect(action.options).toEqual({ opensAppToForeground: true });
   });
 });
 

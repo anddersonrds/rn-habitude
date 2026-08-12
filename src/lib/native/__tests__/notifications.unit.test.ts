@@ -53,11 +53,10 @@ describe("registerNotificationCategories", () => {
     expect(notifications.setNotificationCategoryAsync).toHaveBeenCalledWith(
       HABIT_REMINDER_CATEGORY,
       [
-        {
+        expect.objectContaining({
           identifier: MARK_DONE_ACTION,
           buttonTitle: "Check in",
-          options: { opensAppToForeground: false },
-        },
+        }),
       ],
     );
   });

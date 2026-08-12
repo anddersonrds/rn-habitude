@@ -1,6 +1,7 @@
 import {
   ensureNotificationChannel,
   ensureNotificationPermission,
+  registerNotificationCategories,
   scheduleHabitReminders,
   sendTestNotification,
 } from "@/lib/native/notifications";
@@ -81,6 +82,16 @@ describe("scheduleHabitReminders", () => {
         repeats: true,
       })),
     );
+  });
+});
+
+describe("registerNotificationCategories", () => {
+  it("should keep the check in action in place rather than opening the app", async () => {
+    await registerNotificationCategories();
+
+    const [, [action]] =
+      notifications.setNotificationCategoryAsync.mock.calls[0];
+    expect(action.options).toEqual({ opensAppToForeground: false });
   });
 });
 
