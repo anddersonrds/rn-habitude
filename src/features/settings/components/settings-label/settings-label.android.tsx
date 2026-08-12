@@ -10,7 +10,12 @@ import type { Props } from "./types";
  * own - iOS gets it from the `LabeledContent` around the label, and Compose has
  * neither `Form` nor `LabeledContent`.
  */
-export function SettingsLabel({ label, systemImage, value }: Props) {
+export function SettingsLabel({
+  label,
+  systemImage,
+  value,
+  valueColor,
+}: Props) {
   const colors = useSystemColors();
 
   return (
@@ -26,7 +31,7 @@ export function SettingsLabel({ label, systemImage, value }: Props) {
       {value !== undefined && (
         <ListItem.TrailingContent>
           {/* A Compose colour is a string; `tsc` reads the palette's iOS type. */}
-          <Text color={String(colors.secondaryText)}>{value}</Text>
+          <Text color={valueColor ?? String(colors.secondaryText)}>{value}</Text>
         </ListItem.TrailingContent>
       )}
     </ListItem>

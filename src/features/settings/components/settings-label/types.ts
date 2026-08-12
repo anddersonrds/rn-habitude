@@ -9,8 +9,10 @@ export type Props = {
   label: string;
   systemImage: SettingsIcon;
   /**
-   * The trailing value. Only the Android row draws it: on iOS the value comes
-   * from the `LabeledContent` wrapping the label, and Compose has no such thing.
+   * The trailing value, and the emphasis it carries. Only the Android row draws
+   * them: on iOS the value comes from the `LabeledContent` wrapping the label,
+   * and Compose has no such thing.
    */
   value?: string;
+  valueColor?: string;
 };

@@ -8,7 +8,7 @@ import type { Props } from "./types";
  * The pressable row is the label row made clickable, so a button and a value
  * row are the same shape. The clip is what keeps the ripple inside that shape.
  */
-export function SettingsButton({ label, systemImage, onPress }: Props) {
+export function SettingsButton({ label, systemImage, onPress, value }: Props) {
   return (
     <Box
       modifiers={[
@@ -17,7 +17,7 @@ export function SettingsButton({ label, systemImage, onPress }: Props) {
         clickable(onPress),
       ]}
     >
-      <SettingsLabel label={label} systemImage={systemImage} />
+      <SettingsLabel label={label} systemImage={systemImage} value={value} />
     </Box>
   );
 }

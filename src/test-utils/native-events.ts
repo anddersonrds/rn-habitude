@@ -70,6 +70,11 @@ export function pressComposeButton(target: TestInstance): Promise<void> {
   return dispatch(target, "onButtonPressed");
 }
 
+/** Picks an item out of a Compose dropdown menu. */
+export function pressMenuItem(target: TestInstance): Promise<void> {
+  return dispatch(target, "onItemPressed");
+}
+
 /** Types into a text field, replacing its contents. */
 export function typeInto(target: TestInstance, text: string): Promise<void> {
   return dispatch(target, "onChangeText", text);
