@@ -1,7 +1,7 @@
+import { AppSymbol } from "@/components/ui/app-symbol";
 import { Text } from "@/components/ui/text";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
 import { accent } from "@/theme";
-import { SymbolView } from "expo-symbols";
 import { View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 import { HeatPreview } from "../heat-preview";
@@ -18,7 +18,7 @@ export function WelcomeStep() {
       >
         <View style={styles.cardHeader}>
           <View style={[styles.cardIcon, { backgroundColor: `${accent}26` }]}>
-            <SymbolView
+            <AppSymbol
               name="figure.walk"
               size={30}
               weight="semibold"
@@ -30,7 +30,7 @@ export function WelcomeStep() {
             <Text style={styles.cardSubtitle}>12-day streak</Text>
           </View>
           <View style={[styles.cardCheck, { backgroundColor: accent }]}>
-            <SymbolView
+            <AppSymbol
               name="checkmark"
               size={15}
               weight="bold"
