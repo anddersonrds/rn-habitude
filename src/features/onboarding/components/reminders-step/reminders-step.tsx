@@ -1,7 +1,7 @@
+import { AppSymbol } from "@/components/ui/app-symbol";
 import { Text } from "@/components/ui/text";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
 import { accent, success } from "@/theme";
-import { SymbolView } from "expo-symbols";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import Animated, { FadeInUp, useReducedMotion } from "react-native-reanimated";
@@ -19,7 +19,7 @@ export function RemindersStep({ allowed }: Props) {
         style={[styles.notificationArtwork, { backgroundColor: `${accent}12` }]}
       >
         <View style={[styles.bellCircle, { backgroundColor: accent }]}>
-          <SymbolView
+          <AppSymbol
             name={allowed ? "checkmark" : "bell.fill"}
             size={36}
             tintColor={foregroundOnColor(accent)}
@@ -31,7 +31,7 @@ export function RemindersStep({ allowed }: Props) {
         <View style={styles.notificationCard}>
           <View style={styles.notificationHeader}>
             <View style={[styles.miniAppIcon, { backgroundColor: accent }]}>
-              <SymbolView
+              <AppSymbol
                 name="checklist"
                 size={13}
                 tintColor={foregroundOnColor(accent)}
@@ -50,13 +50,13 @@ export function RemindersStep({ allowed }: Props) {
 
       <View style={styles.points}>
         <View style={styles.point}>
-          <SymbolView name="slider.horizontal.3" size={18} tintColor={accent} />
+          <AppSymbol name="slider.horizontal.3" size={18} tintColor={accent} />
           <Text variant="subheadline" secondary style={styles.pointCopy}>
             {t("pointReminders")}
           </Text>
         </View>
         <View style={styles.point}>
-          <SymbolView name="hand.tap.fill" size={18} tintColor={accent} />
+          <AppSymbol name="hand.tap.fill" size={18} tintColor={accent} />
           <Text variant="subheadline" secondary style={styles.pointCopy}>
             {t("pointCheckIn")}
           </Text>
@@ -68,7 +68,7 @@ export function RemindersStep({ allowed }: Props) {
           entering={reduceMotion ? undefined : FadeInUp.duration(220)}
           style={styles.allowedBadge}
         >
-          <SymbolView name="checkmark.circle.fill" size={20} tintColor={success} />
+          <AppSymbol name="checkmark.circle.fill" size={20} tintColor={success} />
           <Text variant="subheadline">{t("permissionAllowed")}</Text>
         </Animated.View>
       )}

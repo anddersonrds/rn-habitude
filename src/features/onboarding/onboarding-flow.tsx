@@ -1,8 +1,8 @@
+import { AppSymbol } from "@/components/ui/app-symbol";
 import { Text } from "@/components/ui/text";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
 import { accent, colors } from "@/theme";
 import { GlassView } from "expo-glass-effect";
-import { SymbolView } from "expo-symbols";
 import { PressableScale } from "pressto";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
@@ -32,7 +32,7 @@ export function OnboardingFlow() {
               onPress={model.goBack}
               style={styles.backButton}
             >
-              <SymbolView
+              <AppSymbol
                 name="chevron.left"
                 size={18}
                 weight="semibold"
@@ -108,7 +108,7 @@ export function OnboardingFlow() {
                 {model.ctaLabel}
               </Text>
               {!model.requesting && (
-                <SymbolView
+                <AppSymbol
                   name={model.isLast ? "checkmark" : "arrow.right"}
                   size={17}
                   weight="semibold"

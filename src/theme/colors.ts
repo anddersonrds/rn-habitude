@@ -1,5 +1,7 @@
 import { Color } from "expo-router";
-import type { ColorValue } from "react-native";
+import { useColorScheme, type ColorSchemeName } from "react-native";
+import { materialPalette } from "./material-palette";
+import type { SystemPalette } from "./types";
 
 /**
  * Semantic system colors. Using these instead of hard-coded values is what
@@ -8,20 +10,7 @@ import type { ColorValue } from "react-native";
  * They ship inside `expo-router`, which is a routing package, so this is the
  * one file allowed to reach for them. Everything else asks `theme/`.
  */
-export const colors: Record<
-  | "background"
-  | "groupedBackground"
-  | "secondaryBackground"
-  | "text"
-  | "secondaryText"
-  | "tertiaryText"
-  | "mutedText"
-  | "fill"
-  | "subtleFill"
-  | "separator"
-  | "destructive",
-  ColorValue
-> = {
+const iosPalette: SystemPalette = {
   background: Color.ios.systemBackground,
   groupedBackground: Color.ios.systemGroupedBackground,
   secondaryBackground: Color.ios.secondarySystemGroupedBackground,
@@ -44,6 +33,23 @@ export const colors: Record<
  * that has to be updated by hand; it cannot import the token.
  */
 export const accent = "#32ADE6";
+
+function resolve(scheme: ColorSchemeName): SystemPalette {
+  return materialPalette(scheme, accent) ?? iosPalette;
+}
+
+/**
+ * The palette a `StyleSheet` is built from, resolved once at module scope. The
+ * iOS values are references that follow the appearance on their own; a Material
+ * palette is concrete values, and this one is the light appearance. Anything that
+ * has to follow a change reads `useSystemColors()`.
+ */
+export const colors: SystemPalette = resolve("light");
+
+/** The scheme goes through the resolver, so React Compiler sees the dependency. */
+export function useSystemColors(): SystemPalette {
+  return resolve(useColorScheme());
+}
 
 /**
  * The one green that means "complete". Apple's `systemGreen`, shared by the

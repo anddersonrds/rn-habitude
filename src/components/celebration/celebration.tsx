@@ -1,7 +1,7 @@
+import { AppSymbol } from "@/components/ui/app-symbol";
 import { Text } from "@/components/ui/text";
 import { accent, success } from "@/theme";
 import { GlassView } from "expo-glass-effect";
-import { SymbolView } from "expo-symbols";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useColorScheme, View } from "react-native";
@@ -137,7 +137,7 @@ export function Celebration({ colors, onFinished }: Props) {
           <GlassView style={styles.badge} glassEffectStyle="regular">
             {/* The same seal, in the same green, as the Today "all done" seal.
                 They appear within a second of each other. */}
-            <SymbolView
+            <AppSymbol
               name="checkmark.seal.fill"
               size={44}
               tintColor={success}

@@ -19,12 +19,14 @@ const MISSED = colors.fill;
 const UNSCHEDULED = colors.subtleFill;
 const BLANK = "transparent";
 
-/* Cells carry no text and no name; a background is what marks one. */
+/* Cells carry no text and no name; a background is what marks one. The key
+rather than the value, because a semantic colour resolves to nothing off its own
+platform. */
 function cells(container: TestInstance): ViewStyle[] {
   return container
     .queryAll((node) => {
       const style = StyleSheet.flatten(node.props.style) as ViewStyle | undefined;
-      return style?.backgroundColor != null && style.borderRadius != null;
+      return style != null && "backgroundColor" in style && style.borderRadius != null;
     })
     .map((cell) => StyleSheet.flatten(cell.props.style) as ViewStyle);
 }

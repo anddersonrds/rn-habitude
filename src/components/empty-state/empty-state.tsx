@@ -1,7 +1,7 @@
+import { AppSymbol } from "@/components/ui/app-symbol";
 import { Text } from "@/components/ui/text";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
 import { accent } from "@/theme";
-import { SymbolView } from "expo-symbols";
 import { PressableScale } from "pressto";
 import { View } from "react-native";
 import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
@@ -26,7 +26,7 @@ export function EmptyState({
         entering={FadeIn.duration(320)}
         style={[styles.symbolSurface, { backgroundColor: `${tint}1F` }]}
       >
-        <SymbolView name={symbol} size={34} tintColor={tint} />
+        <AppSymbol name={symbol} size={34} tintColor={tint} />
       </Animated.View>
       <Animated.View
         entering={FadeInUp.duration(300).delay(60)}

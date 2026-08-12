@@ -1,6 +1,6 @@
+import { AppSymbol } from "@/components/ui/app-symbol";
 import { Text } from "@/components/ui/text";
 import { accent } from "@/theme";
-import { SymbolView } from "expo-symbols";
 import { View } from "react-native";
 import Animated, { FadeInUp, useReducedMotion } from "react-native-reanimated";
 import { styles } from "./styles";
@@ -17,7 +17,7 @@ export function FeatureRow({ symbol, title, description, index }: Props) {
       style={styles.featureRow}
     >
       <View style={[styles.featureIcon, { backgroundColor: `${accent}22` }]}>
-        <SymbolView name={symbol} size={24} weight="semibold" tintColor={accent} />
+        <AppSymbol name={symbol} size={24} weight="semibold" tintColor={accent} />
       </View>
       <View style={styles.featureCopy}>
         <Text variant="headline">{title}</Text>

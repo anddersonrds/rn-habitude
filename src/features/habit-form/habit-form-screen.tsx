@@ -1,3 +1,4 @@
+import { AppSymbol } from "@/components/ui/app-symbol";
 import { Text } from "@/components/ui/text";
 import { HABIT_ICONS, WEEKDAY_KEYS } from "@/constants/habit-options";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
@@ -20,7 +21,6 @@ import {
   tint,
 } from "@expo/ui/swift-ui/modifiers";
 import { Stack } from "expo-router";
-import { SymbolView, type SFSymbol } from "expo-symbols";
 import { PressableScale } from "pressto";
 import { useTranslation } from "react-i18next";
 import { Keyboard, Pressable, Switch, TextInput, View } from "react-native";
@@ -103,7 +103,7 @@ export function HabitFormScreen() {
         >
           <View style={styles.nameCard}>
             <View style={[styles.namePreviewIcon, { backgroundColor: `${color}26` }]}>
-              <SymbolView name={icon as SFSymbol} size={22} tintColor={color} />
+              <AppSymbol name={icon} size={22} tintColor={color} />
             </View>
             <TextInput
               value={name}
@@ -203,7 +203,7 @@ export function HabitFormScreen() {
           <Animated.View layout={CONDITIONAL_LAYOUT} style={styles.card}>
             <View style={styles.cardRow}>
               <View style={styles.rowLabel}>
-                <SymbolView name="bell.fill" size={18} tintColor={color} />
+                <AppSymbol name="bell.fill" size={18} tintColor={color} />
                 <Text variant="body">{t("remindMe")}</Text>
               </View>
               <Switch
@@ -253,7 +253,7 @@ export function HabitFormScreen() {
                       },
                     ]}
                   >
-                    <SymbolView
+                    <AppSymbol
                       name={symbol}
                       size={21}
                       tintColor={
@@ -294,7 +294,7 @@ export function HabitFormScreen() {
                           ]}
                         >
                           {selected && (
-                            <SymbolView
+                            <AppSymbol
                               name="checkmark"
                               size={13}
                               weight="bold"

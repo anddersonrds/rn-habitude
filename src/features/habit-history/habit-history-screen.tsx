@@ -1,11 +1,11 @@
 import { HeatGraph } from "@/components/heat-graph";
 import { useHabitHeat } from "@/components/heat-graph/hooks/use-habit-heat";
 import { Stat } from "@/components/stat";
+import { AppSymbol } from "@/components/ui/app-symbol";
 import { Text } from "@/components/ui/text";
 import { formatCount, formatPercent } from "@/lib/utils/numbers";
 import { colors } from "@/theme";
 import { Stack } from "expo-router";
-import { SymbolView, type SFSymbol } from "expo-symbols";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { LegendSwatch } from "./components/legend-swatch";
@@ -35,11 +35,7 @@ export function HabitHistoryScreen() {
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <View style={[styles.icon, { backgroundColor: `${habit.color}26` }]}>
-              <SymbolView
-                name={habit.icon as SFSymbol}
-                size={18}
-                tintColor={habit.color}
-              />
+              <AppSymbol name={habit.icon} size={18} tintColor={habit.color} />
             </View>
             <View style={styles.cardTitle}>
               <Text variant="headline">{t("consistency")}</Text>

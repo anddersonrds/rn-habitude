@@ -1,12 +1,12 @@
 import { HeatGraph } from "@/components/heat-graph";
 import { useHabitHeat } from "@/components/heat-graph/hooks/use-habit-heat";
 import { Stat } from "@/components/stat";
+import { AppSymbol } from "@/components/ui/app-symbol";
 import { Text } from "@/components/ui/text";
 import { formatCount, formatPercent } from "@/lib/utils/numbers";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
 import { colors, tints } from "@/theme";
 import { Link, Stack } from "expo-router";
-import { SymbolView, type SFSymbol } from "expo-symbols";
 import { PressableScale } from "pressto";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, View } from "react-native";
@@ -53,11 +53,7 @@ export function HabitDetailScreen() {
       >
         <Animated.View entering={FadeIn.duration(260)} style={styles.hero}>
           <View style={[styles.heroIcon, { backgroundColor: `${habit.color}26` }]}>
-            <SymbolView
-              name={habit.icon as SFSymbol}
-              size={34}
-              tintColor={habit.color}
-            />
+            <AppSymbol name={habit.icon} size={34} tintColor={habit.color} />
           </View>
           <View style={styles.heroCopy}>
             <Text variant="title" numberOfLines={2}>
@@ -86,7 +82,7 @@ export function HabitDetailScreen() {
                 },
               ]}
             >
-              <SymbolView
+              <AppSymbol
                 name={doneToday ? "arrow.uturn.backward" : "checkmark"}
                 size={17}
                 tintColor={
@@ -106,7 +102,7 @@ export function HabitDetailScreen() {
         ) : (
           <View style={styles.restCard}>
             <View style={styles.restIcon}>
-              <SymbolView
+              <AppSymbol
                 name="calendar.badge.clock"
                 size={19}
                 tintColor={colors.secondaryText}
@@ -132,7 +128,7 @@ export function HabitDetailScreen() {
                 { backgroundColor: `${habit.color}20` },
               ]}
             >
-              <SymbolView
+              <AppSymbol
                 name="flame.fill"
                 size={22}
                 tintColor={
@@ -190,7 +186,7 @@ export function HabitDetailScreen() {
                       {t("historyRange")}
                     </Text>
                   </View>
-                  <SymbolView
+                  <AppSymbol
                     name="arrow.up.left.and.arrow.down.right"
                     size={13}
                     tintColor={colors.tertiaryText}

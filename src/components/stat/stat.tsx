@@ -1,5 +1,5 @@
+import { AppSymbol } from "@/components/ui/app-symbol";
 import { Text } from "@/components/ui/text";
-import { SymbolView } from "expo-symbols";
 import { View } from "react-native";
 import { styles } from "./styles";
 import type { Props } from "./types";
@@ -10,7 +10,7 @@ export function Stat(props: Props) {
   if (props.layout === "row") {
     return (
       <View style={styles.row}>
-        <SymbolView name={props.symbol} size={16} tintColor={props.color} />
+        <AppSymbol name={props.symbol} size={16} tintColor={props.color} />
         <Text variant="subheadline" secondary style={styles.rowLabel}>
           {label}
         </Text>
