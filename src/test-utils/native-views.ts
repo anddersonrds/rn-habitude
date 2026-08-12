@@ -56,6 +56,42 @@ export function nativeView(
   return match;
 }
 
+/** How a Compose gesture is reached: a click is a modifier, not a prop. */
+export function viewWithModifier(
+  view: TestInstance,
+  type: string,
+): TestInstance {
+  const match = nativeViews(view).find((node) =>
+    ((node.props.modifiers ?? []) as { $type: string }[]).some(
+      (entry) => entry.$type === type,
+    ),
+  );
+  if (!match) throw new Error(`Nothing in the tree carries a \`${type}\`.`);
+  return match;
+}
+
+/** A Compose button holds its label as a child, so it is found through its subtree. */
+export function composeButton(view: TestInstance, label: string): TestInstance {
+  const buttons = nativeViews(view).filter(
+    (node) => typeof node.props.onButtonPressed === "function",
+  );
+  const match = buttons.find((button) =>
+    button.queryAll((node) => node.props.text === label).length > 0,
+  );
+  if (!match) {
+    const labelled = buttons
+      .flatMap((button) =>
+        button.queryAll((node) => typeof node.props.text === "string"),
+      )
+      .map((node) => node.props.text)
+      .join(", ");
+    throw new Error(
+      `Expected a button labelled "${label}", but the tree offers: ${labelled || "none"}.`,
+    );
+  }
+  return match;
+}
+
 /**
  * A SwiftUI modifier off a native view, by the `$type` the native side keys on.
  * Modifiers are how a native view says what state it is in, so this is the only

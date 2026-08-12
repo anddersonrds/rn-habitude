@@ -1,10 +1,10 @@
 import { AppSymbol } from "@/components/ui/app-symbol";
 import { Text } from "@/components/ui/text";
-import { accent, success } from "@/theme";
+import { accent, success, useSystemColors } from "@/theme";
 import { GlassView } from "expo-glass-effect";
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { useColorScheme, View } from "react-native";
+import { Platform, useColorScheme, View } from "react-native";
 import Animated, {
   Easing,
   FadeIn,
@@ -77,6 +77,30 @@ function Ring({ color }: { color: string }) {
   return <Animated.View style={[styles.ring, { borderColor: color }, style]} />;
 }
 
+/* The flat surface is a deliberate absence, not an unfinished port. */
+function BadgeSurface({ children }: { children: ReactNode }) {
+  const systemColors = useSystemColors();
+
+  if (Platform.OS !== "ios") {
+    return (
+      <View
+        style={[
+          styles.badge,
+          { backgroundColor: systemColors.secondaryBackground },
+        ]}
+      >
+        {children}
+      </View>
+    );
+  }
+
+  return (
+    <GlassView style={styles.badge} glassEffectStyle="regular">
+      {children}
+    </GlassView>
+  );
+}
+
 /**
  * A brief, earned moment shown once when every habit scheduled today is
  * complete: a glass badge springs in, one ring pulses out, and sparks carry the
@@ -134,7 +158,7 @@ export function Celebration({ colors, onFinished }: Props) {
           </>
         )}
         <Animated.View style={badgeStyle}>
-          <GlassView style={styles.badge} glassEffectStyle="regular">
+          <BadgeSurface>
             {/* The same seal, in the same green, as the Today "all done" seal.
                 They appear within a second of each other. */}
             <AppSymbol
@@ -142,7 +166,7 @@ export function Celebration({ colors, onFinished }: Props) {
               size={44}
               tintColor={success}
             />
-          </GlassView>
+          </BadgeSurface>
         </Animated.View>
         <Animated.View
           entering={FadeIn.delay(250).duration(350)}

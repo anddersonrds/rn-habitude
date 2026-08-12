@@ -8,4 +8,7 @@ export type SettingsIcon = NonNullable<
 export type Props = {
   label: string;
   systemImage: SettingsIcon;
+  /** Drawn by the Compose row only; on iOS the `LabeledContent` carries it. */
+  value?: string;
+  valueColor?: string;
 };
