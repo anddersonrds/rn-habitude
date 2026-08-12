@@ -38,10 +38,7 @@ export function pressButton(target: TestInstance): Promise<void> {
   return dispatch(target, "onButtonPress");
 }
 
-/**
- * A Compose gesture arrives on the same prop a SwiftUI one does, but carries the
- * modifier's name and its arguments as a payload rather than keying on the prop.
- */
+/* A Compose gesture names its modifier in the payload; a SwiftUI one keys on the prop. */
 function dispatchCompose(
   target: TestInstance,
   modifierType: string,
@@ -70,7 +67,6 @@ export function pressComposeButton(target: TestInstance): Promise<void> {
   return dispatch(target, "onButtonPressed");
 }
 
-/** Picks an item out of a Compose dropdown menu. */
 export function pressMenuItem(target: TestInstance): Promise<void> {
   return dispatch(target, "onItemPressed");
 }

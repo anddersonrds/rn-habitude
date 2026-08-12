@@ -56,10 +56,7 @@ export function nativeView(
   return match;
 }
 
-/**
- * The view a modifier is attached to, which is how a Compose gesture is reached:
- * a click is a modifier on a container, not a prop on a button.
- */
+/** How a Compose gesture is reached: a click is a modifier, not a prop. */
 export function viewWithModifier(
   view: TestInstance,
   type: string,
@@ -73,10 +70,7 @@ export function viewWithModifier(
   return match;
 }
 
-/**
- * The Compose button whose label a piece of text names. A Compose button holds
- * its label as a child rather than as a prop, so it is found through its subtree.
- */
+/** A Compose button holds its label as a child, so it is found through its subtree. */
 export function composeButton(view: TestInstance, label: string): TestInstance {
   const buttons = nativeViews(view).filter(
     (node) => typeof node.props.onButtonPressed === "function",

@@ -24,10 +24,8 @@ import { useTranslation } from "react-i18next";
 import type { Props } from "./types";
 
 /**
- * iOS keeps edit, history and delete behind a swipe. Compose has no swipe
- * actions, so a long press reveals them as buttons: the actions move from
- * hidden to visible, which is the substitution this milestone chose rather than
- * an unfinished port. Checking in stays the tap, as it is on iOS.
+ * Compose has no swipe actions, so the long press reveals what iOS hides behind
+ * a swipe. Checking in stays the tap.
  */
 export function HabitRow({
   item,
@@ -84,7 +82,6 @@ export function HabitRow({
             >
               {habit.name}
             </Text>
-            {/* A Compose colour is a string; `tsc` reads the palette's iOS type. */}
             {subtitle !== null && (
               <Text
                 style={{ typography: "bodySmall" }}

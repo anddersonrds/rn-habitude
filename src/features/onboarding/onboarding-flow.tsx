@@ -16,10 +16,7 @@ import { WelcomeStep } from "./components/welcome-step";
 import { useOnboardingModel } from "./hooks/use-onboarding-model";
 import { styles } from "./styles";
 
-/**
- * Liquid Glass is iOS only. Android draws the same shape on a flat theme
- * surface: a deliberate absence, not an unfinished port.
- */
+/* The flat surface is a deliberate absence, not an unfinished port. */
 function CtaSurface({ children }: { children: ReactNode }) {
   const systemColors = useSystemColors();
 

@@ -77,10 +77,7 @@ function Ring({ color }: { color: string }) {
   return <Animated.View style={[styles.ring, { borderColor: color }, style]} />;
 }
 
-/**
- * Liquid Glass is iOS only. Android draws the same badge on a flat theme
- * surface: a deliberate absence, not an unfinished port.
- */
+/* The flat surface is a deliberate absence, not an unfinished port. */
 function BadgeSurface({ children }: { children: ReactNode }) {
   const systemColors = useSystemColors();
 

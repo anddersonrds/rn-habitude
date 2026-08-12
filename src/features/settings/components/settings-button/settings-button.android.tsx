@@ -4,10 +4,7 @@ import { SettingsLabel } from "../settings-label";
 import { SETTINGS_ROW_RADIUS } from "../row";
 import type { Props } from "./types";
 
-/**
- * The pressable row is the label row made clickable, so a button and a value
- * row are the same shape. The clip is what keeps the ripple inside that shape.
- */
+/* The clip is what keeps the ripple inside the row's own shape. */
 export function SettingsButton({ label, systemImage, onPress, value }: Props) {
   return (
     <Box

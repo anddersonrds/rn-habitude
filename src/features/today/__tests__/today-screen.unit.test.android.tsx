@@ -90,7 +90,6 @@ function rowOf(container: TestInstance, habit: Habit): TestInstance {
   return row;
 }
 
-/** Every piece of Compose text the screen drew, in render order. */
 function drawnText(container: TestInstance): string[] {
   return nativeViews(container)
     .filter((node) => typeof node.props.text === "string")
@@ -106,10 +105,7 @@ function progressBar(container: TestInstance): TestInstance {
   return found;
 }
 
-/**
- * The header action lives in the navigation bar's options rather than in the
- * screen's own tree, so it is rendered from what the screen handed the stack.
- */
+/** The bar is not in the screen's tree, so this renders what it handed the stack. */
 function headerAction(): ReactElement {
   const [options] = routing.Stack.Screen.mock.calls.map(
     (call) => (call[0] as { options: { headerRight: () => ReactElement } }).options,

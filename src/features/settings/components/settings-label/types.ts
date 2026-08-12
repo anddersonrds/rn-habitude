@@ -8,11 +8,7 @@ export type SettingsIcon = NonNullable<
 export type Props = {
   label: string;
   systemImage: SettingsIcon;
-  /**
-   * The trailing value, and the emphasis it carries. Only the Android row draws
-   * them: on iOS the value comes from the `LabeledContent` wrapping the label,
-   * and Compose has no such thing.
-   */
+  /** Drawn by the Compose row only; on iOS the `LabeledContent` carries it. */
   value?: string;
   valueColor?: string;
 };

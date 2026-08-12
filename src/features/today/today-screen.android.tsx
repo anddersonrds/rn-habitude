@@ -33,12 +33,7 @@ const CONTENT_ENTER = {
   easing: "easeOut",
 } as const;
 
-/**
- * Today in Jetpack Compose: the SwiftUI `List` of `Section`s becomes a
- * `LazyColumn` of cards under their own labels, because Compose has neither.
- * The add button stays React Native in the navigation bar, which no Compose
- * tree can reach into.
- */
+/** The add button stays React Native, because no Compose tree reaches the bar. */
 export function TodayScreen() {
   const { t } = useTranslation(["today", "common"]);
   const model = useTodayModel();
@@ -93,7 +88,6 @@ export function TodayScreen() {
               contentPadding={{ start: 16, top: 12, end: 16, bottom: 24 }}
               verticalArrangement={{ spacedBy: 8 }}
             >
-              {/* A Compose colour is a string; `tsc` reads the palette's iOS type. */}
               <Text
                 style={{ typography: "labelLarge" }}
                 color={String(colors.secondaryText)}

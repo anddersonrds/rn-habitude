@@ -73,14 +73,12 @@ function input(overrides: Partial<HabitInput> = {}): HabitInput {
   };
 }
 
-/** Every piece of Compose text the screen drew, in render order. */
 function drawnText(container: TestInstance): string[] {
   return nativeViews(container)
     .filter((node) => typeof node.props.text === "string")
     .map((node) => node.props.text as string);
 }
 
-/* A row is a clickable box drawing its own label inside it. */
 function settingsRow(container: TestInstance, label: string): TestInstance {
   const found = nativeViews(container).find(
     (node) =>
@@ -98,11 +96,6 @@ function valueAfter(container: TestInstance, label: string): string {
   return drawn[drawn.indexOf(label) + 1];
 }
 
-/** The text view carrying a row's value, so its emphasis can be read. */
-function valueView(container: TestInstance, value: string): TestInstance {
-  return nativeView(container, "text", value);
-}
-
 /** The menu, found by the dismissal only it carries. */
 function languageMenu(container: TestInstance): TestInstance {
   const found = nativeViews(container).find(
@@ -112,7 +105,6 @@ function languageMenu(container: TestInstance): TestInstance {
   return found;
 }
 
-/** A language the menu offers, by the name it draws. */
 function languageOption(container: TestInstance, label: string): TestInstance {
   const found = nativeViews(container).find(
     (node) =>
@@ -123,7 +115,6 @@ function languageOption(container: TestInstance, label: string): TestInstance {
   return found;
 }
 
-/** The languages the menu offers, in the order it draws them. */
 function optionsOf(container: TestInstance): string[] {
   return nativeViews(container)
     .filter((node) => typeof node.props.onItemPressed === "function")
@@ -136,11 +127,7 @@ function optionsOf(container: TestInstance): string[] {
     });
 }
 
-/**
- * The label and the value of the language row, which is the first clickable
- * row on the screen. Found by position because its label is itself translated
- * and moves the moment a language is picked.
- */
+/** Found by position: the label is translated and moves once a language is picked. */
 function languageRowTexts(container: TestInstance): string[] {
   const [row] = nativeViews(container).filter((node) =>
     ((node.props.modifiers ?? []) as { $type: string }[]).some(
@@ -241,17 +228,15 @@ describe("the settings screen", () => {
     expect(valueAfter(container, settings.permission)).toBe(
       settings.permissionAllowed,
     );
-    expect(valueView(container, settings.permissionAllowed).props.color).toBe(
-      success,
-    );
+    expect(nativeView(container, "text", settings.permissionAllowed).props.color)
+      .toBe(success);
   });
 
   it("should mark a refused permission as the one state that is a problem", async () => {
     const { container } = await renderSettings(DENIED);
 
-    expect(valueView(container, settings.permissionDenied).props.color).not.toBe(
-      success,
-    );
+    expect(nativeView(container, "text", settings.permissionDenied).props.color)
+      .not.toBe(success);
   });
 
   it("should ask for the permission when that row is pressed", async () => {

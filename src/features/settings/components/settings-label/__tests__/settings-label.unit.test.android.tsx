@@ -14,7 +14,7 @@ function renderLabel(props: { label?: string; value?: string } = {}) {
   );
 }
 
-/** A rasterised symbol is an image, so the tint is all it can be found by. */
+/* A rasterised symbol is an image, so the tint is all it can be found by. */
 function icon(container: TestInstance): TestInstance {
   const found = nativeViews(container).find(
     (node) => node.props.source !== undefined,

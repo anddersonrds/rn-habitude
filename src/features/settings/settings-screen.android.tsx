@@ -15,11 +15,10 @@ import { SettingsButton } from "./components/settings-button";
 import { SettingsLabel } from "./components/settings-label";
 import { useSettingsModel } from "./hooks/use-settings-model";
 
-/** The `Section` header SwiftUI draws for free; Compose has no `Section`. */
+/* Compose has no `Section`, so its header is a label of our own. */
 function SectionLabel({ children }: { children: string }) {
   const colors = useSystemColors();
 
-  /* A Compose colour is a string; `tsc` reads the palette's iOS type. */
   return (
     <Text
       style={{ typography: "labelLarge" }}
@@ -44,11 +43,8 @@ function Footnote({ children }: { children: string }) {
 }
 
 /**
- * Settings in Jetpack Compose. The SwiftUI `Form` of `Section`s becomes a
- * `LazyColumn` of rows under their own labels, and the language `Picker` - a
- * menu on iOS - becomes the Material menu, a `DropdownMenu` anchored on the
- * same row. Its open state is held here because the trigger has to be a row
- * this screen owns.
+ * The language menu holds its open state here because its trigger has to be a
+ * row this screen owns.
  */
 export function SettingsScreen() {
   const { t, i18n } = useTranslation(["settings", "language"]);

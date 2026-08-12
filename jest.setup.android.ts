@@ -5,14 +5,10 @@ import type { MaterialColorsOptions } from "@expo/ui/jetpack-compose";
 import type { SymbolViewProps } from "expo-symbols";
 
 /*
-A Material 3 palette is generated natively. The stand-in derives a colour from
-the role and the appearance asked for, so the values are valid, distinct and
-stable, which is all a screen reading `colors` needs.
-
-It stands in at the native module rather than at `@expo/ui/jetpack-compose`,
-because `<Host>` seeds its palette by calling `getMaterialColors` inside that
-module: an export replaced from outside leaves that call reaching the real
-native one, and a Host renders no further than the `TypeError` it throws.
+A Material 3 palette is generated natively, and the stand-in derives a colour
+from the role and the appearance asked for. It replaces the native module rather
+than the `@expo/ui/jetpack-compose` export, because `<Host>` seeds its palette
+with a call inside that module, which an export replaced from outside misses.
 */
 jest.mock("expo", () => {
   const actual = jest.requireActual<typeof import("expo")>("expo");

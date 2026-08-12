@@ -5,11 +5,6 @@ import { clip, fillMaxWidth, Shapes } from "@expo/ui/jetpack-compose/modifiers";
 import { SETTINGS_ROW_RADIUS } from "../row";
 import type { Props } from "./types";
 
-/**
- * A `Form` row is a `ListItem` here, which carries the value in a slot of its
- * own - iOS gets it from the `LabeledContent` around the label, and Compose has
- * neither `Form` nor `LabeledContent`.
- */
 export function SettingsLabel({
   label,
   systemImage,
@@ -30,7 +25,6 @@ export function SettingsLabel({
       </ListItem.HeadlineContent>
       {value !== undefined && (
         <ListItem.TrailingContent>
-          {/* A Compose colour is a string; `tsc` reads the palette's iOS type. */}
           <Text color={valueColor ?? String(colors.secondaryText)}>{value}</Text>
         </ListItem.TrailingContent>
       )}
