@@ -58,6 +58,7 @@ export const MATERIAL_SYMBOL_BY_SF = {
   "hand.tap.fill": "touch_app",
   "info.circle.fill": "info",
   "keyboard.chevron.compact.down": "keyboard_hide",
+  "line.3.horizontal": "drag_handle",
   "list.bullet": "format_list_bulleted",
   "moon.zzz.fill": "bedtime",
   paperplane: "send",

@@ -1,6 +1,12 @@
 import { heatAppearance, heatStatusOfDayState } from "@/lib/domain/heat";
 import { HStack, RoundedRectangle } from "@expo/ui/swift-ui";
 import { foregroundStyle, frame, opacity } from "@expo/ui/swift-ui/modifiers";
+import {
+  STRIP_CELL_HEIGHT,
+  STRIP_CELL_RADIUS,
+  STRIP_GAP,
+  STRIP_WIDTH,
+} from "./styles";
 import type { Props } from "./types";
 
 /**
@@ -16,15 +22,15 @@ export function HeatStrip({ states, color, neutral }: Props) {
   };
 
   return (
-    <HStack spacing={2} modifiers={[frame({ width: 76 })]}>
+    <HStack spacing={STRIP_GAP} modifiers={[frame({ width: STRIP_WIDTH })]}>
       {states.map((state, index) => {
         const cell = heatAppearance(heatStatusOfDayState(state), palette);
         return (
           <RoundedRectangle
             key={index}
-            cornerRadius={1.5}
+            cornerRadius={STRIP_CELL_RADIUS}
             modifiers={[
-              frame({ height: 16 }),
+              frame({ height: STRIP_CELL_HEIGHT }),
               foregroundStyle(cell.color),
               opacity(cell.opacity),
             ]}
