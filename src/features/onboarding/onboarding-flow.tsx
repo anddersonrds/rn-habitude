@@ -1,11 +1,12 @@
 import { AppSymbol } from "@/components/ui/app-symbol";
 import { Text } from "@/components/ui/text";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
-import { accent, colors } from "@/theme";
+import { accent, colors, useSystemColors } from "@/theme";
 import { GlassView } from "expo-glass-effect";
 import { PressableScale } from "pressto";
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, View } from "react-native";
+import { Platform, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ConsistencyStep } from "./components/consistency-step";
 import { ProgressDots } from "./components/progress-dots";
@@ -14,6 +15,38 @@ import { StepTransition } from "./components/step-transition";
 import { WelcomeStep } from "./components/welcome-step";
 import { useOnboardingModel } from "./hooks/use-onboarding-model";
 import { styles } from "./styles";
+
+/**
+ * Liquid Glass is iOS only. Android draws the same shape on a flat theme
+ * surface: a deliberate absence, not an unfinished port.
+ */
+function CtaSurface({ children }: { children: ReactNode }) {
+  const systemColors = useSystemColors();
+
+  if (Platform.OS !== "ios") {
+    return (
+      <View
+        style={[
+          styles.ctaGlass,
+          { backgroundColor: systemColors.secondaryBackground },
+        ]}
+      >
+        {children}
+      </View>
+    );
+  }
+
+  return (
+    <GlassView
+      isInteractive
+      glassEffectStyle="regular"
+      tintColor={accent}
+      style={styles.ctaGlass}
+    >
+      {children}
+    </GlassView>
+  );
+}
 
 /** Three screens: what the app is, how consistency reads, and reminders. */
 export function OnboardingFlow() {
@@ -84,12 +117,7 @@ export function OnboardingFlow() {
 
       <View pointerEvents="box-none" style={styles.ctaLayer}>
         <View style={[styles.ctaContent, { paddingBottom: Math.max(bottom, 12) }]}>
-          <GlassView
-            isInteractive
-            glassEffectStyle="regular"
-            tintColor={accent}
-            style={styles.ctaGlass}
-          >
+          <CtaSurface>
             <PressableScale
               accessibilityRole="button"
               accessibilityLabel={model.ctaLabel}
@@ -116,7 +144,7 @@ export function OnboardingFlow() {
                 />
               )}
             </PressableScale>
-          </GlassView>
+          </CtaSurface>
           {model.canSkip && (
             <PressableScale
               accessibilityRole="button"
