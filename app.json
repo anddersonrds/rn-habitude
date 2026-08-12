@@ -48,7 +48,16 @@
       ],
       "expo-sqlite",
       "./plugins/withoutPushEntitlement",
-      "expo-notifications",
+      [
+        "expo-notifications",
+        {
+          /* The id `HABIT_REMINDER_CHANNEL` carries. The icon is a silhouette:
+          Android draws the small icon from the alpha channel alone. */
+          "defaultChannel": "habit-reminders",
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#32ADE6"
+        }
+      ],
       "expo-localization"
     ],
     "experiments": {

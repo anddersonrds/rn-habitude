@@ -17,9 +17,16 @@ Mocked at the package boundary, so the schedule shape this module builds is the
 one asserted. Anything below it belongs to the operating system.
 */
 jest.mock("expo-notifications", () => ({
-  SchedulableTriggerInputTypes: { CALENDAR: "calendar", TIME_INTERVAL: "timeInterval" },
+  AndroidImportance: { HIGH: 6 },
+  SchedulableTriggerInputTypes: {
+    CALENDAR: "calendar",
+    DAILY: "daily",
+    WEEKLY: "weekly",
+    TIME_INTERVAL: "timeInterval",
+  },
   setNotificationHandler: jest.fn(),
   setNotificationCategoryAsync: jest.fn(async () => {}),
+  setNotificationChannelAsync: jest.fn(async () => null),
   getPermissionsAsync: jest.fn(async () => ({ granted: true, canAskAgain: true })),
   requestPermissionsAsync: jest.fn(async () => ({ granted: true })),
   scheduleNotificationAsync: jest.fn(async () => "request-id"),
