@@ -38,6 +38,7 @@ const zhHans: Locale = {
       allowNotifications: "允许通知",
       openIosSettings: "打开 iOS 设置",
       sendTestNotification: "发送测试通知",
+      exactAlarms: "精确提醒时间",
       data: "数据",
       dataFooter:
         "示例数据会创建 5 个习惯，各带 12 周记录，让图表和小组件有内容可显示。",

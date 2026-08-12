@@ -33,6 +33,7 @@ const ptBR: Locale = {
       allowNotifications: "Permitir notificações",
       openIosSettings: "Abrir os Ajustes do iOS",
       sendTestNotification: "Enviar notificação de teste",
+      exactAlarms: "Horário exato dos lembretes",
       data: "Dados",
       dataFooter:
         "Os dados de exemplo criam cinco hábitos com doze semanas de histórico, para o gráfico de constância e o widget terem o que mostrar.",

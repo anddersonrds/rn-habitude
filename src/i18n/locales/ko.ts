@@ -36,6 +36,7 @@ const ko: Locale = {
       allowNotifications: "알림 허용",
       openIosSettings: "iOS 설정 열기",
       sendTestNotification: "테스트 알림 보내기",
+      exactAlarms: "정확한 알림 시간",
       data: "데이터",
       dataFooter:
         "샘플 데이터는 12주치 기록이 있는 습관 5개를 만듭니다. 그래프와 위젯에 보여 줄 내용이 생깁니다.",

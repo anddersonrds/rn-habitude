@@ -38,6 +38,7 @@ const en = {
       allowNotifications: "Allow notifications",
       openIosSettings: "Open iOS Settings",
       sendTestNotification: "Send test notification",
+      exactAlarms: "Exact reminder timing",
       data: "Data",
       dataFooter:
         "Sample data seeds five habits with twelve weeks of history, so the heat graph and the widget have something to show.",

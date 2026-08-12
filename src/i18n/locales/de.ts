@@ -34,6 +34,7 @@ const de: Locale = {
       allowNotifications: "Mitteilungen erlauben",
       openIosSettings: "iOS-Einstellungen öffnen",
       sendTestNotification: "Testmitteilung senden",
+      exactAlarms: "Exakte Erinnerungszeit",
       data: "Daten",
       dataFooter:
         "Die Beispieldaten legen fünf Gewohnheiten mit zwölf Wochen Verlauf an, damit Raster und Widget etwas zu zeigen haben.",

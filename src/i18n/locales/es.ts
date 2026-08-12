@@ -33,6 +33,7 @@ const es: Locale = {
       allowNotifications: "Permitir notificaciones",
       openIosSettings: "Abrir Ajustes de iOS",
       sendTestNotification: "Enviar notificación de prueba",
+      exactAlarms: "Hora exacta de los recordatorios",
       data: "Datos",
       dataFooter:
         "Los datos de ejemplo crean cinco hábitos con doce semanas de historial, para que el gráfico y el widget tengan algo que mostrar.",

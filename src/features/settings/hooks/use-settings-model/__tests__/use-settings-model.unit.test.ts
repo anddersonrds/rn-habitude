@@ -24,6 +24,18 @@ jest.mock("@/lib/native/notifications", () => ({
   sendTestNotification: jest.fn(async () => {}),
 }));
 
+/*
+Whether the grant exists is the module's own business, and its platform suites
+assert it. Here only the pass-through is. Held outside the factory so a case can
+decide the answer before the reload the hook is loaded through.
+*/
+const mockExactAlarms = {
+  needsExactAlarmAccess: jest.fn(() => false),
+  openExactAlarmSettings: jest.fn(async () => {}),
+};
+
+jest.mock("@/lib/native/exact-alarms", () => mockExactAlarms);
+
 jest.mock("@/lib/native/haptics", () => ({
   haptic: {
     selection: jest.fn(),
@@ -120,6 +132,7 @@ type Loaded = {
   getPermission: jest.Mock;
   ensurePermission: jest.Mock;
   sendTestNotification: jest.Mock;
+  exactAlarms: typeof mockExactAlarms;
   alert: jest.Mock;
   openURL: jest.Mock;
   testingLibrary: TestingLibrary;
@@ -149,6 +162,7 @@ function load(): Loaded {
     getPermission: notifications.getNotificationPermission,
     ensurePermission: notifications.ensureNotificationPermission,
     sendTestNotification: notifications.sendTestNotification,
+    exactAlarms: mockExactAlarms,
     alert: jest.spyOn(Alert, "alert").mockImplementation(() => {}) as jest.Mock,
     openURL: jest
       .spyOn(Linking, "openURL")
@@ -198,6 +212,8 @@ function buttonsOf(alert: jest.Mock): AlertButtons {
 beforeEach(() => {
   freezeClock(`${TODAY}T12:00:00-03:00`);
   stableIds();
+  mockExactAlarms.needsExactAlarmAccess.mockReturnValue(false);
+  mockExactAlarms.openExactAlarmSettings.mockClear();
 });
 
 afterEach(() => {
@@ -296,6 +312,31 @@ describe("asking for permission", () => {
 
     expect(haptic.success).not.toHaveBeenCalled();
     expect(result.current.permissionLabel).toBe(settings.permissionDenied);
+    await unmount();
+  });
+
+  it("should open the exact alarm screen when its row is used", async () => {
+    const { act, exactAlarms, result, unmount } = await renderModel(GRANTED);
+
+    await act(async () => result.current.openExactAlarms());
+
+    expect(exactAlarms.openExactAlarmSettings).toHaveBeenCalledTimes(1);
+    await unmount();
+  });
+
+  it("should keep that screen out of the way where there is no grant to ask for", async () => {
+    const { result, unmount } = await renderModel(GRANTED);
+
+    expect(result.current.canOpenExactAlarms).toBe(false);
+    await unmount();
+  });
+
+  it("should offer that screen where the platform gates exact alarms", async () => {
+    mockExactAlarms.needsExactAlarmAccess.mockReturnValue(true);
+
+    const { result, unmount } = await renderModel(GRANTED);
+
+    expect(result.current.canOpenExactAlarms).toBe(true);
     await unmount();
   });
 

@@ -36,6 +36,7 @@ const ja: Locale = {
       allowNotifications: "通知を許可",
       openIosSettings: "iOS の設定を開く",
       sendTestNotification: "テスト通知を送信",
+      exactAlarms: "リマインダーの正確な時刻",
       data: "データ",
       dataFooter:
         "サンプルデータは12週間の履歴がある習慣を5つ作成します。グラフとウィジェットに表示するものが用意されます。",
