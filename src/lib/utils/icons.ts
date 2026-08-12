@@ -2,19 +2,16 @@ import type { AndroidSymbol } from "expo-symbols";
 import type { SFSymbol } from "sf-symbols-typescript";
 
 /**
- * The Material Symbol each SF Symbol the app draws translates to.
- *
- * The persisted `icon` column stores an SF Symbol name on every platform - the
- * database has been shipping since 0.1.0, and migrating it to gain a tidier
- * stored value is risk taken for nothing a user sees. Android translates at
- * render time, here and nowhere else.
+ * The Material Symbol each SF Symbol the app draws translates to. The persisted
+ * `icon` column holds the SF name on every platform, so Android translates here
+ * and nowhere else.
  *
  * `satisfies` rather than an annotation: an explicit `Record<string,
- * AndroidSymbol>` widens the keys and loses the narrowing, while this way a name
+ * AndroidSymbol>` widens the keys and loses the narrowing, and this way a name
  * that is not a Material Symbol is a typecheck error.
  */
 export const MATERIAL_SYMBOL_BY_SF = {
-  /* The 24 icons a habit can be given. */
+  /* The habit icons. */
   "figure.walk": "directions_walk",
   "figure.run": "directions_run",
   "figure.mind.and.body": "self_improvement",
@@ -75,23 +72,17 @@ export const MATERIAL_SYMBOL_BY_SF = {
   "wand.and.stars": "auto_fix_high",
 } satisfies Record<string, AndroidSymbol>;
 
-/**
- * What an unmapped name draws. A missing entry is a mistake to see rather than
- * one to crash on: a habit created before the map knew its icon still lists.
- */
+/* What an unmapped name draws, so a habit whose icon is missing still lists. */
 const FALLBACK: AndroidSymbol = "question_mark";
 
-/** The Material Symbol for a stored SF Symbol name. */
 export function materialSymbolFor(name: string): AndroidSymbol {
   const known: Record<string, AndroidSymbol> = MATERIAL_SYMBOL_BY_SF;
   return known[name] ?? FALLBACK;
 }
 
 /**
- * A stored name as `SymbolView` takes it, so one call site serves both
- * platforms. The iOS half is the stored value itself, which no runtime check
- * validates - the column is a string, and an icon that left the palette would
- * already be drawing nothing on iOS.
+ * A stored name as `SymbolView` takes it. The cast is the column's type: an icon
+ * outside the palette would already be drawing nothing on iOS.
  */
 export function crossPlatformSymbol(name: string): {
   ios: SFSymbol;

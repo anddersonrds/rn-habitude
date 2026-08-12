@@ -5,8 +5,7 @@ import { getMaterialColors } from "@expo/ui/jetpack-compose";
 import { renderHook } from "@testing-library/react-native";
 
 /*
-The palette comes from the Compose module, which is native. Every role is
-answered with the scheme and the seed it was generated from, so one assertion
+Every role answers with the scheme and the seed it came from, so one assertion
 covers the mapping, the appearance and the seed at once.
 */
 jest.mock("@expo/ui/jetpack-compose", () => ({
@@ -40,8 +39,7 @@ describe("the Android palette", () => {
   });
 
   it("should generate the dark palette from the same seed", () => {
-    /* `?.` because a single typecheck pass resolves the stand-in this file
-    shadows, whose return is nullable. */
+    /* `?.` because `tsc` resolves the stand-in, whose return is nullable. */
     expect(materialPalette("dark", accent)?.text).toBe(role("onSurface", "dark"));
   });
 

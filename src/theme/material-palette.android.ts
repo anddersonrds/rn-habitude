@@ -3,16 +3,9 @@ import type { ColorSchemeName, ColorValue } from "react-native";
 import type { SystemPalette } from "./types";
 
 /**
- * The eleven semantic colors as Material 3 roles, from a palette generated with
- * `seed` rather than from the wallpaper.
- *
- * Material 3 is the role system; Material You is one way of filling it, and
- * `Color.android.dynamic.*` is that one. The seed here is the app accent, which
- * is deliberately the same hex as the cyan habit color, so chrome derived from a
- * photo would leave a cyan habit matching nothing.
- *
- * The roles resolve to concrete values, so unlike the iOS references this has to
- * be re-read when the appearance changes. `useSystemColors()` is that path.
+ * Material 3 is the role system; Material You is one way of filling it, from the
+ * wallpaper, and `Color.android.dynamic.*` is that one. This fills the roles from
+ * `seed`, the app accent, which is the same hex as the cyan habit color.
  */
 export function materialPalette(
   scheme: ColorSchemeName,

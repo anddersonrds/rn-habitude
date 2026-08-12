@@ -39,21 +39,14 @@ function resolve(scheme: ColorSchemeName): SystemPalette {
 }
 
 /**
- * The palette a `StyleSheet` is built from, resolved once at module scope.
- *
- * On iOS every value is a reference UIKit resolves at render time, so one object
- * follows the appearance on its own. A Material palette is concrete values
- * instead, and this one is the light appearance: a `StyleSheet.create` call runs
- * once and could never follow Android, which changes appearance under a live
- * process. Anything that has to follow it reads `useSystemColors()`.
+ * The palette a `StyleSheet` is built from, resolved once at module scope. The
+ * iOS values are references that follow the appearance on their own; a Material
+ * palette is concrete values, and this one is the light appearance. Anything that
+ * has to follow a change reads `useSystemColors()`.
  */
 export const colors: SystemPalette = resolve("light");
 
-/**
- * The palette for the appearance the app is in. The scheme goes through the
- * resolver rather than being read inside it, so the dependency stays visible to
- * React Compiler.
- */
+/** The scheme goes through the resolver, so React Compiler sees the dependency. */
 export function useSystemColors(): SystemPalette {
   return resolve(useColorScheme());
 }

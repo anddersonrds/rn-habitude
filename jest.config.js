@@ -5,9 +5,7 @@ const BABEL_TRANSFORM = "\\.[jt]sx?$";
 
 /**
  * One project per platform, so an `.android.tsx` file is resolved and executed
- * by the Android run instead of being counted by `collectCoverageFrom` and
- * never run. The presets carry their own `displayName`, which is what labels
- * each line of the report.
+ * rather than counted by `collectCoverageFrom` and never run.
  */
 function platformProject(preset, setupFilesAfterEnv = []) {
   /*
@@ -16,8 +14,7 @@ function platformProject(preset, setupFilesAfterEnv = []) {
   strips TypeScript.
   */
   const [, babelOptions] = preset.transform[BABEL_TRANSFORM];
-  /* A watch plugin belongs to the run, not to a project inside it, and jest
-  rejects the key here with a warning on every invocation. */
+  /* Jest rejects this key inside a project, with a warning on every run. */
   const { watchPlugins, ...rest } = preset;
 
   return {
@@ -50,10 +47,9 @@ function platformProject(preset, setupFilesAfterEnv = []) {
 module.exports = {
   watchPlugins: iosPreset.watchPlugins,
   /*
-  Two projects give each worker twice the suites to hold, and a worker that grows
-  past this dies inside `node:sqlite` with a SIGSEGV rather than an out-of-memory
-  error - two runs in three before this line. Recycling by memory keeps the
-  parallelism a worker cap would cost.
+  Two projects give each worker twice the suites to hold, and past this a worker
+  dies inside `node:sqlite` with a SIGSEGV, two runs in three. Recycling by memory
+  keeps the parallelism a worker cap would cost.
   */
   workerIdleMemoryLimit: "512MB",
   projects: [
@@ -63,11 +59,7 @@ module.exports = {
   collectCoverageFrom: [
     "src/**/*.{ts,tsx}",
     "!src/test-utils/**",
-    /*
-    A suite is excluded by being one, which each project decides for itself: a
-    `.ios.` file is a test to the iOS project and an uncovered source file to
-    the Android one.
-    */
+    /* A `.ios.` suite is a test to one project and uncovered source to the other. */
     "!src/**/__tests__/**",
     /*
     Route files that only re-export a screen. The parentheses are escaped
@@ -82,9 +74,8 @@ module.exports = {
     "!src/app/habit/\\[id\\].tsx",
   ],
   /*
-  Root rather than per project, so a tier measures the union of both runs: a
-  shared module is executed twice and a platform file once, and the numbers
-  below mean what they meant on one platform.
+  Root rather than per project, so a tier measures the union of both runs and the
+  numbers below mean what they meant on one platform.
   */
   coverageThreshold: {
     global: { statements: 70 },

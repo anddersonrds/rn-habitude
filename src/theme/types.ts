@@ -1,9 +1,6 @@
 import type { ColorValue } from "react-native";
 
-/**
- * The eleven semantic colors a screen is allowed to ask for. Each platform
- * fills them from its own system palette, so a consumer never branches.
- */
+/** The semantic colors a screen asks for, filled by whichever platform it is on. */
 export type SystemPalette = Record<
   | "background"
   | "groupedBackground"

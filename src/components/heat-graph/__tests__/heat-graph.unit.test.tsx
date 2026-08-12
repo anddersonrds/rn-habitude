@@ -19,11 +19,9 @@ const MISSED = colors.fill;
 const UNSCHEDULED = colors.subtleFill;
 const BLANK = "transparent";
 
-/*
-Cells carry no text and no name; a background is what marks one. The key has to
-be asked for rather than the value read, because a semantic colour resolves to
-nothing until the platform it belongs to renders it.
-*/
+/* Cells carry no text and no name; a background is what marks one. The key
+rather than the value, because a semantic colour resolves to nothing off its own
+platform. */
 function cells(container: TestInstance): ViewStyle[] {
   return container
     .queryAll((node) => {

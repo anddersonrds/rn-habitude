@@ -5,10 +5,9 @@ import type { MaterialColorsOptions } from "@expo/ui/jetpack-compose";
 import type { SymbolViewProps } from "expo-symbols";
 
 /*
-A Material 3 palette is generated natively, and the runner has no native side,
-so `getMaterialColors` answers with a colour derived from the role and the
-appearance asked for: valid, distinct and stable, which is all a screen reading
-`colors` needs. A case about a particular role stands its own value in.
+A Material 3 palette is generated natively. The stand-in derives a colour from
+the role and the appearance asked for, so the values are valid, distinct and
+stable, which is all a screen reading `colors` needs.
 */
 jest.mock("@expo/ui/jetpack-compose", () => {
   function roleColor(role: string, scheme: string): string {
@@ -30,13 +29,11 @@ jest.mock("@expo/ui/jetpack-compose", () => {
 });
 
 /*
-`expo-symbols` ships no native view for Android. Its default implementation
-draws a Material icon font, and a glyph is a codepoint rather than a name, so a
-symbol drawn on Android leaves nothing a test can ask about - and a symbol asked
-for by an iOS name draws nothing at all. The runner therefore renders the same
-view-manager stand-in iOS renders, carrying the name the app asked for, so one
-shared suite asserts the same symbol on both platforms. What Android draws from
-that name is `lib/utils/icons.ts`'s contract and is asserted there.
+`expo-symbols` ships no native view for Android: it draws an icon font, and a
+glyph is a codepoint, so a symbol leaves nothing in the tree to ask about. The
+stand-in renders the view manager iOS renders, carrying the name the app asked
+for, so one shared suite asserts the same symbol on both platforms. The
+translation that name gets on Android is asserted in `lib/utils/icons.ts`.
 */
 jest.mock("expo-symbols", () => {
   const React = require("react") as typeof import("react");

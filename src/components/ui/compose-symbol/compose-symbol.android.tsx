@@ -5,17 +5,12 @@ import { useEffect, useState } from "react";
 import type { ColorValue, ImageSourcePropType } from "react-native";
 import type { Props } from "./types";
 
-/**
- * Rasterised sources, held for the process. A row scrolling back into view has
- * already paid for its symbol, and resolving again would blank it for a frame.
- * Keyed by everything the image is baked from.
- */
+/* Held for the process, keyed by everything the image is baked from. */
 const sources = new Map<string, ImageSourcePropType>();
 
 /*
-The work in flight, so a list of rows sharing an icon rasterises it once. The
-cache above cannot cover this: it only fills when the first resolve lands, and
-by then every row has asked.
+The cache only fills when the first resolve lands, and by then every row of a
+list sharing an icon has asked for its own. So the work in flight is shared too.
 */
 const rasterising = new Map<string, Promise<void>>();
 
@@ -49,11 +44,9 @@ function rasterise(
 
 /**
  * A symbol for inside a Compose `<Host>`, where `AppSymbol` cannot go: a Compose
- * tree hosts native Compose views, and `SymbolView` is a React Native one. The
- * Compose `Icon` takes an image, so the glyph is rendered to one.
- *
- * This is the only call site of `unstable_getMaterialSymbolSourceAsync`, so the
- * `unstable_` prefix reaches one file.
+ * tree hosts Compose views, and `SymbolView` is a React Native one. The Compose
+ * `Icon` takes an image, so the glyph is rasterised to one, and this file is the
+ * only call site of the `unstable_` function that does it.
  */
 export function ComposeSymbol({
   name,
@@ -63,7 +56,7 @@ export function ComposeSymbol({
 }: Props) {
   const key = `${name}:${size}:${String(color)}`;
   const cached = sources.get(key);
-  /* Only a nudge to render again once a resolve lands; the cache holds the value. */
+  /* A nudge to render again; the cache holds the value. */
   const [, setResolved] = useState(0);
 
   useEffect(() => {

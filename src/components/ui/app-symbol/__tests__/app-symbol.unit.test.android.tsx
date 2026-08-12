@@ -1,11 +1,7 @@
 import { AppSymbol } from "@/components/ui/app-symbol";
 import { renderWithProviders } from "@/test-utils/render";
 
-/*
-The runner's stand-in resolves the name the way the platform does, which is what
-lets a shared suite assert one symbol. This case is about what the component
-hands over, so it takes the props raw.
-*/
+/* The runner's stand-in resolves the name; this case wants the props raw. */
 jest.mock("expo-symbols", () => ({ SymbolView: jest.fn(() => null) }));
 
 const { SymbolView } = jest.requireMock<{ SymbolView: jest.Mock }>("expo-symbols");
