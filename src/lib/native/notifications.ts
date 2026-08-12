@@ -63,9 +63,45 @@ export async function ensureNotificationPermission(): Promise<boolean> {
 }
 
 /**
+ * The repeating trigger for a time of day, and for one weekday when there is
+ * one. Android has repeating types of its own and takes the channel here rather
+ * than on the content; the calendar trigger is `UNCalendarNotificationTrigger`
+ * and stays iOS's. Both count weekdays from 1 = Sunday.
+ */
+function reminderTrigger(
+  hour: number,
+  minute: number,
+  weekday: number | null,
+): Notifications.NotificationTriggerInput {
+  if (Platform.OS === "android") {
+    return weekday === null
+      ? {
+          type: Notifications.SchedulableTriggerInputTypes.DAILY,
+          channelId: HABIT_REMINDER_CHANNEL,
+          hour,
+          minute,
+        }
+      : {
+          type: Notifications.SchedulableTriggerInputTypes.WEEKLY,
+          channelId: HABIT_REMINDER_CHANNEL,
+          weekday,
+          hour,
+          minute,
+        };
+  }
+
+  return {
+    type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
+    ...(weekday === null ? {} : { weekday }),
+    hour,
+    minute,
+    repeats: true,
+  };
+}
+
+/**
  * Cancels the habit's previous reminders and schedules new ones. Daily habits
- * get one repeating calendar trigger; weekday habits get one per scheduled
- * weekday (iOS weekday: 1 = Sunday).
+ * get one repeating trigger; weekday habits get one per scheduled weekday.
  */
 export async function scheduleHabitReminders(habit: Habit): Promise<string[]> {
   await cancelReminders(habit.notificationIds);
@@ -84,12 +120,7 @@ export async function scheduleHabitReminders(habit: Habit): Promise<string[]> {
   if (isDaily(habit)) {
     const id = await Notifications.scheduleNotificationAsync({
       content,
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
-        hour,
-        minute,
-        repeats: true,
-      },
+      trigger: reminderTrigger(hour, minute, null),
     });
     return [id];
   }
@@ -98,13 +129,7 @@ export async function scheduleHabitReminders(habit: Habit): Promise<string[]> {
   for (const weekday of habit.weekdays) {
     const id = await Notifications.scheduleNotificationAsync({
       content,
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
-        weekday: weekday + 1,
-        hour,
-        minute,
-        repeats: true,
-      },
+      trigger: reminderTrigger(hour, minute, weekday + 1),
     });
     ids.push(id);
   }
@@ -124,6 +149,7 @@ export async function cancelAllReminders(): Promise<void> {
 }
 
 export async function sendTestNotification(): Promise<void> {
+  await ensureNotificationChannel();
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "habitude",
@@ -132,6 +158,7 @@ export async function sendTestNotification(): Promise<void> {
     },
     trigger: {
       type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+      ...(Platform.OS === "android" && { channelId: HABIT_REMINDER_CHANNEL }),
       seconds: 3,
       repeats: false,
     },

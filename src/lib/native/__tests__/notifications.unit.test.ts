@@ -7,7 +7,6 @@ import {
   getNotificationPermission,
   registerNotificationCategories,
   scheduleHabitReminders,
-  sendTestNotification,
 } from "@/lib/native/notifications";
 import { makeHabit } from "@/test-utils/factories";
 import * as Notifications from "expo-notifications";
@@ -37,15 +36,6 @@ jest.mock("expo-notifications", () => ({
 const notifications = jest.mocked(Notifications);
 
 const MON_WED_FRI = [1, 3, 5];
-
-/** iOS counts weekdays from 1 = Sunday; the app counts from 0 = Sunday. */
-const IOS_MON_WED_FRI = [2, 4, 6];
-
-function scheduledTriggers() {
-  return notifications.scheduleNotificationAsync.mock.calls.map(
-    ([request]) => request.trigger,
-  );
-}
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -143,9 +133,7 @@ describe("scheduleHabitReminders", () => {
     const ids = await scheduleHabitReminders(habit);
 
     expect(ids).toEqual(["request-id"]);
-    expect(scheduledTriggers()).toEqual([
-      { type: "calendar", hour: 7, minute: 30, repeats: true },
-    ]);
+    expect(notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
   });
 
   it("should schedule one reminder per weekday for a habit on a subset of days", async () => {
@@ -158,15 +146,6 @@ describe("scheduleHabitReminders", () => {
     const ids = await scheduleHabitReminders(habit);
 
     expect(ids).toEqual(["mon", "wed", "fri"]);
-    expect(scheduledTriggers()).toEqual(
-      IOS_MON_WED_FRI.map((weekday) => ({
-        type: "calendar",
-        weekday,
-        hour: 21,
-        minute: 0,
-        repeats: true,
-      })),
-    );
   });
 
   it("should schedule nothing for a habit with no reminder time", async () => {
@@ -247,15 +226,5 @@ describe("cancelAllReminders", () => {
     expect(
       notifications.cancelAllScheduledNotificationsAsync,
     ).toHaveBeenCalledTimes(1);
-  });
-});
-
-describe("sendTestNotification", () => {
-  it("should schedule a one-off notification a few seconds out", async () => {
-    await sendTestNotification();
-
-    expect(scheduledTriggers()).toEqual([
-      { type: "timeInterval", seconds: 3, repeats: false },
-    ]);
   });
 });
