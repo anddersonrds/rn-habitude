@@ -64,6 +64,12 @@ module.exports = {
     "src/**/*.{ts,tsx}",
     "!src/test-utils/**",
     /*
+    A suite is excluded by being one, which each project decides for itself: a
+    `.ios.` file is a test to the iOS project and an uncovered source file to
+    the Android one.
+    */
+    "!src/**/__tests__/**",
+    /*
     Route files that only re-export a screen. The parentheses are escaped
     because a bare `(onboarding)` reads as a glob group and matches nothing.
     */

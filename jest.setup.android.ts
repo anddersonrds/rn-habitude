@@ -1,7 +1,33 @@
 /* eslint-disable @typescript-eslint/no-require-imports --
 mock factories are hoisted above imports and cannot close over them.
 */
+import type { MaterialColorsOptions } from "@expo/ui/jetpack-compose";
 import type { SymbolViewProps } from "expo-symbols";
+
+/*
+A Material 3 palette is generated natively, and the runner has no native side,
+so `getMaterialColors` answers with a colour derived from the role and the
+appearance asked for: valid, distinct and stable, which is all a screen reading
+`colors` needs. A case about a particular role stands its own value in.
+*/
+jest.mock("@expo/ui/jetpack-compose", () => {
+  function roleColor(role: string, scheme: string): string {
+    const seed = `${role}/${scheme}`;
+    let hash = 0;
+    for (const character of seed) {
+      hash = (hash * 31 + character.charCodeAt(0)) % 0xffffff;
+    }
+    return `#${hash.toString(16).padStart(6, "0")}FF`;
+  }
+
+  return {
+    ...jest.requireActual<typeof import("@expo/ui/jetpack-compose")>(
+      "@expo/ui/jetpack-compose",
+    ),
+    getMaterialColors: ({ scheme = "light" }: MaterialColorsOptions = {}) =>
+      new Proxy({}, { get: (_target, role: string) => roleColor(role, scheme) }),
+  };
+});
 
 /*
 `expo-symbols` ships no native view for Android. Its default implementation

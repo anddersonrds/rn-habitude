@@ -1,5 +1,7 @@
 import { Color } from "expo-router";
-import type { ColorValue } from "react-native";
+import { useColorScheme, type ColorSchemeName } from "react-native";
+import { materialPalette } from "./material-palette";
+import type { SystemPalette } from "./types";
 
 /**
  * Semantic system colors. Using these instead of hard-coded values is what
@@ -8,20 +10,7 @@ import type { ColorValue } from "react-native";
  * They ship inside `expo-router`, which is a routing package, so this is the
  * one file allowed to reach for them. Everything else asks `theme/`.
  */
-export const colors: Record<
-  | "background"
-  | "groupedBackground"
-  | "secondaryBackground"
-  | "text"
-  | "secondaryText"
-  | "tertiaryText"
-  | "mutedText"
-  | "fill"
-  | "subtleFill"
-  | "separator"
-  | "destructive",
-  ColorValue
-> = {
+const iosPalette: SystemPalette = {
   background: Color.ios.systemBackground,
   groupedBackground: Color.ios.systemGroupedBackground,
   secondaryBackground: Color.ios.secondarySystemGroupedBackground,
@@ -44,6 +33,30 @@ export const colors: Record<
  * that has to be updated by hand; it cannot import the token.
  */
 export const accent = "#32ADE6";
+
+function resolve(scheme: ColorSchemeName): SystemPalette {
+  return materialPalette(scheme, accent) ?? iosPalette;
+}
+
+/**
+ * The palette a `StyleSheet` is built from, resolved once at module scope.
+ *
+ * On iOS every value is a reference UIKit resolves at render time, so one object
+ * follows the appearance on its own. A Material palette is concrete values
+ * instead, and this one is the light appearance: a `StyleSheet.create` call runs
+ * once and could never follow Android, which changes appearance under a live
+ * process. Anything that has to follow it reads `useSystemColors()`.
+ */
+export const colors: SystemPalette = resolve("light");
+
+/**
+ * The palette for the appearance the app is in. The scheme goes through the
+ * resolver rather than being read inside it, so the dependency stays visible to
+ * React Compiler.
+ */
+export function useSystemColors(): SystemPalette {
+  return resolve(useColorScheme());
+}
 
 /**
  * The one green that means "complete". Apple's `systemGreen`, shared by the
