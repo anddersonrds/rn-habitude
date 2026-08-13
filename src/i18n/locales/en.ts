@@ -51,7 +51,7 @@ const en = {
       version: "Version",
       notificationsOffTitle: "Notifications are off",
       notificationsOffBody:
-        "Allow notifications in iOS Settings to receive reminders.",
+        "Allow notifications in the system settings to receive reminders.",
       openSettings: "Open Settings",
       testSentTitle: "Test notification sent",
       testSentBody:
@@ -142,7 +142,7 @@ const en = {
       createHabit: "Create habit",
       notificationsOffTitle: "Notifications are off",
       notificationsOffBody:
-        "Allow notifications in iOS Settings to add a reminder.",
+        "Allow notifications in the system settings to add a reminder.",
       notNow: "Not Now",
       openSettings: "Open Settings",
     },

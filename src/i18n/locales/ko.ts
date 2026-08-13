@@ -48,7 +48,7 @@ const ko: Locale = {
       checkIns: "기록",
       version: "버전",
       notificationsOffTitle: "알림이 꺼져 있습니다",
-      notificationsOffBody: "알림을 받으려면 iOS 설정에서 알림을 허용하세요.",
+      notificationsOffBody: "알림을 받으려면 시스템 설정에서 알림을 허용하세요.",
       openSettings: "설정 열기",
       testSentTitle: "테스트 알림을 보냈습니다",
       testSentBody:
@@ -139,7 +139,7 @@ const ko: Locale = {
       createHabit: "습관 만들기",
       notificationsOffTitle: "알림이 꺼져 있습니다",
       notificationsOffBody:
-        "알림을 추가하려면 iOS 설정에서 알림을 허용하세요.",
+        "알림을 추가하려면 시스템 설정에서 알림을 허용하세요.",
       notNow: "나중에",
       openSettings: "설정 열기",
     },

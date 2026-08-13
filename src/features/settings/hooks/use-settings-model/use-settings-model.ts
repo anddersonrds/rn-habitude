@@ -114,7 +114,8 @@ export function useSettingsModel() {
         ? "secondary"
         : "red";
 
-  const openSystemSettings = () => void Linking.openURL("app-settings:");
+  /* `openSettings` rather than the `app-settings:` URL, which is iOS's alone. */
+  const openSystemSettings = () => void Linking.openSettings();
 
   const requestPermission = async () => {
     const granted = await ensureNotificationPermission();

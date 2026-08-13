@@ -134,7 +134,7 @@ type Loaded = {
   sendTestNotification: jest.Mock;
   exactAlarms: typeof mockExactAlarms;
   alert: jest.Mock;
-  openURL: jest.Mock;
+  openSettings: jest.Mock;
   testingLibrary: TestingLibrary;
 };
 
@@ -164,9 +164,9 @@ function load(): Loaded {
     sendTestNotification: notifications.sendTestNotification,
     exactAlarms: mockExactAlarms,
     alert: jest.spyOn(Alert, "alert").mockImplementation(() => {}) as jest.Mock,
-    openURL: jest
-      .spyOn(Linking, "openURL")
-      .mockImplementation(async () => true) as jest.Mock,
+    openSettings: jest
+      .spyOn(Linking, "openSettings")
+      .mockImplementation(async () => {}) as jest.Mock,
     testingLibrary: require("@testing-library/react-native/pure"),
   };
 }
@@ -340,12 +340,12 @@ describe("asking for permission", () => {
     await unmount();
   });
 
-  it("should open iOS Settings when that is all that is left", async () => {
-    const { act, openURL, result, unmount } = await renderModel(DENIED);
+  it("should open the system settings when that is all that is left", async () => {
+    const { act, openSettings, result, unmount } = await renderModel(DENIED);
 
     await act(async () => result.current.openSystemSettings());
 
-    expect(openURL).toHaveBeenCalledWith("app-settings:");
+    expect(openSettings).toHaveBeenCalled();
     await unmount();
   });
 });
@@ -382,23 +382,23 @@ describe("sending a test notification", () => {
     await unmount();
   });
 
-  it("should offer iOS Settings when it could not send", async () => {
-    const { act, alert, ensurePermission, openURL, result, unmount } =
+  it("should offer the system settings when it could not send", async () => {
+    const { act, alert, ensurePermission, openSettings, result, unmount } =
       await renderModel(DENIED);
     ensurePermission.mockResolvedValue(false);
     await act(async () => result.current.sendTest());
 
-    const openSettings = buttonsOf(alert).find(
+    const offer = buttonsOf(alert).find(
       (button) => button.text === settings.openSettings,
     );
-    await act(async () => openSettings?.onPress?.());
+    await act(async () => offer?.onPress?.());
 
-    expect(openURL).toHaveBeenCalledWith("app-settings:");
+    expect(openSettings).toHaveBeenCalled();
     await unmount();
   });
 
   it("should do nothing more when that offer is declined", async () => {
-    const { act, alert, ensurePermission, openURL, result, unmount } =
+    const { act, alert, ensurePermission, openSettings, result, unmount } =
       await renderModel(DENIED);
     ensurePermission.mockResolvedValue(false);
     await act(async () => result.current.sendTest());
@@ -406,7 +406,7 @@ describe("sending a test notification", () => {
     const cancel = buttonsOf(alert).find((button) => button.style === "cancel");
     await act(async () => cancel?.onPress?.());
 
-    expect(openURL).not.toHaveBeenCalled();
+    expect(openSettings).not.toHaveBeenCalled();
     await unmount();
   });
 });

@@ -49,7 +49,7 @@ const ja: Locale = {
       version: "バージョン",
       notificationsOffTitle: "通知がオフです",
       notificationsOffBody:
-        "リマインダーを受け取るには、iOS の設定で通知を許可してください。",
+        "リマインダーを受け取るには、システム設定で通知を許可してください。",
       openSettings: "設定を開く",
       testSentTitle: "テスト通知を送信しました",
       testSentBody:
@@ -140,7 +140,7 @@ const ja: Locale = {
       createHabit: "習慣を作成",
       notificationsOffTitle: "通知がオフです",
       notificationsOffBody:
-        "リマインダーを追加するには、iOS の設定で通知を許可してください。",
+        "リマインダーを追加するには、システム設定で通知を許可してください。",
       notNow: "今はしない",
       openSettings: "設定を開く",
     },

@@ -46,7 +46,7 @@ const ptBR: Locale = {
       version: "Versão",
       notificationsOffTitle: "As notificações estão desativadas",
       notificationsOffBody:
-        "Permita as notificações nos Ajustes do iOS para receber os lembretes.",
+        "Permita as notificações nas configurações do sistema para receber os lembretes.",
       openSettings: "Abrir os Ajustes",
       testSentTitle: "Notificação de teste enviada",
       testSentBody:
@@ -144,7 +144,7 @@ const ptBR: Locale = {
       createHabit: "Criar hábito",
       notificationsOffTitle: "As notificações estão desativadas",
       notificationsOffBody:
-        "Permita as notificações nos Ajustes do iOS para adicionar um lembrete.",
+        "Permita as notificações nas configurações do sistema para adicionar um lembrete.",
       notNow: "Agora não",
       openSettings: "Abrir os Ajustes",
     },
