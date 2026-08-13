@@ -25,6 +25,12 @@ jest.mock("@/lib/native/notifications", () => ({
   cancelAllReminders: jest.fn(async () => {}),
 }));
 
+/*
+The sink is a different module per platform, and what the store owes the widget
+is the snapshot rather than either platform's way of delivering it.
+*/
+jest.mock("@/lib/native/widget-sink", () => ({ pushWidgetSnapshot: jest.fn() }));
+
 /* A Wednesday, so a habit scheduled only on Mondays is not due on it. */
 const sampleNames = i18n.getFixedT("en", "sampleData");
 
@@ -32,7 +38,7 @@ const TODAY = "2026-07-29";
 const MONDAY = 1;
 
 type StoreModule = typeof import("@/lib/data/store");
-type WidgetModule = typeof import("@/../widgets/HabitudeWidget");
+type SinkModule = typeof import("@/lib/native/widget-sink");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
 
 type Loaded = {
@@ -50,10 +56,10 @@ type Loaded = {
 /** Loads the store into whatever module registry is current. */
 function requireStore(): Loaded {
   const store: StoreModule = require("@/lib/data/store");
-  const widget: WidgetModule = require("@/../widgets/HabitudeWidget");
+  const sink: SinkModule = require("@/lib/native/widget-sink");
   return {
     store,
-    snapshots: widget.default.updateSnapshot as unknown as jest.Mock,
+    snapshots: sink.pushWidgetSnapshot as unknown as jest.Mock,
     testingLibrary: require("@testing-library/react-native/pure"),
   };
 }

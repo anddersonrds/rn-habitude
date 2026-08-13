@@ -7,17 +7,14 @@ import { makeAppState, makeCompletions, makeHabit } from "@/test-utils/factories
 import { freezeClock, restoreClock } from "@/test-utils/time";
 
 /*
-The widget is a project module, and the only thing this one does with it is
-push a snapshot. `WIDGET_DAYS` stays real because it decides the shape of what
-is pushed.
+What this module does with the widget is hand a snapshot to the sink, and the
+sink is a different one per platform. `WIDGET_DAYS` stays real because it
+decides the shape of what is pushed.
 */
-const mockUpdateSnapshot = jest.fn();
+const mockPushSnapshot = jest.fn();
 
-jest.mock("@/../widgets/HabitudeWidget", () => ({
-  ...jest.requireActual("@/../widgets/HabitudeWidget"),
-  /* Without this the interop hands the importer the module object itself. */
-  __esModule: true,
-  default: { updateSnapshot: mockUpdateSnapshot },
+jest.mock("@/lib/native/widget-sink", () => ({
+  pushWidgetSnapshot: mockPushSnapshot,
 }));
 
 /* A Wednesday. */
@@ -33,7 +30,7 @@ function freshWidgetSync(): WidgetSyncModule {
 }
 
 function lastSnapshot(): HabitudeWidgetProps {
-  return mockUpdateSnapshot.mock.calls[mockUpdateSnapshot.mock.calls.length - 1][0];
+  return mockPushSnapshot.mock.calls[mockPushSnapshot.mock.calls.length - 1][0];
 }
 
 beforeEach(() => {
@@ -130,10 +127,10 @@ describe("syncWidgetFromState", () => {
   });
 });
 
-describe("when the widget extension is not there", () => {
+describe("when the widget cannot be reached", () => {
   it("should leave the caller unaffected", () => {
     const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
-    mockUpdateSnapshot.mockImplementation(() => {
+    mockPushSnapshot.mockImplementation(() => {
       throw new Error("no widget extension in this build");
     });
 
@@ -145,7 +142,7 @@ describe("when the widget extension is not there", () => {
 
   it("should report the problem once rather than on every mutation", () => {
     const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
-    mockUpdateSnapshot.mockImplementation(() => {
+    mockPushSnapshot.mockImplementation(() => {
       throw new Error("no widget extension in this build");
     });
     const { syncWidgetFromState } = freshWidgetSync();
