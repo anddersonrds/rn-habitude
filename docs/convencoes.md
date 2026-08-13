@@ -9,6 +9,7 @@ dito; quando não é, vale igual.
 [Onde mora um tipo](#onde-mora-um-tipo) ·
 [Onde mora um estilo](#onde-mora-um-estilo) ·
 [Tokens](#tokens) ·
+[Ícones](#ícones) ·
 [Estado](#estado) ·
 [Comentários](#comentários) ·
 [O alias](#o-alias) ·
@@ -35,6 +36,12 @@ nome:
 | --- | --- |
 | `heat-graph/heat-graph.tsx` | `heat-graph/component.tsx` |
 | | `heat-graph/HeatGraph.tsx` |
+
+A versão Android de um arquivo é **o mesmo nome mais `.android`**, na mesma
+pasta: `habit-row.tsx` e `habit-row.android.tsx`. Não é uma segunda regra de
+nome, é a mesma com um qualificador, e por isso o kebab-case continua valendo
+inteiro. Quais arquivos podem ter irmão está em
+[arquitetura](arquitetura.md#onde-um-irmão-de-plataforma-é-permitido).
 
 > **Renomeie com `git mv`.** O macOS monta APFS sem diferenciar maiúscula de
 > minúscula por padrão, e a CI roda em Linux. Trocar só a caixa de um arquivo
@@ -108,11 +115,26 @@ Em `styles.ts`, na pasta do componente, num `StyleSheet.create`.
 
 **Nenhum literal de cor entra num `styles.ts`.** Uma cor vem de `@/theme`, e o
 accent de um hábito vem do próprio hábito. `theme/colors.ts` é o único arquivo
-que importa `Color` do `expo-router`, e reexporta os onze valores semânticos
-por papel e não pelo nome da Apple, então trocar um deles é uma linha.
+que importa `Color` do `expo-router`, nas duas plataformas, e reexporta os onze
+valores semânticos por papel e não pelo nome da Apple, então trocar um deles é
+uma linha.
 
 Estilo que depende de valor calculado em runtime fica inline no componente. O
 resto vai para `styles.ts`.
+
+**No Android a mesma cor tem duas formas, e a escolha é sua.** O valor iOS é
+uma referência semântica que o sistema resolve na hora de desenhar; a paleta
+Android é Material 3 semeada pelo accent do app, e são valores concretos:
+
+| O que você lê | O que ele dá | Quando |
+| --- | --- | --- |
+| `colors` | A paleta resolvida uma vez, no escopo do módulo | Um `StyleSheet.create`, que também é montado uma vez |
+| `useSystemColors()` | A paleta da aparência atual | Tudo que precisa acompanhar a troca de claro para escuro |
+
+O Android troca de aparência com o processo vivo, onde o iOS reinicia o app,
+então `colors` num `StyleSheet` fica na paleta clara e não segue a troca. É por
+isso que as telas React Native do Android são claras por enquanto: seguir a
+aparência ali significa tirar as superfícies do `StyleSheet`.
 
 > **A exceção conhecida.** Espaçamento e raio ainda têm números soltos nos
 > estilos de `features/` e `components/`, porque `theme/spacing.ts` só declara
@@ -143,6 +165,28 @@ texto claro e escuro a partir da luminância, mora em `utils/` e não no tema.
 literal nenhum. `Text` é a única hoje.
 
 Tudo em `theme/` sai pelo barril: importe de `@/theme`, não de `@/theme/colors`.
+
+---
+
+## Ícones
+
+**A coluna `icon` do banco guarda um nome de SF Symbol, nas duas plataformas.**
+Um hábito criado no iPhone abre no Android e vice-versa, e um backup antigo
+continua legível.
+
+`lib/utils/icons.ts` é **o único lugar onde um símbolo é traduzido**. Ele mapeia
+cada SF Symbol que o app desenha para o Material Symbol equivalente, com um
+`satisfies` que transforma um nome inexistente em erro de typecheck.
+
+Ninguém desenha um símbolo direto:
+
+| Componente | Onde |
+| --- | --- |
+| `AppSymbol` | Qualquer lugar fora de uma árvore Compose, nas duas plataformas |
+| `ComposeSymbol` | Dentro de um `<Host>` do Compose, o que só acontece no Android |
+
+Os dois recebem o nome SF e resolvem a tradução por dentro. Um símbolo novo na
+interface é uma entrada nova no mapa, e não um `SymbolView` a mais.
 
 ---
 
