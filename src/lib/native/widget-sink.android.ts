@@ -6,11 +6,6 @@ import {
 } from "../../../widgets/android/render";
 import { saveWidgetSnapshot } from "../../../widgets/android/snapshot";
 
-/**
- * Two halves, because the launcher can ask for a redraw with the app closed:
- * the snapshot is stored for that handler, and the widgets already on a home
- * screen are redrawn now.
- */
 export function pushWidgetSnapshot(props: HabitudeWidgetProps): void {
   saveWidgetSnapshot(props);
 

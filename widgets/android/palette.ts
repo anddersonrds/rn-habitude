@@ -23,11 +23,7 @@ export const WIDGET_THEMES: Record<WidgetAppearance, WidgetTheme> = {
 const MISSED_OPACITY = 0.12;
 const UNSCHEDULED_OPACITY = 0.05;
 
-/**
- * The cell rule is `lib/domain/heat.ts`'s, read rather than restated: this
- * widget draws the same statuses the app draws, at the two surface opacities
- * the iOS widget uses.
- */
+/** The two surface opacities are the iOS widget's, so both draw one grid. */
 export function widgetCellColor(
   dayState: number,
   habitColor: string,
