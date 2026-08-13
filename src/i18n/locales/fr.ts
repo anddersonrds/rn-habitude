@@ -34,6 +34,7 @@ const fr: Locale = {
       allowNotifications: "Autoriser les notifications",
       openIosSettings: "Ouvrir les Réglages iOS",
       sendTestNotification: "Envoyer une notification test",
+      exactAlarms: "Heure exacte des rappels",
       data: "Données",
       dataFooter:
         "Les données d'exemple créent cinq habitudes avec douze semaines d'historique, pour que le graphique et le widget aient de quoi s'afficher.",
@@ -46,7 +47,7 @@ const fr: Locale = {
       version: "Version",
       notificationsOffTitle: "Les notifications sont désactivées",
       notificationsOffBody:
-        "Autorisez les notifications dans les Réglages iOS pour recevoir les rappels.",
+        "Autorisez les notifications dans les réglages du système pour recevoir les rappels.",
       openSettings: "Ouvrir les Réglages",
       testSentTitle: "Notification test envoyée",
       testSentBody:
@@ -143,7 +144,7 @@ const fr: Locale = {
       createHabit: "Créer l'habitude",
       notificationsOffTitle: "Les notifications sont désactivées",
       notificationsOffBody:
-        "Autorisez les notifications dans les Réglages iOS pour ajouter un rappel.",
+        "Autorisez les notifications dans les réglages du système pour ajouter un rappel.",
       notNow: "Pas maintenant",
       openSettings: "Ouvrir les Réglages",
     },

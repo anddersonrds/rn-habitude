@@ -36,6 +36,7 @@ const ja: Locale = {
       allowNotifications: "通知を許可",
       openIosSettings: "iOS の設定を開く",
       sendTestNotification: "テスト通知を送信",
+      exactAlarms: "リマインダーの正確な時刻",
       data: "データ",
       dataFooter:
         "サンプルデータは12週間の履歴がある習慣を5つ作成します。グラフとウィジェットに表示するものが用意されます。",
@@ -48,7 +49,7 @@ const ja: Locale = {
       version: "バージョン",
       notificationsOffTitle: "通知がオフです",
       notificationsOffBody:
-        "リマインダーを受け取るには、iOS の設定で通知を許可してください。",
+        "リマインダーを受け取るには、システム設定で通知を許可してください。",
       openSettings: "設定を開く",
       testSentTitle: "テスト通知を送信しました",
       testSentBody:
@@ -139,7 +140,7 @@ const ja: Locale = {
       createHabit: "習慣を作成",
       notificationsOffTitle: "通知がオフです",
       notificationsOffBody:
-        "リマインダーを追加するには、iOS の設定で通知を許可してください。",
+        "リマインダーを追加するには、システム設定で通知を許可してください。",
       notNow: "今はしない",
       openSettings: "設定を開く",
     },

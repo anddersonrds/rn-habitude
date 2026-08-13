@@ -79,7 +79,7 @@ type Loaded = {
   ensurePermission: jest.Mock;
   alert: jest.Mock;
   dismissKeyboard: jest.Mock;
-  openURL: jest.Mock;
+  openSettings: jest.Mock;
   testingLibrary: TestingLibrary;
 };
 
@@ -104,9 +104,9 @@ function load(): Loaded {
     dismissKeyboard: jest
       .spyOn(Keyboard, "dismiss")
       .mockImplementation(() => {}) as jest.Mock,
-    openURL: jest
-      .spyOn(Linking, "openURL")
-      .mockImplementation(async () => true) as jest.Mock,
+    openSettings: jest
+      .spyOn(Linking, "openSettings")
+      .mockImplementation(async () => {}) as jest.Mock,
     testingLibrary: require("@testing-library/react-native/pure"),
   };
 }
@@ -465,7 +465,7 @@ describe("turning the reminder on", () => {
     await unmount();
   });
 
-  it("should leave it off and offer iOS Settings when notifications are denied", async () => {
+  it("should leave it off and offer the system settings when notifications are denied", async () => {
     const { act, alert, ensurePermission, result, unmount } = await renderForm();
     ensurePermission.mockResolvedValue(false);
 
@@ -474,29 +474,29 @@ describe("turning the reminder on", () => {
     expect(result.current.reminderOn).toBe(false);
     expect(alert).toHaveBeenCalledWith(
       habitForm.notificationsOffTitle,
-      "Allow notifications in iOS Settings to add a reminder.",
+      "Allow notifications in the system settings to add a reminder.",
       expect.any(Array),
     );
     await unmount();
   });
 
-  it("should open iOS Settings when that is the answer taken", async () => {
-    const { act, alert, ensurePermission, openURL, result, unmount } =
+  it("should open the system settings when that is the answer taken", async () => {
+    const { act, alert, ensurePermission, openSettings, result, unmount } =
       await renderForm();
     ensurePermission.mockResolvedValue(false);
     await act(async () => result.current.toggleReminder(true));
 
-    const settings = buttonsOf(alert).find(
+    const offer = buttonsOf(alert).find(
       (button) => button.text === habitForm.openSettings,
     );
-    await act(async () => settings?.onPress?.());
+    await act(async () => offer?.onPress?.());
 
-    expect(openURL).toHaveBeenCalledWith("app-settings:");
+    expect(openSettings).toHaveBeenCalled();
     await unmount();
   });
 
   it("should leave the reminder off when the offer is declined", async () => {
-    const { act, alert, ensurePermission, openURL, result, unmount } =
+    const { act, alert, ensurePermission, openSettings, result, unmount } =
       await renderForm();
     ensurePermission.mockResolvedValue(false);
     await act(async () => result.current.toggleReminder(true));
@@ -505,7 +505,7 @@ describe("turning the reminder on", () => {
     await act(async () => notNow?.onPress?.());
 
     expect(result.current.reminderOn).toBe(false);
-    expect(openURL).not.toHaveBeenCalled();
+    expect(openSettings).not.toHaveBeenCalled();
     await unmount();
   });
 

@@ -20,7 +20,7 @@ import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 import { accent, success } from "@/theme";
 import { act, fireEvent } from "@testing-library/react-native";
 import * as Application from "expo-application";
-import { Alert } from "react-native";
+import { Alert, Linking, Platform } from "react-native";
 import type { TestInstance } from "test-renderer";
 
 /* Reminders are the store's business, and their own tests cover them. */
@@ -147,6 +147,11 @@ function sectionLabels(container: TestInstance): string[] {
     .map((node) => node.props.text as string);
 }
 
+/* `Version` is a getter, so it is spied rather than assigned. */
+function onApiLevel(level: number): void {
+  jest.spyOn(Platform, "Version", "get").mockReturnValue(level);
+}
+
 async function renderSettings(permission: unknown = GRANTED) {
   notifications.getNotificationPermission.mockResolvedValue(permission);
   const rendered = await renderWithProviders(<SettingsScreen />);
@@ -269,6 +274,29 @@ describe("the settings screen", () => {
     await act(async () => new Promise((resolve) => setImmediate(resolve)));
 
     expect(notifications.sendTestNotification).toHaveBeenCalledTimes(1);
+  });
+
+  it("should leave out the exact alarm row where there is no grant to ask for", async () => {
+    onApiLevel(30);
+
+    const { container } = await renderSettings(GRANTED);
+
+    expect(drawnText(container)).not.toContain(settings.exactAlarms);
+  });
+
+  it("should open the special access screen from the exact alarm row", async () => {
+    onApiLevel(31);
+    const sendIntent = jest
+      .spyOn(Linking, "sendIntent")
+      .mockImplementation(async () => {});
+
+    const { container } = await renderSettings(GRANTED);
+    await clickCompose(settingsRow(container, settings.exactAlarms));
+    await act(async () => new Promise((resolve) => setImmediate(resolve)));
+
+    expect(sendIntent).toHaveBeenCalledWith(
+      "android.settings.REQUEST_SCHEDULE_EXACT_ALARM",
+    );
   });
 
   it("should count the habits and the check-ins", async () => {

@@ -56,6 +56,8 @@ export function SettingsScreen() {
     permissionColor,
     canRequestPermission,
     canOpenSettings,
+    canOpenExactAlarms,
+    openExactAlarms,
     habitCount,
     totalCheckIns,
     hasHabits,
@@ -144,6 +146,13 @@ export function SettingsScreen() {
           systemImage="paperplane"
           onPress={() => void sendTest()}
         />
+        {canOpenExactAlarms && (
+          <SettingsButton
+            label={t("exactAlarms")}
+            systemImage="alarm"
+            onPress={openExactAlarms}
+          />
+        )}
         <Footnote>{t("notificationsFooter")}</Footnote>
 
         <SectionLabel>{t("data")}</SectionLabel>

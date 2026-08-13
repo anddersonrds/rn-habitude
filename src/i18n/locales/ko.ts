@@ -36,6 +36,7 @@ const ko: Locale = {
       allowNotifications: "알림 허용",
       openIosSettings: "iOS 설정 열기",
       sendTestNotification: "테스트 알림 보내기",
+      exactAlarms: "정확한 알림 시간",
       data: "데이터",
       dataFooter:
         "샘플 데이터는 12주치 기록이 있는 습관 5개를 만듭니다. 그래프와 위젯에 보여 줄 내용이 생깁니다.",
@@ -47,7 +48,7 @@ const ko: Locale = {
       checkIns: "기록",
       version: "버전",
       notificationsOffTitle: "알림이 꺼져 있습니다",
-      notificationsOffBody: "알림을 받으려면 iOS 설정에서 알림을 허용하세요.",
+      notificationsOffBody: "알림을 받으려면 시스템 설정에서 알림을 허용하세요.",
       openSettings: "설정 열기",
       testSentTitle: "테스트 알림을 보냈습니다",
       testSentBody:
@@ -138,7 +139,7 @@ const ko: Locale = {
       createHabit: "습관 만들기",
       notificationsOffTitle: "알림이 꺼져 있습니다",
       notificationsOffBody:
-        "알림을 추가하려면 iOS 설정에서 알림을 허용하세요.",
+        "알림을 추가하려면 시스템 설정에서 알림을 허용하세요.",
       notNow: "나중에",
       openSettings: "설정 열기",
     },

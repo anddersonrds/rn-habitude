@@ -26,7 +26,7 @@ export function alertNotificationsOff(copy: NotificationsOffCopy): void {
     { text: copy.dismiss, style: "cancel" },
     {
       text: copy.openSettings,
-      onPress: () => void Linking.openURL("app-settings:"),
+      onPress: () => void Linking.openSettings(),
     },
   ]);
 }

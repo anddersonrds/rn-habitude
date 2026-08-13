@@ -38,6 +38,7 @@ const en = {
       allowNotifications: "Allow notifications",
       openIosSettings: "Open iOS Settings",
       sendTestNotification: "Send test notification",
+      exactAlarms: "Exact reminder timing",
       data: "Data",
       dataFooter:
         "Sample data seeds five habits with twelve weeks of history, so the heat graph and the widget have something to show.",
@@ -50,7 +51,7 @@ const en = {
       version: "Version",
       notificationsOffTitle: "Notifications are off",
       notificationsOffBody:
-        "Allow notifications in iOS Settings to receive reminders.",
+        "Allow notifications in the system settings to receive reminders.",
       openSettings: "Open Settings",
       testSentTitle: "Test notification sent",
       testSentBody:
@@ -141,7 +142,7 @@ const en = {
       createHabit: "Create habit",
       notificationsOffTitle: "Notifications are off",
       notificationsOffBody:
-        "Allow notifications in iOS Settings to add a reminder.",
+        "Allow notifications in the system settings to add a reminder.",
       notNow: "Not Now",
       openSettings: "Open Settings",
     },

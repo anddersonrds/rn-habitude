@@ -10,9 +10,9 @@ const en = i18n.getFixedT("en", "common");
 const ptBR = i18n.getFixedT("pt-BR", "common");
 
 const alert = jest.spyOn(Alert, "alert").mockImplementation(() => {});
-const openURL = jest
-  .spyOn(Linking, "openURL")
-  .mockImplementation(async () => true);
+const openSettings = jest
+  .spyOn(Linking, "openSettings")
+  .mockImplementation(async () => {});
 
 function shown(): { title: string; body: string; buttons: AlertButtons } {
   const [title, body, buttons] = alert.mock.calls[0];
@@ -79,7 +79,7 @@ describe("confirmDeleteHabit", () => {
 describe("alertNotificationsOff", () => {
   const copy = {
     title: "Notifications are off",
-    body: "Allow notifications in iOS Settings to receive reminders.",
+    body: "Allow notifications in the system settings to receive reminders.",
     dismiss: "Not Now",
     openSettings: "Open Settings",
   };
@@ -95,17 +95,17 @@ describe("alertNotificationsOff", () => {
     ]);
   });
 
-  it("should open the app's own iOS settings pane", () => {
+  it("should open the app's own page in the system settings", () => {
     alertNotificationsOff(copy);
     shown().buttons[1].onPress?.();
 
-    expect(openURL).toHaveBeenCalledWith("app-settings:");
+    expect(openSettings).toHaveBeenCalled();
   });
 
   it("should leave dismissing to do nothing at all", () => {
     alertNotificationsOff(copy);
     shown().buttons[0].onPress?.();
 
-    expect(openURL).not.toHaveBeenCalled();
+    expect(openSettings).not.toHaveBeenCalled();
   });
 });

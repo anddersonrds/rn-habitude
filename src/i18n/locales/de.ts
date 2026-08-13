@@ -34,6 +34,7 @@ const de: Locale = {
       allowNotifications: "Mitteilungen erlauben",
       openIosSettings: "iOS-Einstellungen öffnen",
       sendTestNotification: "Testmitteilung senden",
+      exactAlarms: "Exakte Erinnerungszeit",
       data: "Daten",
       dataFooter:
         "Die Beispieldaten legen fünf Gewohnheiten mit zwölf Wochen Verlauf an, damit Raster und Widget etwas zu zeigen haben.",
@@ -46,7 +47,7 @@ const de: Locale = {
       version: "Version",
       notificationsOffTitle: "Mitteilungen sind aus",
       notificationsOffBody:
-        "Erlaube Mitteilungen in den iOS-Einstellungen, um Erinnerungen zu erhalten.",
+        "Erlaube Mitteilungen in den Systemeinstellungen, um Erinnerungen zu erhalten.",
       openSettings: "Einstellungen öffnen",
       testSentTitle: "Testmitteilung gesendet",
       testSentBody:
@@ -143,7 +144,7 @@ const de: Locale = {
       createHabit: "Gewohnheit anlegen",
       notificationsOffTitle: "Mitteilungen sind aus",
       notificationsOffBody:
-        "Erlaube Mitteilungen in den iOS-Einstellungen, um eine Erinnerung zu setzen.",
+        "Erlaube Mitteilungen in den Systemeinstellungen, um eine Erinnerung zu setzen.",
       notNow: "Jetzt nicht",
       openSettings: "Einstellungen öffnen",
     },

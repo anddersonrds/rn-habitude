@@ -6,6 +6,10 @@ import {
 } from "@/i18n/i18next";
 import { switchLanguage } from "@/i18n/switching";
 import { alertNotificationsOff } from "@/lib/native/alerts";
+import {
+  needsExactAlarmAccess,
+  openExactAlarmSettings,
+} from "@/lib/native/exact-alarms";
 import { haptic } from "@/lib/native/haptics";
 import {
   ensureNotificationPermission,
@@ -110,7 +114,7 @@ export function useSettingsModel() {
         ? "secondary"
         : "red";
 
-  const openSystemSettings = () => void Linking.openURL("app-settings:");
+  const openSystemSettings = () => void Linking.openSettings();
 
   const requestPermission = async () => {
     const granted = await ensureNotificationPermission();
@@ -176,6 +180,8 @@ export function useSettingsModel() {
       permission != null && !permission.granted && permission.canAskAgain,
     canOpenSettings:
       permission != null && !permission.granted && !permission.canAskAgain,
+    canOpenExactAlarms: needsExactAlarmAccess(),
+    openExactAlarms: () => void openExactAlarmSettings(),
     habitCount,
     totalCheckIns,
     hasHabits: habitCount > 0,

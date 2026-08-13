@@ -33,6 +33,7 @@ const ptBR: Locale = {
       allowNotifications: "Permitir notificações",
       openIosSettings: "Abrir os Ajustes do iOS",
       sendTestNotification: "Enviar notificação de teste",
+      exactAlarms: "Horário exato dos lembretes",
       data: "Dados",
       dataFooter:
         "Os dados de exemplo criam cinco hábitos com doze semanas de histórico, para o gráfico de constância e o widget terem o que mostrar.",
@@ -45,7 +46,7 @@ const ptBR: Locale = {
       version: "Versão",
       notificationsOffTitle: "As notificações estão desativadas",
       notificationsOffBody:
-        "Permita as notificações nos Ajustes do iOS para receber os lembretes.",
+        "Permita as notificações nas configurações do sistema para receber os lembretes.",
       openSettings: "Abrir os Ajustes",
       testSentTitle: "Notificação de teste enviada",
       testSentBody:
@@ -143,7 +144,7 @@ const ptBR: Locale = {
       createHabit: "Criar hábito",
       notificationsOffTitle: "As notificações estão desativadas",
       notificationsOffBody:
-        "Permita as notificações nos Ajustes do iOS para adicionar um lembrete.",
+        "Permita as notificações nas configurações do sistema para adicionar um lembrete.",
       notNow: "Agora não",
       openSettings: "Abrir os Ajustes",
     },

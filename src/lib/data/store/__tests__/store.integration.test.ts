@@ -17,9 +17,16 @@ module registry, and a factory that closed over nothing would hand each reload
 a fresh set of spies the assertions could no longer see.
 */
 const mockNotifications = {
-  SchedulableTriggerInputTypes: { CALENDAR: "calendar", TIME_INTERVAL: "timeInterval" },
+  AndroidImportance: { HIGH: 6 },
+  SchedulableTriggerInputTypes: {
+    CALENDAR: "calendar",
+    DAILY: "daily",
+    WEEKLY: "weekly",
+    TIME_INTERVAL: "timeInterval",
+  },
   setNotificationHandler: jest.fn(),
   setNotificationCategoryAsync: jest.fn(async () => {}),
+  setNotificationChannelAsync: jest.fn(async () => null),
   getPermissionsAsync: jest.fn(async () => ({ granted: true, canAskAgain: true })),
   requestPermissionsAsync: jest.fn(async () => ({ granted: true })),
   scheduleNotificationAsync: jest.fn(async () => "request-id"),

@@ -39,6 +39,7 @@ export const MATERIAL_SYMBOL_BY_SF = {
 
   /* The interface's own symbols. */
   add: "add",
+  alarm: "alarm",
   "arrow.right": "arrow_forward",
   "arrow.up.left.and.arrow.down.right": "open_in_full",
   "arrow.uturn.backward": "undo",

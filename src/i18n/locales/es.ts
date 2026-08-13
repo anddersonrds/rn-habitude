@@ -33,6 +33,7 @@ const es: Locale = {
       allowNotifications: "Permitir notificaciones",
       openIosSettings: "Abrir Ajustes de iOS",
       sendTestNotification: "Enviar notificación de prueba",
+      exactAlarms: "Hora exacta de los recordatorios",
       data: "Datos",
       dataFooter:
         "Los datos de ejemplo crean cinco hábitos con doce semanas de historial, para que el gráfico y el widget tengan algo que mostrar.",
@@ -45,7 +46,7 @@ const es: Locale = {
       version: "Versión",
       notificationsOffTitle: "Las notificaciones están desactivadas",
       notificationsOffBody:
-        "Permite las notificaciones en Ajustes de iOS para recibir recordatorios.",
+        "Permite las notificaciones en los ajustes del sistema para recibir recordatorios.",
       openSettings: "Abrir Ajustes",
       testSentTitle: "Notificación de prueba enviada",
       testSentBody:
@@ -142,7 +143,7 @@ const es: Locale = {
       createHabit: "Crear hábito",
       notificationsOffTitle: "Las notificaciones están desactivadas",
       notificationsOffBody:
-        "Permite las notificaciones en Ajustes de iOS para añadir un recordatorio.",
+        "Permite las notificaciones en los ajustes del sistema para añadir un recordatorio.",
       notNow: "Ahora no",
       openSettings: "Abrir Ajustes",
     },
