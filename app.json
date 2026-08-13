@@ -58,7 +58,27 @@
           "color": "#32ADE6"
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      [
+        "react-native-android-widget",
+        {
+          "widgets": [
+            {
+              "name": "HabitudeWidget",
+              "label": "Consistency",
+              "description": "Your habit heat graph at a glance.",
+              "minWidth": "180dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 4,
+              "targetCellHeight": 2,
+              "resizeMode": "horizontal|vertical",
+              /* The floor the platform allows. The path that matters is a
+              check-in with the app open, which redraws immediately. */
+              "updatePeriodMillis": 1800000
+            }
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

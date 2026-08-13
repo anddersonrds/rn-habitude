@@ -3,7 +3,8 @@ import {
   DefaultTheme,
   type Theme,
 } from "expo-router/react-navigation";
-import { accent, colors } from "./colors";
+import { accent } from "./accent";
+import { colors } from "./colors";
 
 /** Adapts the tokens to the shape React Navigation asks a `ThemeProvider` for. */
 export function getNavigationTheme(dark: boolean): Theme {
