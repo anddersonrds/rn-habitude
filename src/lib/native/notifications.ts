@@ -10,26 +10,23 @@ export const MARK_DONE_ACTION = "markDone";
 export const HABIT_REMINDER_CHANNEL = "habit-reminders";
 
 /**
- * Creates the Android channel, and does nothing anywhere else. Android 8
- * displays nothing without one, and Android 13 presents no permission prompt
- * until one exists, so this runs before the request and before every schedule.
- * The channel name stays English like the action button, because none of the
- * callers holds a `t`.
+ * Android 8 displays nothing without a channel, and Android 13 presents no
+ * permission prompt until one exists, so this runs before the request and
+ * before every schedule.
  */
 export async function ensureNotificationChannel(): Promise<void> {
   if (Platform.OS !== "android") return;
   await Notifications.setNotificationChannelAsync(HABIT_REMINDER_CHANNEL, {
     name: "Habit reminders",
     importance: Notifications.AndroidImportance.HIGH,
-    /* `sound` is omitted rather than set: Expo reads `"default"` as the name of
-    a bundled file, and leaving it out is what gets the system sound. */
+    /* No `sound`: Expo reads `"default"` there as a bundled filename. */
   });
 }
 
 /**
  * Registers the action buttons shown on reminder notifications. Android opens
- * the app to run them: the completion guard is JavaScript and no background
- * task is registered, so an action handled in place would check nothing in.
+ * the app to run them, because the completion guard is JavaScript and no
+ * background task is registered.
  */
 export async function registerNotificationCategories(): Promise<void> {
   await Notifications.setNotificationCategoryAsync(HABIT_REMINDER_CATEGORY, [
@@ -67,10 +64,8 @@ export async function ensureNotificationPermission(): Promise<boolean> {
 }
 
 /**
- * The repeating trigger for a time of day, and for one weekday when there is
- * one. Android has repeating types of its own and takes the channel here rather
- * than on the content; the calendar trigger is `UNCalendarNotificationTrigger`
- * and stays iOS's. Both count weekdays from 1 = Sunday.
+ * Android has repeating trigger types of its own, and takes the channel here
+ * rather than on the content. Both platforms count weekdays from 1 = Sunday.
  */
 function reminderTrigger(
   hour: number,

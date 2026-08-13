@@ -4,9 +4,8 @@ import { Linking, Platform } from "react-native";
 const EXACT_ALARM_ACCESS_SINCE = 31;
 
 /**
- * Whether exact alarms are gated behind a user grant here. React Native cannot
- * read `AlarmManager.canScheduleExactAlarms()`, so this reports that the grant
- * exists to be asked for, never whether it was given.
+ * Whether the grant exists to be asked for, never whether it was given: React
+ * Native cannot read `AlarmManager.canScheduleExactAlarms()`.
  */
 export function needsExactAlarmAccess(): boolean {
   return (
@@ -16,9 +15,8 @@ export function needsExactAlarmAccess(): boolean {
 }
 
 /**
- * Opens the special access screen, falling back to the app's own settings page
- * because some vendors ship no activity for that intent. Refusing there costs
- * the exactness of the alarm, not the reminder.
+ * Opens the special access screen. The fallback is there because some vendors
+ * ship no activity for that intent.
  */
 export async function openExactAlarmSettings(): Promise<void> {
   try {

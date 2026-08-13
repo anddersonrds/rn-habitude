@@ -147,8 +147,7 @@ function sectionLabels(container: TestInstance): string[] {
     .map((node) => node.props.text as string);
 }
 
-/* The exact alarm row appears by API level, and `Version` is a getter on the
-platform object, so it is spied rather than assigned. */
+/* `Version` is a getter, so it is spied rather than assigned. */
 function onApiLevel(level: number): void {
   jest.spyOn(Platform, "Version", "get").mockReturnValue(level);
 }

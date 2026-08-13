@@ -24,11 +24,8 @@ jest.mock("@/lib/native/notifications", () => ({
   sendTestNotification: jest.fn(async () => {}),
 }));
 
-/*
-Whether the grant exists is the module's own business, and its platform suites
-assert it. Here only the pass-through is. Held outside the factory so a case can
-decide the answer before the reload the hook is loaded through.
-*/
+/* Held outside the factory so a case can decide the answer before the reload
+the hook is loaded through. */
 const mockExactAlarms = {
   needsExactAlarmAccess: jest.fn(() => false),
   openExactAlarmSettings: jest.fn(async () => {}),

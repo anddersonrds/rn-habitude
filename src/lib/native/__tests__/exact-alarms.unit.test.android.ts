@@ -13,8 +13,7 @@ const openSettings = jest
   .spyOn(Linking, "openSettings")
   .mockImplementation(async () => {});
 
-/* `Version` is a getter on the platform object, so it is spied rather than
-replaced. */
+/* `Version` is a getter, so it is spied rather than replaced. */
 function onApiLevel(level: number): void {
   jest.spyOn(Platform, "Version", "get").mockReturnValue(level);
 }

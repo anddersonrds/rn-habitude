@@ -114,7 +114,6 @@ export function useSettingsModel() {
         ? "secondary"
         : "red";
 
-  /* `openSettings` rather than the `app-settings:` URL, which is iOS's alone. */
   const openSystemSettings = () => void Linking.openSettings();
 
   const requestPermission = async () => {
@@ -181,8 +180,6 @@ export function useSettingsModel() {
       permission != null && !permission.granted && permission.canAskAgain,
     canOpenSettings:
       permission != null && !permission.granted && !permission.canAskAgain,
-    /* Offered wherever the grant exists, because nothing can read back whether
-    it was given. */
     canOpenExactAlarms: needsExactAlarmAccess(),
     openExactAlarms: () => void openExactAlarmSettings(),
     habitCount,

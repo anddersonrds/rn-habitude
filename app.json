@@ -51,8 +51,8 @@
       [
         "expo-notifications",
         {
-          /* The id `HABIT_REMINDER_CHANNEL` carries. The icon is a silhouette:
-          Android draws the small icon from the alpha channel alone. */
+          /* The id `HABIT_REMINDER_CHANNEL` carries. The icon is white on
+          transparent because Android draws it from the alpha channel alone. */
           "defaultChannel": "habit-reminders",
           "icon": "./assets/images/notification-icon.png",
           "color": "#32ADE6"
