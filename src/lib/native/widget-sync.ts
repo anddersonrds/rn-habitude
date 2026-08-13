@@ -1,15 +1,17 @@
-import HabitudeWidget, {
+import {
   WIDGET_DAYS,
   type HabitudeWidgetProps,
   type WidgetHabitRow,
 } from "../../../widgets/HabitudeWidget";
+import { pushWidgetSnapshot } from "./widget-sink";
 import { todayKey, weekdayOf } from "../utils/dates";
 import { computeStreaks, trailingDayStates } from "../domain/streaks";
 import { isScheduledOn, type AppState } from "../domain/types";
 
 /**
- * Builds without `HABITUDE_WIDGET=1` ship no widget extension, so the sync is
- * expected to fail. Report it once instead of on every store mutation.
+ * Builds without `HABITUDE_WIDGET=1` ship no iOS extension, and a home screen
+ * can carry no widget at all, so the sync is expected to fail. Report it once
+ * instead of on every store mutation.
  */
 let warnedAboutSync = false;
 
@@ -46,7 +48,7 @@ export function syncWidgetFromState(state: AppState): void {
       dueToday: dueHabits.length,
       date: today,
     };
-    HabitudeWidget.updateSnapshot(props);
+    pushWidgetSnapshot(props);
   } catch (error) {
     /* Swallowed rather than rethrown: a widget that cannot update must not
     take a check-in down with it. */
