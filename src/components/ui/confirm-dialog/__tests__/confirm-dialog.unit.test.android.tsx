@@ -15,6 +15,8 @@ jest.mock("expo-symbols", () => ({
   })),
 }));
 
+const RASTERISED = "file:///symbol.png";
+
 const ASK = "ask";
 
 function request(overrides: Partial<ConfirmRequest> = {}): ConfirmRequest {
@@ -70,9 +72,12 @@ function dialogView(container: TestInstance): TestInstance {
   return match;
 }
 
-/* A Compose icon is an image, so what says one was drawn is its source. */
+/* A Compose icon is an image, so what says a glyph was drawn is its source:
+the view is mounted blank from the first render and filled in when it lands. */
 function iconViews(container: TestInstance): TestInstance[] {
-  return nativeViews(container).filter((node) => node.props.source !== undefined);
+  return nativeViews(container).filter(
+    (node) => (node.props.source as { uri?: string } | undefined)?.uri === RASTERISED,
+  );
 }
 
 describe("useConfirm", () => {

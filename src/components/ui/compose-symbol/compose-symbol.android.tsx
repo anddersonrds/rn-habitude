@@ -9,6 +9,15 @@ import type { Props } from "./types";
 const sources = new Map<string, ImageSourcePropType>();
 
 /*
+A 1x1 transparent PNG. A Compose host draws its children once, so an icon
+mounted after the glyph lands never appears; the view is there from the first
+render at its full size, and only its source changes.
+*/
+const BLANK: ImageSourcePropType = {
+  uri: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+};
+
+/*
 The cache only fills when the first resolve lands, and by then every row of a
 list sharing an icon has asked for its own. So the work in flight is shared too.
 */
@@ -72,12 +81,9 @@ export function ComposeSymbol({
     };
   }, [key, name, size, color]);
 
-  /* Nothing rather than a placeholder: a box that appears later shifts the row. */
-  if (!cached) return null;
-
   return (
     <Icon
-      source={cached}
+      source={cached ?? BLANK}
       size={size}
       tint={color}
       contentDescription={contentDescription}
