@@ -9,11 +9,6 @@ import type { Confirmation } from "./types";
 /* What marks a destructive action, since Material 3 has no destructive button. */
 const WARNING = "exclamationmark.triangle.fill";
 
-/**
- * The Material 3 dialog, which is declarative and needs React state, so the
- * confirmation is a hook returning the element rather than the imperative call
- * `Alert.alert` is on iOS.
- */
 export function useConfirm(): Confirmation {
   const scheme = useColorScheme();
   const [asked, setAsked] = useState<ConfirmRequest | null>(null);

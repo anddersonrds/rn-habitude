@@ -54,11 +54,6 @@ describe("ComposeSymbol", () => {
     expect(nativeViews(container)).toHaveLength(2);
   });
 
-  /*
-  A Compose host draws its children once: an icon mounted after the glyph
-  lands never appears, which is why the view is there from the first render
-  and only its source changes.
-  */
   it("should draw its icon on the first render, before the glyph is rasterised", async () => {
     resolveSource.mockImplementationOnce(() => new Promise(() => {}));
 

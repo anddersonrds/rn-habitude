@@ -40,8 +40,6 @@ jest.mock("react-native-reanimated", () => {
   return { __esModule: true, ...actual, useReducedMotion: jest.fn(() => true) };
 });
 
-/* The gesture inset is the device's, so a case sets it rather than asserting
-whatever the runner's provider happens to report. */
 jest.mock("react-native-safe-area-context", () => {
   const actual = jest.requireActual("react-native-safe-area-context");
   return {

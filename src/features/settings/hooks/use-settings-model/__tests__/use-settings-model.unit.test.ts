@@ -363,7 +363,6 @@ describe("sending a test notification", () => {
       body: settings.testSentBody,
       confirmLabel: common.ok,
     });
-    /* Nothing to decide, so the message offers no second answer. */
     expect(askedBy(confirm).cancelLabel).toBeUndefined();
     await unmount();
   });

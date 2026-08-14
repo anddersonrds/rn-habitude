@@ -8,11 +8,9 @@ import type { Props } from "./types";
 /* Held for the process, keyed by everything the image is baked from. */
 const sources = new Map<string, ImageSourcePropType>();
 
-/*
-A 1x1 transparent PNG. A Compose host draws its children once, so an icon
-mounted after the glyph lands never appears; the view is there from the first
-render at its full size, and only its source changes.
-*/
+/* A Compose host draws its children once, so an icon mounted after the glyph
+lands never appears. The view is there from the start and only its source
+changes; this is what it carries until then. */
 const BLANK: ImageSourcePropType = {
   uri: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
 };

@@ -58,7 +58,6 @@ async function ask(overrides: Partial<ConfirmRequest> = {}) {
   return rendered;
 }
 
-/** Waits for the dialog to leave, which is what dismissing it does. */
 async function waitForDismissal(container: TestInstance): Promise<void> {
   await waitFor(() => expect(nativeViews(container)).toEqual([]));
 }
@@ -72,8 +71,7 @@ function dialogView(container: TestInstance): TestInstance {
   return match;
 }
 
-/* A Compose icon is an image, so what says a glyph was drawn is its source:
-the view is mounted blank from the first render and filled in when it lands. */
+/* The icon mounts blank, so what says a glyph was drawn is its source. */
 function iconViews(container: TestInstance): TestInstance[] {
   return nativeViews(container).filter(
     (node) => (node.props.source as { uri?: string } | undefined)?.uri === RASTERISED,

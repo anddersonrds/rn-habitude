@@ -17,8 +17,8 @@ import { SettingsButton } from "./components/settings-button";
 import { SettingsLabel } from "./components/settings-label";
 import { useSettingsModel } from "./hooks/use-settings-model";
 
-/* Material 3's navigation bar height. The native tab bar draws over the
-content and exposes no measurement of itself, so the list leaves it clear. */
+/* Material 3's navigation bar height: the native tab bar draws over the
+content and measures nothing for JavaScript to read. */
 const TAB_BAR_HEIGHT = 80;
 
 /* Compose has no `Section`, so its header is a label of our own. */
