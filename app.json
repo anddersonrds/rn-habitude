@@ -48,6 +48,7 @@
       ],
       "expo-sqlite",
       "./plugins/withoutPushEntitlement",
+      "./plugins/withWorkManagerAlignment",
       [
         "expo-notifications",
         {
