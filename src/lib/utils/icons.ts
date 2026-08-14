@@ -53,6 +53,7 @@ export const MATERIAL_SYMBOL_BY_SF = {
   "checkmark.seal.fill": "verified",
   "chevron.left": "chevron_left",
   circle: "radio_button_unchecked",
+  "exclamationmark.triangle.fill": "warning",
   "flame.fill": "local_fire_department",
   gear: "settings",
   "gearshape.fill": "settings",
