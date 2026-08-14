@@ -5,6 +5,7 @@ estar verde antes de um pull request.
 
 [← README](../README.md) ·
 [Rodando](#rodando) ·
+[Os dois projetos](#os-dois-projetos) ·
 [Os tipos](#os-tipos) ·
 [Onde moram e como se chamam](#onde-moram-e-como-se-chamam) ·
 [Como se escreve um caso](#como-se-escreve-um-caso) ·
@@ -24,8 +25,8 @@ bun run test:watch    # re-executa a cada alteração
 bun run test:ci       # com cobertura, como a CI roda
 ```
 
-Jest com o preset `jest-expo/ios` e `@testing-library/react-native`. Nada
-precisa de device nem de simulador.
+Jest e `@testing-library/react-native`, em dois projetos: um por plataforma.
+Nada precisa de device nem de simulador.
 
 **Rode sempre por esses scripts, nunca chamando `jest` direto.** Eles fixam o
 idioma e o fuso, sem os quais um resultado mudaria com a máquina que rodou:
@@ -40,6 +41,44 @@ A suíte se recusa a iniciar se eles faltarem, em `assertStableEnvironment`
 
 O fuso não é UTC de propósito. Toda chave de data no app é meia-noite local, e
 UTC esconderia exatamente o erro que isso pode causar.
+
+---
+
+## Os dois projetos
+
+`jest.config.js` declara um projeto iOS e um projeto Android, cada um no preset
+de plataforma do `jest-expo`. Uma execução são as duas: hoje 66 suítes no iOS,
+69 no Android, 1735 casos no total.
+
+**O motivo é cobertura, não zelo.** Sob um preset só, um arquivo `.android.tsx`
+nunca é resolvido, e o `collectCoverageFrom` continua casando com ele. Toda a
+superfície Android seria contada e nunca executada. A saída barata, tirar o
+sufixo do glob, compra o verde escondendo o código novo do gate, que é
+exatamente a armadilha do fim desta página.
+
+O que cada projeto executa sai do sufixo do arquivo de teste:
+
+| Arquivo | Roda em |
+| --- | --- |
+| `x.unit.test.ts` | Nos dois projetos |
+| `x.unit.test.ios.ts` | Só no iOS |
+| `x.unit.test.android.ts` | Só no Android |
+
+Um modelo de tela não bifurca, então a suíte dele roda duas vezes e conta duas
+vezes. Uma view bifurcada tem uma suíte por plataforma.
+
+> **Uma suíte compartilhada fica errada no instante em que o módulo dela
+> bifurca.** Ela afirma uma árvore que agora só existe numa das plataformas. O
+> escopo dela vai para `.ios` **no mesmo commit** que cria o irmão Android, não
+> no commit seguinte, para a suíte ficar verde em todo commit.
+
+`jest.setup.ts` roda nos dois e `jest.setup.android.ts` só no Android. O
+segundo existe porque três coisas não existem sob o runner: o módulo nativo do
+widget, que responde a qualquer propriedade com uma exceção; as cores do
+Material, que o `<Host>` pede por dentro do próprio `@expo/ui`; e a view de
+símbolo, que no Android é fonte de ícone e não deixa nome nenhum na árvore. Os
+três são substituídos **no módulo nativo**, que é a costura por onde o código
+que vai para produção passa de qualquer jeito.
 
 ---
 
@@ -69,12 +108,14 @@ src/components/heat-graph/__tests__/heat-graph.unit.test.tsx
 src/features/today/hooks/use-today-model/__tests__/use-today-model.unit.test.ts
 ```
 
-O nome é o do módulo em kebab-case, mais o tipo, mais `.test`:
+O nome é o do módulo em kebab-case, mais o tipo, mais `.test`, mais a
+plataforma quando o teste é de uma só:
 
 | Extensão | Quando |
 | --- | --- |
 | `.tsx` | O teste renderiza |
 | `.ts` | O teste não renderiza |
+| `.ios` / `.android` antes dela | O módulo coberto bifurca, ou a asserção só vale numa plataforma |
 
 Quando um módulo muda de lugar, **o teste dele muda no mesmo commit**, para que
 a suíte esteja verde em todo commit e não só no fim.
@@ -138,14 +179,15 @@ comportamento, explicitamente.
 | `native-views.ts` | `symbolView`, `nativeView`, `modifier`, para achar uma view `@expo/ui` na árvore |
 | `expo-router.tsx` | `expoRouterMock` |
 
-As telas SwiftUI são `@expo/ui`, então o runner não renderiza componente nativo
-nenhum. Ele vê só os elementos que o React declarou. Por isso
-`native-events.ts` confere que o alvo carrega o handler antes de disparar: uma
-prop renomeada falha com uma mensagem clara em vez de virar um teste que passa
-sem tocar em nada.
+Nenhuma tela `@expo/ui` desenha sob o runner, seja SwiftUI ou Compose. Ele vê
+só os elementos que o React declarou. Por isso `native-events.ts` confere que o
+alvo carrega o handler antes de disparar: uma prop renomeada falha com uma
+mensagem clara em vez de virar um teste que passa sem tocar em nada.
 
 `jest.setup.ts` mocka `expo-sqlite` na fronteira do próprio módulo,
 `expo-widgets` em `createWidget` apenas, e o `react-native-gesture-handler`.
+Os stand-ins que só o Android precisa estão em
+[os dois projetos](#os-dois-projetos).
 
 ---
 
@@ -184,13 +226,23 @@ de bypass.
 | `src/app/` | 0 | sem limite |
 | Global | 70 | sem limite |
 
+**Os limites são da raiz, não de cada projeto**, então cada faixa mede a união
+das duas execuções e os números acima querem dizer o que queriam quando havia
+uma plataforma só.
+
 `src/app/` está em 0 e nomeado, não removido. Sobraram só layouts, e um layout
 monta um navegador nativo que o runner não renderiza. Removê-lo da lista o
 afundaria no número global sem medida nenhuma.
 
-As rotas que só re-exportam uma tela estão fora do `collectCoverageFrom`, com
-os parênteses escapados: um `(onboarding)` cru é lido como grupo de glob e não
-casa com nada.
+Três coisas ficam fora do `collectCoverageFrom`:
+
+| O quê | Por quê |
+| --- | --- |
+| As rotas que só re-exportam uma tela | Não têm o que medir. Os parênteses vão escapados: um `(onboarding)` cru é lido como grupo de glob e não casa com nada |
+| `src/test-utils/` | É ferramenta de teste |
+| `__tests__/` | Uma suíte `.ios.` é teste para um projeto e código sem cobertura para o outro, e foi assim que a faixa global caiu de 96 para 50 |
+
+`widgets/` tem suítes e nenhum piso: a cobertura só olha `src/`.
 
 > **Um glob que não casa com nada atinge qualquer percentual.** Verde nunca é
 > prova suficiente quando um caminho de cobertura muda. Confira no relatório
@@ -200,13 +252,20 @@ casa com nada.
 
 ## O que nenhum gate consegue ver
 
-**Layout SwiftUI.** Quatro das sete telas são `@expo/ui`, e o runner nunca as
-renderiza. Uma tela que compila, passa na suíte e desenha errado é possível. O
-gate de build pega uma tela que não renderiza; ele não pega uma que renderiza
-mal.
+**Layout nativo, e agora são seis arquivos de tela e não quatro.** Quatro
+telas são `@expo/ui` em SwiftUI no iOS, e duas delas têm um irmão em Compose no
+Android. O runner não renderiza nenhum dos dois. Uma tela que compila, passa na
+suíte e desenha errado é possível. O gate de build pega uma tela que não
+renderiza; ele não pega uma que renderiza mal.
 
-**Comportamento em device.** Reordenar por arrastar, notificação agendada,
-atualização do widget e a versão lida em Ajustes só se verificam num aparelho.
+**Comportamento em device, nas duas plataformas.** Reordenar por arrastar,
+notificação agendada, o widget e a versão lida em Ajustes só se verificam num
+aparelho, e um aparelho de cada. As duas plataformas agendam lembrete por
+caminhos diferentes, desenham o widget por caminhos diferentes e reordenam por
+gestos diferentes, então uma verificação não vale pela outra.
+
+O widget do Android é um bitmap, e o recorte que o launcher faz dele não é
+observável em lugar nenhum além de uma tela de início de verdade.
 
 Ao checar a versão, reinicie o dev server em vez de recarregar o JavaScript. O
 `Constants.expoConfig` vem do manifesto que o dev server avaliou ao iniciar.
