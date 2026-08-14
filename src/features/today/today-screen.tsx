@@ -1,4 +1,5 @@
 import { Celebration } from "@/components/celebration";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import { EmptyState } from "@/components/empty-state";
 import { accent, listChange, success, tints } from "@/theme";
 import {
@@ -45,7 +46,8 @@ const CONTENT_ENTER = {
  */
 export function TodayScreen() {
   const { t } = useTranslation(["today", "common"]);
-  const model = useTodayModel();
+  const { confirm, dialog } = useConfirm();
+  const model = useTodayModel(confirm);
 
   const progressSummary = model.allDone
     ? t("allDone")
@@ -185,6 +187,7 @@ export function TodayScreen() {
           onFinished={model.endCelebration}
         />
       )}
+      {dialog}
     </>
   );
 }

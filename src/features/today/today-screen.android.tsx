@@ -2,6 +2,7 @@ import { Celebration } from "@/components/celebration";
 import { EmptyState } from "@/components/empty-state";
 import { AppSymbol } from "@/components/ui/app-symbol";
 import { ComposeSymbol } from "@/components/ui/compose-symbol";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import { accent, success, useSystemColors } from "@/theme";
 import {
   Card,
@@ -36,7 +37,8 @@ const CONTENT_ENTER = {
 /** The add button stays React Native, because no Compose tree reaches the bar. */
 export function TodayScreen() {
   const { t } = useTranslation(["today", "common"]);
-  const model = useTodayModel();
+  const { confirm, dialog } = useConfirm();
+  const model = useTodayModel(confirm);
   const colors = useSystemColors();
   const scheme = useColorScheme();
 
@@ -190,6 +192,7 @@ export function TodayScreen() {
           onFinished={model.endCelebration}
         />
       )}
+      {dialog}
     </>
   );
 }

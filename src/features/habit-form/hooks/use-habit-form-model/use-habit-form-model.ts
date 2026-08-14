@@ -3,15 +3,15 @@ import {
   DEFAULT_HABIT_COLOR,
   DEFAULT_HABIT_ICON,
 } from "@/constants/habit-options";
-import { alertNotificationsOff, confirmDeleteHabit } from "@/lib/native/alerts";
 import { haptic } from "@/lib/native/haptics";
 import { ensureNotificationPermission } from "@/lib/native/notifications";
 import { createHabit, deleteHabit, updateHabit, useAppState } from "@/lib/data/store";
+import { deleteHabitRequest, type Confirm } from "@/lib/utils/confirmations";
 import { routes } from "@/lib/utils/routes";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Keyboard } from "react-native";
+import { Keyboard, Linking } from "react-native";
 import type { FrequencyChoice } from "./types";
 
 /** The habit form's two modes, as the screen asks about them. */
@@ -35,7 +35,7 @@ function dateToTime(date: Date): string {
  * View model for the habit form: the draft habit, what makes it valid, and
  * every action the form can take, so the SwiftUI view stays a thin render layer.
  */
-export function useHabitFormModel() {
+export function useHabitFormModel(confirm: Confirm) {
   const { t } = useTranslation("habitForm");
   const { t: tCommon } = useTranslation("common");
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -131,21 +131,24 @@ export function useHabitFormModel() {
       return;
     }
 
-    alertNotificationsOff({
+    confirm({
       title: t("notificationsOffTitle"),
       body: t("notificationsOffBody"),
-      dismiss: t("notNow"),
-      openSettings: t("openSettings"),
+      confirmLabel: t("openSettings"),
+      cancelLabel: t("notNow"),
+      onConfirm: () => void Linking.openSettings(),
     });
   };
 
   const confirmDelete = () => {
     if (!editing) return;
     haptic.warning();
-    confirmDeleteHabit(editing.name, tCommon, () => {
-      deleteHabit(editing.id);
-      leaveForm();
-    });
+    confirm(
+      deleteHabitRequest(editing.name, tCommon, () => {
+        deleteHabit(editing.id);
+        leaveForm();
+      }),
+    );
   };
 
   return {

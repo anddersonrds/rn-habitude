@@ -1,6 +1,6 @@
-import { confirmDeleteHabit } from "@/lib/native/alerts";
 import { formatFullDate, formatTime, todayKey, weekdayOf } from "@/lib/utils/dates";
 import { haptic } from "@/lib/native/haptics";
+import { deleteHabitRequest, type Confirm } from "@/lib/utils/confirmations";
 import { routes } from "@/lib/utils/routes";
 import { deleteHabit, toggleCompletion, useAppState } from "@/lib/data/store";
 import { computeStreaks } from "@/lib/domain/streaks";
@@ -14,7 +14,7 @@ import type { TodayItem } from "./types";
  * View model for the Today screen: all data shaping and actions live here so
  * the SwiftUI view stays a thin render layer.
  */
-export function useTodayModel() {
+export function useTodayModel(confirm: Confirm) {
   const { t, i18n } = useTranslation("today");
   const { t: tCommon } = useTranslation("common");
   const habits = useAppState((state) => state.habits);
@@ -78,7 +78,7 @@ export function useTodayModel() {
 
   const confirmDelete = (habit: Habit) => {
     haptic.warning();
-    confirmDeleteHabit(habit.name, tCommon, () => deleteHabit(habit.id));
+    confirm(deleteHabitRequest(habit.name, tCommon, () => deleteHabit(habit.id)));
   };
 
   return {

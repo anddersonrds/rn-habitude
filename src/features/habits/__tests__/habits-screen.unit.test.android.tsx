@@ -11,12 +11,12 @@ import {
 } from "@/lib/data/store";
 import type { Habit, HabitInput } from "@/lib/domain/types";
 import { haptic } from "@/lib/native/haptics";
-import { symbolView, symbolViews } from "@/test-utils/native-views";
+import { nativeView, symbolView, symbolViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 import { act, fireEvent } from "@testing-library/react-native";
 import type { ReactElement } from "react";
-import { Alert, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { State } from "react-native-gesture-handler";
 import {
   fireGestureHandler,
@@ -397,18 +397,20 @@ describe("what a row does", () => {
   });
 
   it("should ask before deleting from its actions", async () => {
-    const alert = jest.spyOn(Alert, "alert").mockImplementation(() => {});
     seedHabit({ name: "Walk outside" });
-    const { getAllByHintText, getByLabelText } = await renderList();
+    const { container, getAllByHintText, getByLabelText } = await renderList();
     await fireEvent(getAllByHintText(habits.idleHint)[0], "longPress");
 
     await fireEvent.press(getByLabelText(common.delete));
 
-    expect(alert).toHaveBeenCalledWith(
-      fill(common.deleteHabitTitle, { name: "Walk outside" }),
-      common.deleteHabitBody,
-      expect.any(Array),
-    );
+    expect(
+      nativeView(
+        container,
+        "text",
+        fill(common.deleteHabitTitle, { name: "Walk outside" }),
+      ),
+    ).toBeTruthy();
+    expect(nativeView(container, "text", common.deleteHabitBody)).toBeTruthy();
     expect(getAppState().habits).toHaveLength(1);
   });
 });

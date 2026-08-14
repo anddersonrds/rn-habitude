@@ -12,6 +12,7 @@ const en = {
   weekStart: 0,
   translations: {
     common: {
+      ok: "OK",
       cancel: "Cancel",
       delete: "Delete",
       edit: "Edit",

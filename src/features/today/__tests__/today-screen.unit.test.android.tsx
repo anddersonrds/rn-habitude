@@ -22,7 +22,6 @@ import { renderWithProviders } from "@/test-utils/render";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 import { accent, success } from "@/theme";
 import { fireEvent } from "@testing-library/react-native";
-import { Alert } from "react-native";
 import type { ReactElement } from "react";
 import type { TestInstance } from "test-renderer";
 
@@ -247,14 +246,15 @@ describe("what the screen answers", () => {
   });
 
   it("should ask before deleting from the revealed action", async () => {
-    const alert = jest.spyOn(Alert, "alert").mockImplementation(() => {});
     const habit = seedHabit({ name: "Walk outside" });
     const { container } = await renderToday();
 
     await longPressCompose(rowOf(container, habit));
     await pressComposeButton(composeButton(container, common.delete));
 
-    expect(alert).toHaveBeenCalled();
+    expect(
+      nativeView(container, "text", common.deleteHabitTitle.replace("{{name}}", "Walk outside")),
+    ).toBeTruthy();
     expect(getAppState().habits).toHaveLength(1);
   });
 

@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import { formatCount } from "@/lib/utils/numbers";
 import { accent, success, useSystemColors } from "@/theme";
 import {
@@ -11,9 +12,14 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useColorScheme } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SettingsButton } from "./components/settings-button";
 import { SettingsLabel } from "./components/settings-label";
 import { useSettingsModel } from "./hooks/use-settings-model";
+
+/* Material 3's navigation bar height: the native tab bar draws over the
+content and measures nothing for JavaScript to read. */
+const TAB_BAR_HEIGHT = 80;
 
 /* Compose has no `Section`, so its header is a label of our own. */
 function SectionLabel({ children }: { children: string }) {
@@ -50,7 +56,9 @@ export function SettingsScreen() {
   const { t, i18n } = useTranslation(["settings", "language"]);
   const colors = useSystemColors();
   const scheme = useColorScheme();
+  const { bottom: bottomInset } = useSafeAreaInsets();
   const [choosingLanguage, setChoosingLanguage] = useState(false);
+  const { confirm, dialog } = useConfirm();
   const {
     permissionLabel,
     permissionColor,
@@ -71,7 +79,7 @@ export function SettingsScreen() {
     loadSample,
     deleteEverything,
     viewOnboarding,
-  } = useSettingsModel();
+  } = useSettingsModel(confirm);
 
   /* The model names a SwiftUI colour; this is the same meaning in Material. */
   const permissionTint =
@@ -85,111 +93,121 @@ export function SettingsScreen() {
     languages.find((entry) => entry.tag === language)?.label ?? "";
 
   return (
-    <Host style={{ flex: 1 }} colorScheme={scheme} seedColor={accent}>
-      <LazyColumn
-        contentPadding={{ start: 16, top: 12, end: 16, bottom: 24 }}
-        verticalArrangement={{ spacedBy: 8 }}
-      >
-        <SectionLabel>{t("language:title")}</SectionLabel>
-        <DropdownMenu
-          expanded={choosingLanguage}
-          onDismissRequest={() => setChoosingLanguage(false)}
+    <>
+      <Host style={{ flex: 1 }} colorScheme={scheme} seedColor={accent}>
+        <LazyColumn
+          contentPadding={{
+            start: 16,
+            top: 12,
+            end: 16,
+            bottom: TAB_BAR_HEIGHT + bottomInset,
+          }}
+          verticalArrangement={{ spacedBy: 8 }}
         >
-          <DropdownMenu.Trigger>
+          <SectionLabel>{t("language:title")}</SectionLabel>
+          <DropdownMenu
+            expanded={choosingLanguage}
+            onDismissRequest={() => setChoosingLanguage(false)}
+          >
+            <DropdownMenu.Trigger>
+              <SettingsButton
+                label={t("language:title")}
+                systemImage="globe.americas.fill"
+                value={activeLanguage}
+                onPress={() => setChoosingLanguage(true)}
+              />
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Items>
+              {languages.map((entry) => (
+                <DropdownMenuItem
+                  key={entry.tag}
+                  onClick={() => {
+                    setChoosingLanguage(false);
+                    chooseLanguage(entry.tag);
+                  }}
+                >
+                  <DropdownMenuItem.Text>
+                    <Text>{entry.label}</Text>
+                  </DropdownMenuItem.Text>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenu.Items>
+          </DropdownMenu>
+
+          <SectionLabel>{t("notifications")}</SectionLabel>
+          <SettingsLabel
+            label={t("permission")}
+            systemImage="bell.fill"
+            value={permissionLabel}
+            valueColor={permissionTint}
+          />
+          {canRequestPermission && (
             <SettingsButton
-              label={t("language:title")}
-              systemImage="globe.americas.fill"
-              value={activeLanguage}
-              onPress={() => setChoosingLanguage(true)}
+              label={t("allowNotifications")}
+              systemImage="bell.badge"
+              onPress={() => void requestPermission()}
             />
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Items>
-            {languages.map((entry) => (
-              <DropdownMenuItem
-                key={entry.tag}
-                onClick={() => {
-                  setChoosingLanguage(false);
-                  chooseLanguage(entry.tag);
-                }}
-              >
-                <DropdownMenuItem.Text>
-                  <Text>{entry.label}</Text>
-                </DropdownMenuItem.Text>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenu.Items>
-        </DropdownMenu>
-
-        <SectionLabel>{t("notifications")}</SectionLabel>
-        <SettingsLabel
-          label={t("permission")}
-          systemImage="bell.fill"
-          value={permissionLabel}
-          valueColor={permissionTint}
-        />
-        {canRequestPermission && (
+          )}
+          {canOpenSettings && (
+            <SettingsButton
+              label={t("openSettings")}
+              systemImage="gear"
+              onPress={openSystemSettings}
+            />
+          )}
           <SettingsButton
-            label={t("allowNotifications")}
-            systemImage="bell.badge"
-            onPress={() => void requestPermission()}
+            label={t("sendTestNotification")}
+            systemImage="paperplane"
+            onPress={() => void sendTest()}
           />
-        )}
-        {canOpenSettings && (
-          <SettingsButton
-            label={t("openSettings")}
-            systemImage="gear"
-            onPress={openSystemSettings}
-          />
-        )}
-        <SettingsButton
-          label={t("sendTestNotification")}
-          systemImage="paperplane"
-          onPress={() => void sendTest()}
-        />
-        {canOpenExactAlarms && (
-          <SettingsButton
-            label={t("exactAlarms")}
-            systemImage="alarm"
-            onPress={openExactAlarms}
-          />
-        )}
-        <Footnote>{t("notificationsFooter")}</Footnote>
+          {canOpenExactAlarms && (
+            <SettingsButton
+              label={t("exactAlarms")}
+              systemImage="alarm"
+              onPress={openExactAlarms}
+            />
+          )}
+          <Footnote>{t("notificationsFooter")}</Footnote>
 
-        <SectionLabel>{t("data")}</SectionLabel>
-        <SettingsButton
-          label={t("loadSampleData")}
-          systemImage="wand.and.stars"
-          onPress={loadSample}
-        />
-        {hasHabits && (
-          <TextButton onClick={deleteEverything}>
-            <Text color={String(colors.destructive)}>{t("deleteAllData")}</Text>
-          </TextButton>
-        )}
-        <Footnote>{t("dataFooter")}</Footnote>
+          <SectionLabel>{t("data")}</SectionLabel>
+          <SettingsButton
+            label={t("loadSampleData")}
+            systemImage="wand.and.stars"
+            onPress={loadSample}
+          />
+          {hasHabits && (
+            <TextButton onClick={deleteEverything}>
+              <Text color={String(colors.destructive)}>
+                {t("deleteAllData")}
+              </Text>
+            </TextButton>
+          )}
+          <Footnote>{t("dataFooter")}</Footnote>
 
-        <SectionLabel>{t("about")}</SectionLabel>
-        <SettingsButton
-          label={t("viewOnboarding")}
-          systemImage="sparkles"
-          onPress={viewOnboarding}
-        />
-        <SettingsLabel
-          label={t("habits")}
-          systemImage="list.bullet"
-          value={formatCount(habitCount, i18n.language)}
-        />
-        <SettingsLabel
-          label={t("checkIns")}
-          systemImage="checkmark.seal.fill"
-          value={formatCount(totalCheckIns, i18n.language)}
-        />
-        <SettingsLabel
-          label={t("version")}
-          systemImage="info.circle.fill"
-          value={version}
-        />
-      </LazyColumn>
-    </Host>
+          <SectionLabel>{t("about")}</SectionLabel>
+          <SettingsButton
+            label={t("viewOnboarding")}
+            systemImage="sparkles"
+            onPress={viewOnboarding}
+          />
+          <SettingsLabel
+            label={t("habits")}
+            systemImage="list.bullet"
+            value={formatCount(habitCount, i18n.language)}
+          />
+          <SettingsLabel
+            label={t("checkIns")}
+            systemImage="checkmark.seal.fill"
+            value={formatCount(totalCheckIns, i18n.language)}
+          />
+          <SettingsLabel
+            label={t("version")}
+            systemImage="info.circle.fill"
+            value={version}
+          />
+        </LazyColumn>
+      </Host>
+      {dialog}
+    </>
   );
 }

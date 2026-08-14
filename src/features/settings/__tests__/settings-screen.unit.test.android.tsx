@@ -20,7 +20,7 @@ import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 import { accent, success } from "@/theme";
 import { act, fireEvent } from "@testing-library/react-native";
 import * as Application from "expo-application";
-import { Alert, Linking, Platform } from "react-native";
+import { Linking, Platform } from "react-native";
 import type { TestInstance } from "test-renderer";
 
 /* Reminders are the store's business, and their own tests cover them. */
@@ -40,11 +40,24 @@ jest.mock("react-native-reanimated", () => {
   return { __esModule: true, ...actual, useReducedMotion: jest.fn(() => true) };
 });
 
+jest.mock("react-native-safe-area-context", () => {
+  const actual = jest.requireActual("react-native-safe-area-context");
+  return {
+    __esModule: true,
+    ...actual,
+    useSafeAreaInsets: jest.fn(() => ({ top: 0, bottom: 0, left: 0, right: 0 })),
+  };
+});
+
 jest.mock("expo-router", () =>
   /* eslint-disable-next-line @typescript-eslint/no-require-imports --
   a mock factory is hoisted above the imports and cannot close over one. */
   require("@/test-utils/expo-router").expoRouterMock(),
 );
+
+const { useSafeAreaInsets } = jest.requireMock<{
+  useSafeAreaInsets: jest.Mock;
+}>("react-native-safe-area-context");
 
 const notifications = jest.requireMock<{
   getNotificationPermission: jest.Mock;
@@ -161,6 +174,7 @@ async function renderSettings(permission: unknown = GRANTED) {
 }
 
 beforeEach(async () => {
+  useSafeAreaInsets.mockReturnValue({ top: 0, bottom: 0, left: 0, right: 0 });
   /* Pinned rather than inherited: a change to how the device is resolved must
   not rewrite what these cases assert. The preference is a stored row, so it
   outlives the case that wrote it unless it is cleared here. */
@@ -187,6 +201,17 @@ describe("the settings screen", () => {
       settings.data,
       settings.about,
     ]);
+  });
+
+  it("should end its content clear of the tab bar and the gesture inset", async () => {
+    useSafeAreaInsets.mockReturnValue({ top: 0, bottom: 24, left: 0, right: 0 });
+
+    const { container } = await renderSettings();
+    const list = nativeViews(container).find(
+      (node) => node.props.contentPadding !== undefined,
+    );
+
+    expect(list?.props.contentPadding).toMatchObject({ bottom: 80 + 24 });
   });
 
   it("should draw every section's rows", async () => {
@@ -330,17 +355,13 @@ describe("the settings screen", () => {
   });
 
   it("should offer to delete everything once there is something to delete", async () => {
-    const alert = jest.spyOn(Alert, "alert").mockImplementation(() => {});
     createHabit(input());
     const { container } = await renderSettings();
 
     await pressComposeButton(composeButton(container, settings.deleteAllData));
 
-    expect(alert).toHaveBeenCalledWith(
-      settings.deleteAllTitle,
-      settings.deleteAllBody,
-      expect.any(Array),
-    );
+    expect(nativeView(container, "text", settings.deleteAllTitle)).toBeTruthy();
+    expect(nativeView(container, "text", settings.deleteAllBody)).toBeTruthy();
     expect(getAppState().habits).toHaveLength(1);
   });
 });

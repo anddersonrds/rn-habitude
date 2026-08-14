@@ -5,6 +5,7 @@ registry to be the ones the hook actually calls.
 */
 import en from "@/i18n/locales/en";
 import type { HabitInput } from "@/lib/domain/types";
+import type { ConfirmRequest } from "@/lib/utils/confirmations";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 /*
@@ -60,21 +61,19 @@ type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/today/hooks/use-today-model");
 type HapticsModule = typeof import("@/lib/native/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
-type AlertButtons = { text: string; style?: string; onPress?: () => void }[];
 
 type Loaded = {
   store: StoreModule;
   useTodayModel: ModelModule["useTodayModel"];
   haptic: { [K in keyof HapticsModule["haptic"]]: jest.Mock };
   push: jest.Mock;
-  alert: jest.Mock;
+  confirm: jest.Mock;
   testingLibrary: TestingLibrary;
 };
 
 /** Loads the hook and every boundary it talks to into one fresh registry. */
 function load(language = "en"): Loaded {
   jest.resetModules();
-  const { Alert } = require("react-native") as typeof import("react-native");
   /* The hook translates, so the instance has to be the one in this registry,
   and its language pinned rather than inherited from how the device resolves. */
   const i18n = require("@/i18n/i18next") as typeof import("@/i18n/i18next");
@@ -85,7 +84,7 @@ function load(language = "en"): Loaded {
       .useTodayModel,
     haptic: require("@/lib/native/haptics").haptic,
     push: require("expo-router").router.push,
-    alert: jest.spyOn(Alert, "alert").mockImplementation(() => {}) as jest.Mock,
+    confirm: jest.fn() as jest.Mock,
     testingLibrary: require("@testing-library/react-native/pure"),
   };
 }
@@ -117,12 +116,15 @@ async function renderModel(
   await settle();
 
   const { act, renderHook } = loaded.testingLibrary;
-  const { result, unmount } = await renderHook(() => loaded.useTodayModel());
+  const { result, unmount } = await renderHook(() =>
+    loaded.useTodayModel(loaded.confirm),
+  );
   return { ...loaded, act, result, unmount };
 }
 
-function buttonsOf(alert: jest.Mock): AlertButtons {
-  return alert.mock.calls[alert.mock.calls.length - 1][2];
+/** The last confirmation the model asked for. */
+function askedBy(confirm: jest.Mock): ConfirmRequest {
+  return confirm.mock.calls[confirm.mock.calls.length - 1][0] as ConfirmRequest;
 }
 
 beforeEach(() => {
@@ -515,21 +517,19 @@ describe("going somewhere else", () => {
 
 describe("deleting a habit", () => {
   it("should ask before deleting anything", async () => {
-    const { act, alert, result, unmount } = await renderModel((store) => {
+    const { act, confirm, result, unmount } = await renderModel((store) => {
       store.createHabit(input({ name: "Walk outside" }));
     });
 
     await act(async () => result.current.confirmDelete(result.current.items[0].habit));
 
-    expect(alert).toHaveBeenCalledWith(
-      fill(common.deleteHabitTitle, { name: "Walk outside" }),
-      common.deleteHabitBody,
-      expect.any(Array),
-    );
-    expect(buttonsOf(alert).map((button) => button.text)).toEqual([
-      common.cancel,
-      common.delete,
-    ]);
+    expect(askedBy(confirm)).toMatchObject({
+      title: fill(common.deleteHabitTitle, { name: "Walk outside" }),
+      body: common.deleteHabitBody,
+      confirmLabel: common.delete,
+      cancelLabel: common.cancel,
+      destructive: true,
+    });
     await unmount();
   });
 
@@ -544,14 +544,11 @@ describe("deleting a habit", () => {
     await unmount();
   });
 
-  it("should keep the habit when the confirmation is cancelled", async () => {
-    const { act, alert, result, store, unmount } = await renderModel((store) => {
+  it("should keep the habit while the confirmation goes unanswered", async () => {
+    const { act, result, store, unmount } = await renderModel((store) => {
       store.createHabit(input({ name: "Walk outside" }));
     });
     await act(async () => result.current.confirmDelete(result.current.items[0].habit));
-
-    const cancel = buttonsOf(alert).find((button) => button.style === "cancel");
-    await act(async () => cancel?.onPress?.());
 
     expect(store.getAppState().habits.map((habit) => habit.name)).toEqual([
       "Walk outside",
@@ -561,15 +558,12 @@ describe("deleting a habit", () => {
   });
 
   it("should delete the habit once the confirmation is taken", async () => {
-    const { act, alert, result, store, unmount } = await renderModel((store) => {
+    const { act, confirm, result, store, unmount } = await renderModel((store) => {
       store.createHabit(input({ name: "Walk outside" }));
     });
     await act(async () => result.current.confirmDelete(result.current.items[0].habit));
 
-    const remove = buttonsOf(alert).find(
-      (button) => button.style === "destructive",
-    );
-    await act(async () => remove?.onPress?.());
+    await act(async () => askedBy(confirm).onConfirm?.());
 
     expect(store.getAppState().habits).toEqual([]);
     expect(result.current.items).toEqual([]);
