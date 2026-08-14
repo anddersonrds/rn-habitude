@@ -12,9 +12,14 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useColorScheme } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SettingsButton } from "./components/settings-button";
 import { SettingsLabel } from "./components/settings-label";
 import { useSettingsModel } from "./hooks/use-settings-model";
+
+/* Material 3's navigation bar height. The native tab bar draws over the
+content and exposes no measurement of itself, so the list leaves it clear. */
+const TAB_BAR_HEIGHT = 80;
 
 /* Compose has no `Section`, so its header is a label of our own. */
 function SectionLabel({ children }: { children: string }) {
@@ -51,6 +56,7 @@ export function SettingsScreen() {
   const { t, i18n } = useTranslation(["settings", "language"]);
   const colors = useSystemColors();
   const scheme = useColorScheme();
+  const { bottom: bottomInset } = useSafeAreaInsets();
   const [choosingLanguage, setChoosingLanguage] = useState(false);
   const { confirm, dialog } = useConfirm();
   const {
@@ -90,7 +96,12 @@ export function SettingsScreen() {
     <>
       <Host style={{ flex: 1 }} colorScheme={scheme} seedColor={accent}>
         <LazyColumn
-          contentPadding={{ start: 16, top: 12, end: 16, bottom: 24 }}
+          contentPadding={{
+            start: 16,
+            top: 12,
+            end: 16,
+            bottom: TAB_BAR_HEIGHT + bottomInset,
+          }}
           verticalArrangement={{ spacedBy: 8 }}
         >
           <SectionLabel>{t("language:title")}</SectionLabel>
