@@ -1,5 +1,6 @@
 /* First: the language is resolved at import, before any screen is evaluated. */
 import "@/i18n/i18next";
+import { habitFormPresentation } from "@/features/habit-form";
 import { useLanguageSwitch } from "@/i18n/switching";
 import { haptic } from "@/lib/native/haptics";
 import { useNotificationActions } from "@/lib/native/notification-actions";
@@ -86,11 +87,7 @@ function AppStack() {
       <Stack.Screen
         name="habit-form"
         options={{
-          headerShown: true,
-          presentation: "formSheet",
-          /* Fully expanded: the whole form is reachable without a drag. */
-          sheetAllowedDetents: [1],
-          sheetCornerRadius: 28,
+          ...habitFormPresentation,
           contentStyle: { backgroundColor: colors.groupedBackground },
         }}
       />
