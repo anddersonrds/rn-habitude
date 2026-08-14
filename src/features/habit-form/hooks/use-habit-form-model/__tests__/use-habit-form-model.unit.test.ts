@@ -5,6 +5,7 @@ come from that same registry to be the ones the hook actually calls.
 */
 import en from "@/i18n/locales/en";
 import type { HabitInput } from "@/lib/domain/types";
+import type { ConfirmRequest } from "@/lib/utils/confirmations";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 /*
@@ -68,7 +69,6 @@ type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/habit-form/hooks/use-habit-form-model");
 type HapticsModule = typeof import("@/lib/native/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
-type AlertButtons = { text: string; style?: string; onPress?: () => void }[];
 
 type Loaded = {
   store: StoreModule;
@@ -77,7 +77,7 @@ type Loaded = {
   router: { canGoBack: jest.Mock; back: jest.Mock; replace: jest.Mock };
   useLocalSearchParams: jest.Mock;
   ensurePermission: jest.Mock;
-  alert: jest.Mock;
+  confirm: jest.Mock;
   dismissKeyboard: jest.Mock;
   openSettings: jest.Mock;
   testingLibrary: TestingLibrary;
@@ -86,7 +86,7 @@ type Loaded = {
 /** Loads the hook and every boundary it talks to into one fresh registry. */
 function load(): Loaded {
   jest.resetModules();
-  const { Alert, Keyboard, Linking } =
+  const { Keyboard, Linking } =
     require("react-native") as typeof import("react-native");
   /* The hook translates, so the instance has to be the one in this registry,
   and its language pinned rather than inherited from how the device resolves. */
@@ -100,7 +100,7 @@ function load(): Loaded {
     router: require("expo-router").router,
     useLocalSearchParams: require("expo-router").useLocalSearchParams,
     ensurePermission: require("@/lib/native/notifications").ensureNotificationPermission,
-    alert: jest.spyOn(Alert, "alert").mockImplementation(() => {}) as jest.Mock,
+    confirm: jest.fn() as jest.Mock,
     dismissKeyboard: jest
       .spyOn(Keyboard, "dismiss")
       .mockImplementation(() => {}) as jest.Mock,
@@ -143,12 +143,15 @@ async function renderForm(
   await settle();
 
   const { act, renderHook } = loaded.testingLibrary;
-  const { result, unmount } = await renderHook(() => loaded.useHabitFormModel());
+  const { result, unmount } = await renderHook(() =>
+    loaded.useHabitFormModel(loaded.confirm),
+  );
   return { ...loaded, act, result, unmount, editing };
 }
 
-function buttonsOf(alert: jest.Mock): AlertButtons {
-  return alert.mock.calls[alert.mock.calls.length - 1][2];
+/** The last confirmation the model asked for. */
+function askedBy(confirm: jest.Mock): ConfirmRequest {
+  return confirm.mock.calls[confirm.mock.calls.length - 1][0] as ConfirmRequest;
 }
 
 function savedHabit(store: StoreModule) {
@@ -466,43 +469,38 @@ describe("turning the reminder on", () => {
   });
 
   it("should leave it off and offer the system settings when notifications are denied", async () => {
-    const { act, alert, ensurePermission, result, unmount } = await renderForm();
+    const { act, confirm, ensurePermission, result, unmount } = await renderForm();
     ensurePermission.mockResolvedValue(false);
 
     await act(async () => result.current.toggleReminder(true));
 
     expect(result.current.reminderOn).toBe(false);
-    expect(alert).toHaveBeenCalledWith(
-      habitForm.notificationsOffTitle,
-      "Allow notifications in the system settings to add a reminder.",
-      expect.any(Array),
-    );
+    expect(askedBy(confirm)).toMatchObject({
+      title: habitForm.notificationsOffTitle,
+      body: "Allow notifications in the system settings to add a reminder.",
+      confirmLabel: habitForm.openSettings,
+      cancelLabel: habitForm.notNow,
+    });
     await unmount();
   });
 
   it("should open the system settings when that is the answer taken", async () => {
-    const { act, alert, ensurePermission, openSettings, result, unmount } =
+    const { act, confirm, ensurePermission, openSettings, result, unmount } =
       await renderForm();
     ensurePermission.mockResolvedValue(false);
     await act(async () => result.current.toggleReminder(true));
 
-    const offer = buttonsOf(alert).find(
-      (button) => button.text === habitForm.openSettings,
-    );
-    await act(async () => offer?.onPress?.());
+    await act(async () => askedBy(confirm).onConfirm?.());
 
     expect(openSettings).toHaveBeenCalled();
     await unmount();
   });
 
-  it("should leave the reminder off when the offer is declined", async () => {
-    const { act, alert, ensurePermission, openSettings, result, unmount } =
+  it("should leave the reminder off while the offer goes unanswered", async () => {
+    const { act, ensurePermission, openSettings, result, unmount } =
       await renderForm();
     ensurePermission.mockResolvedValue(false);
     await act(async () => result.current.toggleReminder(true));
-
-    const notNow = buttonsOf(alert).find((button) => button.style === "cancel");
-    await act(async () => notNow?.onPress?.());
 
     expect(result.current.reminderOn).toBe(false);
     expect(openSettings).not.toHaveBeenCalled();
@@ -565,29 +563,26 @@ describe("choosing how often a habit runs", () => {
 
 describe("deleting the habit being edited", () => {
   it("should ask before deleting anything", async () => {
-    const { act, alert, haptic, result, unmount } = await renderForm((store) =>
+    const { act, confirm, haptic, result, unmount } = await renderForm((store) =>
       store.createHabit(input({ name: "Read" })),
     );
 
     await act(async () => result.current.confirmDelete());
 
-    expect(alert).toHaveBeenCalledWith(
-      fill(common.deleteHabitTitle, { name: "Read" }),
-      common.deleteHabitBody,
-      expect.any(Array),
-    );
+    expect(askedBy(confirm)).toMatchObject({
+      title: fill(common.deleteHabitTitle, { name: "Read" }),
+      body: common.deleteHabitBody,
+      destructive: true,
+    });
     expect(haptic.warning).toHaveBeenCalledTimes(1);
     await unmount();
   });
 
-  it("should keep the habit when the confirmation is cancelled", async () => {
-    const { act, alert, result, router, store, unmount } = await renderForm(
-      (store) => store.createHabit(input({ name: "Read" })),
+  it("should keep the habit while the confirmation goes unanswered", async () => {
+    const { act, result, router, store, unmount } = await renderForm((store) =>
+      store.createHabit(input({ name: "Read" })),
     );
     await act(async () => result.current.confirmDelete());
-
-    const cancel = buttonsOf(alert).find((button) => button.style === "cancel");
-    await act(async () => cancel?.onPress?.());
 
     expect(store.getAppState().habits).toHaveLength(1);
     expect(router.back).not.toHaveBeenCalled();
@@ -595,15 +590,12 @@ describe("deleting the habit being edited", () => {
   });
 
   it("should delete the habit and leave the form once the confirmation is taken", async () => {
-    const { act, alert, result, router, store, unmount } = await renderForm(
+    const { act, confirm, result, router, store, unmount } = await renderForm(
       (store) => store.createHabit(input({ name: "Read" })),
     );
     await act(async () => result.current.confirmDelete());
 
-    const remove = buttonsOf(alert).find(
-      (button) => button.style === "destructive",
-    );
-    await act(async () => remove?.onPress?.());
+    await act(async () => askedBy(confirm).onConfirm?.());
     await settle();
 
     expect(store.getAppState().habits).toEqual([]);
@@ -612,11 +604,11 @@ describe("deleting the habit being edited", () => {
   });
 
   it("should offer nothing to delete on a habit that does not exist yet", async () => {
-    const { act, alert, result, unmount } = await renderForm();
+    const { act, confirm, result, unmount } = await renderForm();
 
     await act(async () => result.current.confirmDelete());
 
-    expect(alert).not.toHaveBeenCalled();
+    expect(confirm).not.toHaveBeenCalled();
     await unmount();
   });
 });

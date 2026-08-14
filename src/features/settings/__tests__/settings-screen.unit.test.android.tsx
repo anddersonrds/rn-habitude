@@ -20,7 +20,7 @@ import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 import { accent, success } from "@/theme";
 import { act, fireEvent } from "@testing-library/react-native";
 import * as Application from "expo-application";
-import { Alert, Linking, Platform } from "react-native";
+import { Linking, Platform } from "react-native";
 import type { TestInstance } from "test-renderer";
 
 /* Reminders are the store's business, and their own tests cover them. */
@@ -330,17 +330,13 @@ describe("the settings screen", () => {
   });
 
   it("should offer to delete everything once there is something to delete", async () => {
-    const alert = jest.spyOn(Alert, "alert").mockImplementation(() => {});
     createHabit(input());
     const { container } = await renderSettings();
 
     await pressComposeButton(composeButton(container, settings.deleteAllData));
 
-    expect(alert).toHaveBeenCalledWith(
-      settings.deleteAllTitle,
-      settings.deleteAllBody,
-      expect.any(Array),
-    );
+    expect(nativeView(container, "text", settings.deleteAllTitle)).toBeTruthy();
+    expect(nativeView(container, "text", settings.deleteAllBody)).toBeTruthy();
     expect(getAppState().habits).toHaveLength(1);
   });
 });

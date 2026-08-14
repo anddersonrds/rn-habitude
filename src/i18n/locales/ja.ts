@@ -10,6 +10,7 @@ const ja: Locale = {
   weekStart: 0,
   translations: {
     common: {
+      ok: "OK",
       cancel: "キャンセル",
       delete: "削除",
       edit: "編集",

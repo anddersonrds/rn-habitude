@@ -7,6 +7,7 @@ const ptBR: Locale = {
   weekStart: 0,
   translations: {
     common: {
+      ok: "OK",
       cancel: "Cancelar",
       delete: "Apagar",
       edit: "Editar",

@@ -1,2 +1,2 @@
 export { useConfirm } from "./confirm-dialog";
-export type { Confirmation, ConfirmRequest } from "./types";
+export type { Confirmation } from "./types";

@@ -7,6 +7,7 @@ const es: Locale = {
   weekStart: 1,
   translations: {
     common: {
+      ok: "OK",
       cancel: "Cancelar",
       delete: "Eliminar",
       edit: "Editar",

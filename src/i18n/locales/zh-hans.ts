@@ -12,6 +12,7 @@ const zhHans: Locale = {
   weekStart: 1,
   translations: {
     common: {
+      ok: "确定",
       cancel: "取消",
       delete: "删除",
       edit: "编辑",

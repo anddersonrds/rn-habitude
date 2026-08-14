@@ -1,7 +1,7 @@
-import { confirmDeleteHabit } from "@/lib/native/alerts";
 import { todayKey } from "@/lib/utils/dates";
 import { scheduleLabel } from "@/lib/domain/habits";
 import { haptic } from "@/lib/native/haptics";
+import { deleteHabitRequest, type Confirm } from "@/lib/utils/confirmations";
 import { routes } from "@/lib/utils/routes";
 import { deleteHabit, reorderHabits, useAppState } from "@/lib/data/store";
 import { computeStreaks, trailingDayStates } from "@/lib/domain/streaks";
@@ -18,7 +18,7 @@ export const STRIP_DAYS = 21;
  * View model for the habits list: the rows, the totals above them, and every
  * action the list can take, so the SwiftUI view stays a thin render layer.
  */
-export function useHabitsModel() {
+export function useHabitsModel(confirm: Confirm) {
   const { t } = useTranslation("habits");
   const { t: tCommon } = useTranslation("common");
   const { t: tSchedule } = useTranslation("schedule");
@@ -51,7 +51,7 @@ export function useHabitsModel() {
 
   const confirmDelete = (habit: Habit) => {
     haptic.warning();
-    confirmDeleteHabit(habit.name, tCommon, () => deleteHabit(habit.id));
+    confirm(deleteHabitRequest(habit.name, tCommon, () => deleteHabit(habit.id)));
   };
 
   const toggleReordering = () => {

@@ -5,7 +5,6 @@ import {
   setLanguage,
 } from "@/i18n/i18next";
 import { switchLanguage } from "@/i18n/switching";
-import { alertNotificationsOff } from "@/lib/native/alerts";
 import {
   needsExactAlarmAccess,
   openExactAlarmSettings,
@@ -22,13 +21,14 @@ import {
   resetOnboarding,
   useAppState,
 } from "@/lib/data/store";
+import type { Confirm } from "@/lib/utils/confirmations";
 import * as Application from "expo-application";
 import Constants from "expo-constants";
 import type * as Notifications from "expo-notifications";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, AppState, Linking } from "react-native";
+import { AppState, Linking } from "react-native";
 import { useReducedMotion } from "react-native-reanimated";
 
 /**
@@ -46,7 +46,7 @@ const version =
  * every flow behind a confirmation, so the SwiftUI view stays a thin render
  * layer.
  */
-export function useSettingsModel() {
+export function useSettingsModel(confirm: Confirm) {
   const { t } = useTranslation(["settings", "common", "language"]);
   const { t: tSampleData } = useTranslation("sampleData");
   const reduceMotion = !!useReducedMotion();
@@ -126,17 +126,22 @@ export function useSettingsModel() {
     const granted = await ensureNotificationPermission();
     refreshPermission();
     if (!granted) {
-      alertNotificationsOff({
+      confirm({
         title: t("notificationsOffTitle"),
         body: t("notificationsOffBody"),
-        dismiss: t("common:cancel"),
-        openSettings: t("openSettings"),
+        confirmLabel: t("openSettings"),
+        cancelLabel: t("common:cancel"),
+        onConfirm: openSystemSettings,
       });
       return;
     }
     await sendTestNotification();
     haptic.impact();
-    Alert.alert(t("testSentTitle"), t("testSentBody"));
+    confirm({
+      title: t("testSentTitle"),
+      body: t("testSentBody"),
+      confirmLabel: t("common:ok"),
+    });
   };
 
   const loadSample = () => {
@@ -149,22 +154,25 @@ export function useSettingsModel() {
       run();
       return;
     }
-    Alert.alert(t("loadSampleTitle"), t("loadSampleBody"), [
-      { text: t("common:cancel"), style: "cancel" },
-      { text: t("load"), onPress: run },
-    ]);
+    confirm({
+      title: t("loadSampleTitle"),
+      body: t("loadSampleBody"),
+      confirmLabel: t("load"),
+      cancelLabel: t("common:cancel"),
+      onConfirm: run,
+    });
   };
 
   const deleteEverything = () => {
     haptic.warning();
-    Alert.alert(t("deleteAllTitle"), t("deleteAllBody"), [
-      { text: t("common:cancel"), style: "cancel" },
-      {
-        text: t("deleteEverything"),
-        style: "destructive",
-        onPress: () => void deleteAllData(),
-      },
-    ]);
+    confirm({
+      title: t("deleteAllTitle"),
+      body: t("deleteAllBody"),
+      confirmLabel: t("deleteEverything"),
+      cancelLabel: t("common:cancel"),
+      destructive: true,
+      onConfirm: () => void deleteAllData(),
+    });
   };
 
   const viewOnboarding = () => {

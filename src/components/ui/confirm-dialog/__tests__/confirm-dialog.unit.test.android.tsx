@@ -1,5 +1,5 @@
 import { useConfirm } from "@/components/ui/confirm-dialog";
-import type { ConfirmRequest } from "@/components/ui/confirm-dialog";
+import type { ConfirmRequest } from "@/lib/utils/confirmations";
 import { pressComposeButton } from "@/test-utils/native-events";
 import { composeButton, nativeView, nativeViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
@@ -119,6 +119,13 @@ describe("useConfirm", () => {
       titleContentColor: colors.destructive,
     });
     await waitFor(() => expect(iconViews(container)).toHaveLength(1));
+  });
+
+  it("should offer one answer when there is nothing to decide", async () => {
+    const { container } = await ask({ cancelLabel: undefined, confirmLabel: "OK" });
+
+    expect(composeButton(container, "OK")).toBeTruthy();
+    expect(() => composeButton(container, "Cancel")).toThrow();
   });
 
   it("should leave a plain confirmation unmarked", async () => {

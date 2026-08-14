@@ -1,4 +1,5 @@
 import { AppSymbol } from "@/components/ui/app-symbol";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import { Text } from "@/components/ui/text";
 import { HABIT_ICONS, WEEKDAY_KEYS } from "@/constants/habit-options";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
@@ -53,6 +54,7 @@ export function HabitFormScreen() {
   const { t } = useTranslation(["habitForm", "common"]);
   const { t: tSchedule } = useTranslation("schedule");
   const { rows: colorRows, gap: colorGap } = useColorGrid();
+  const { confirm, dialog } = useConfirm();
   const {
     isEditing,
     name,
@@ -74,7 +76,7 @@ export function HabitFormScreen() {
     save,
     cancel,
     confirmDelete,
-  } = useHabitFormModel();
+  } = useHabitFormModel(confirm);
 
   /**
    * The one control this milestone downgrades: Compose has no date picker worth
@@ -368,6 +370,7 @@ export function HabitFormScreen() {
           )}
         </KeyboardAwareScrollView>
       </View>
+      {dialog}
     </>
   );
 }

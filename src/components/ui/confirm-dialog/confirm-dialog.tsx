@@ -1,6 +1,7 @@
+import type { ConfirmRequest } from "@/lib/utils/confirmations";
 import { useCallback } from "react";
 import { Alert } from "react-native";
-import type { Confirmation, ConfirmRequest } from "./types";
+import type { Confirmation } from "./types";
 
 /**
  * The native control here is `Alert.alert`, which is a call and not a view, so
@@ -9,14 +10,19 @@ import type { Confirmation, ConfirmRequest } from "./types";
  */
 export function useConfirm(): Confirmation {
   const confirm = useCallback((request: ConfirmRequest) => {
-    Alert.alert(request.title, request.body, [
-      { text: request.cancelLabel, style: "cancel" },
-      {
-        text: request.confirmLabel,
-        style: request.destructive ? "destructive" : "default",
-        onPress: request.onConfirm,
-      },
-    ]);
+    const answer = {
+      text: request.confirmLabel,
+      style: request.destructive ? ("destructive" as const) : ("default" as const),
+      onPress: request.onConfirm,
+    };
+
+    Alert.alert(
+      request.title,
+      request.body,
+      request.cancelLabel
+        ? [{ text: request.cancelLabel, style: "cancel" }, answer]
+        : [answer],
+    );
   }, []);
 
   return { confirm, dialog: null };

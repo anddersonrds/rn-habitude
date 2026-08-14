@@ -1,5 +1,5 @@
 import { useConfirm } from "@/components/ui/confirm-dialog";
-import type { ConfirmRequest } from "@/components/ui/confirm-dialog";
+import type { ConfirmRequest } from "@/lib/utils/confirmations";
 import { renderWithProviders } from "@/test-utils/render";
 import { fireEvent, renderHook, screen } from "@testing-library/react-native";
 import { Alert, Pressable } from "react-native";
@@ -93,6 +93,12 @@ describe("useConfirm", () => {
     buttonsOf(alert)[1].onPress?.();
 
     expect(onConfirm).toHaveBeenCalledTimes(1);
+  });
+
+  it("should offer one answer when there is nothing to decide", async () => {
+    const { alert } = await ask({ cancelLabel: undefined, confirmLabel: "OK" });
+
+    expect(buttonsOf(alert).map((button) => button.text)).toEqual(["OK"]);
   });
 
   it("should return no element, so a call site reads the same on both platforms", async () => {

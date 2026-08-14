@@ -1,9 +1,10 @@
 import { ComposeSymbol } from "@/components/ui/compose-symbol";
+import type { ConfirmRequest } from "@/lib/utils/confirmations";
 import { accent, colors } from "@/theme";
 import { AlertDialog, Host, Text, TextButton } from "@expo/ui/jetpack-compose";
 import { useCallback, useState } from "react";
 import { useColorScheme } from "react-native";
-import type { Confirmation, ConfirmRequest } from "./types";
+import type { Confirmation } from "./types";
 
 /* What marks a destructive action, since Material 3 has no destructive button. */
 const WARNING = "exclamationmark.triangle.fill";
@@ -25,7 +26,7 @@ export function useConfirm(): Confirmation {
 
   const answer = () => {
     setAsked(null);
-    asked?.onConfirm();
+    asked?.onConfirm?.();
   };
 
   const destructive = asked?.destructive === true;
@@ -61,11 +62,13 @@ export function useConfirm(): Confirmation {
             </Text>
           </TextButton>
         </AlertDialog.ConfirmButton>
-        <AlertDialog.DismissButton>
-          <TextButton onClick={dismiss}>
-            <Text>{asked.cancelLabel}</Text>
-          </TextButton>
-        </AlertDialog.DismissButton>
+        {asked.cancelLabel != null && (
+          <AlertDialog.DismissButton>
+            <TextButton onClick={dismiss}>
+              <Text>{asked.cancelLabel}</Text>
+            </TextButton>
+          </AlertDialog.DismissButton>
+        )}
       </AlertDialog>
     </Host>
   ) : null;

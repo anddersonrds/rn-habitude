@@ -1,3 +1,4 @@
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import { EmptyState } from "@/components/empty-state";
 import { formatCount } from "@/lib/utils/numbers";
 import { listChange, tints } from "@/theme";
@@ -34,6 +35,7 @@ const EDIT_ANIMATION = Animation.spring({ duration: 0.35, bounce: 0.06 });
  */
 export function HabitsScreen() {
   const { t, i18n } = useTranslation(["habits", "common"]);
+  const { confirm, dialog } = useConfirm();
   const {
     rows,
     hasHabits,
@@ -48,7 +50,7 @@ export function HabitsScreen() {
     editHabit,
     confirmDelete,
     move,
-  } = useHabitsModel();
+  } = useHabitsModel(confirm);
   const neutral = useColorScheme() === "dark" ? tints.white : tints.black;
 
   if (!hasHabits) {
@@ -180,6 +182,7 @@ export function HabitsScreen() {
           </Section>
         </List>
       </Host>
+      {dialog}
     </>
   );
 }

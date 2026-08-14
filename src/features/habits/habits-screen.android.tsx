@@ -1,5 +1,6 @@
 import { EmptyState } from "@/components/empty-state";
 import { AppSymbol } from "@/components/ui/app-symbol";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import { Text } from "@/components/ui/text";
 import { formatCount } from "@/lib/utils/numbers";
 import { accent, tints } from "@/theme";
@@ -21,6 +22,7 @@ import { styles } from "./styles";
  */
 export function HabitsScreen() {
   const { t, i18n } = useTranslation(["habits", "common"]);
+  const { confirm, dialog } = useConfirm();
   const {
     rows,
     hasHabits,
@@ -35,7 +37,7 @@ export function HabitsScreen() {
     editHabit,
     confirmDelete,
     move,
-  } = useHabitsModel();
+  } = useHabitsModel(confirm);
   const neutral = useColorScheme() === "dark" ? tints.white : tints.black;
   const dragIndex = useSharedValue(-1);
   const dragY = useSharedValue(0);
@@ -158,6 +160,7 @@ export function HabitsScreen() {
           </Text>
         </ScrollView>
       )}
+      {dialog}
     </>
   );
 }

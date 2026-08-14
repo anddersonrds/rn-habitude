@@ -10,6 +10,7 @@ const ko: Locale = {
   weekStart: 0,
   translations: {
     common: {
+      ok: "확인",
       cancel: "취소",
       delete: "삭제",
       edit: "편집",

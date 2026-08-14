@@ -5,6 +5,7 @@ from that same registry to be the ones the hook actually calls.
 */
 import en from "@/i18n/locales/en";
 import type { HabitInput } from "@/lib/domain/types";
+import type { ConfirmRequest } from "@/lib/utils/confirmations";
 import { resetDatabase } from "@/test-utils/sqlite";
 import { freezeClock, restoreClock, stableIds } from "@/test-utils/time";
 /*
@@ -108,6 +109,7 @@ type Permission = {
 };
 
 const settings = en.translations.settings;
+const common = en.translations.common;
 
 const GRANTED: Permission = { granted: true, canAskAgain: false };
 const NOT_ASKED: Permission = { granted: false, canAskAgain: true };
@@ -117,7 +119,6 @@ type StoreModule = typeof import("@/lib/data/store");
 type ModelModule = typeof import("@/features/settings/hooks/use-settings-model");
 type HapticsModule = typeof import("@/lib/native/haptics");
 type TestingLibrary = typeof import("@testing-library/react-native/pure");
-type AlertButtons = { text: string; style?: string; onPress?: () => void }[];
 
 type Loaded = {
   store: StoreModule;
@@ -130,7 +131,7 @@ type Loaded = {
   ensurePermission: jest.Mock;
   sendTestNotification: jest.Mock;
   exactAlarms: typeof mockExactAlarms;
-  alert: jest.Mock;
+  confirm: jest.Mock;
   openSettings: jest.Mock;
   testingLibrary: TestingLibrary;
 };
@@ -138,7 +139,7 @@ type Loaded = {
 /** Loads the hook and every boundary it talks to into one fresh registry. */
 function load(): Loaded {
   jest.resetModules();
-  const { Alert, Linking } =
+  const { Linking } =
     require("react-native") as typeof import("react-native");
   const notifications = require("@/lib/native/notifications");
   /*
@@ -160,7 +161,7 @@ function load(): Loaded {
     ensurePermission: notifications.ensureNotificationPermission,
     sendTestNotification: notifications.sendTestNotification,
     exactAlarms: mockExactAlarms,
-    alert: jest.spyOn(Alert, "alert").mockImplementation(() => {}) as jest.Mock,
+    confirm: jest.fn() as jest.Mock,
     openSettings: jest
       .spyOn(Linking, "openSettings")
       .mockImplementation(async () => {}) as jest.Mock,
@@ -196,14 +197,15 @@ async function renderModel(
   await settle();
 
   const { act, renderHook } = loaded.testingLibrary;
-  const rendered = await renderHook(() => loaded.useSettingsModel());
+  const rendered = await renderHook(() => loaded.useSettingsModel(loaded.confirm));
   /* The permission is read asynchronously, so let the first read land. */
   await act(async () => settle());
   return { ...loaded, act, ...rendered };
 }
 
-function buttonsOf(alert: jest.Mock): AlertButtons {
-  return alert.mock.calls[alert.mock.calls.length - 1][2];
+/** The last confirmation the model asked for. */
+function askedBy(confirm: jest.Mock): ConfirmRequest {
+  return confirm.mock.calls[confirm.mock.calls.length - 1][0] as ConfirmRequest;
 }
 
 beforeEach(() => {
@@ -226,7 +228,7 @@ describe("what the screen says about notifications", () => {
     loaded.getPermission.mockReturnValue(new Promise(() => {}));
 
     const { result, unmount } = await loaded.testingLibrary.renderHook(() =>
-      loaded.useSettingsModel(),
+      loaded.useSettingsModel(loaded.confirm),
     );
 
     expect(result.current).toMatchObject({
@@ -349,59 +351,57 @@ describe("asking for permission", () => {
 
 describe("sending a test notification", () => {
   it("should send one and say so", async () => {
-    const { act, alert, haptic, result, sendTestNotification, unmount } =
+    const { act, confirm, haptic, result, sendTestNotification, unmount } =
       await renderModel(GRANTED);
 
     await act(async () => result.current.sendTest());
 
     expect(sendTestNotification).toHaveBeenCalledTimes(1);
     expect(haptic.impact).toHaveBeenCalledTimes(1);
-    expect(alert).toHaveBeenCalledWith(
-      settings.testSentTitle,
-      settings.testSentBody,
-    );
+    expect(askedBy(confirm)).toMatchObject({
+      title: settings.testSentTitle,
+      body: settings.testSentBody,
+      confirmLabel: common.ok,
+    });
+    /* Nothing to decide, so the message offers no second answer. */
+    expect(askedBy(confirm).cancelLabel).toBeUndefined();
     await unmount();
   });
 
   it("should send nothing while notifications are off", async () => {
-    const { act, alert, ensurePermission, result, sendTestNotification, unmount } =
+    const { act, confirm, ensurePermission, result, sendTestNotification, unmount } =
       await renderModel(DENIED);
     ensurePermission.mockResolvedValue(false);
 
     await act(async () => result.current.sendTest());
 
     expect(sendTestNotification).not.toHaveBeenCalled();
-    expect(alert).toHaveBeenCalledWith(
-      settings.notificationsOffTitle,
-      settings.notificationsOffBody,
-      expect.any(Array),
-    );
+    expect(askedBy(confirm)).toMatchObject({
+      title: settings.notificationsOffTitle,
+      body: settings.notificationsOffBody,
+      confirmLabel: settings.openSettings,
+      cancelLabel: common.cancel,
+    });
     await unmount();
   });
 
   it("should offer the system settings when it could not send", async () => {
-    const { act, alert, ensurePermission, openSettings, result, unmount } =
+    const { act, confirm, ensurePermission, openSettings, result, unmount } =
       await renderModel(DENIED);
     ensurePermission.mockResolvedValue(false);
     await act(async () => result.current.sendTest());
 
-    const offer = buttonsOf(alert).find(
-      (button) => button.text === settings.openSettings,
-    );
-    await act(async () => offer?.onPress?.());
+    await act(async () => askedBy(confirm).onConfirm?.());
 
     expect(openSettings).toHaveBeenCalled();
     await unmount();
   });
 
-  it("should do nothing more when that offer is declined", async () => {
-    const { act, alert, ensurePermission, openSettings, result, unmount } =
+  it("should do nothing more while that offer goes unanswered", async () => {
+    const { act, ensurePermission, openSettings, result, unmount } =
       await renderModel(DENIED);
     ensurePermission.mockResolvedValue(false);
     await act(async () => result.current.sendTest());
-
-    const cancel = buttonsOf(alert).find((button) => button.style === "cancel");
-    await act(async () => cancel?.onPress?.());
 
     expect(openSettings).not.toHaveBeenCalled();
     await unmount();
@@ -410,20 +410,20 @@ describe("sending a test notification", () => {
 
 describe("loading the sample data", () => {
   it("should load it without asking when there is nothing to lose", async () => {
-    const { act, alert, haptic, result, store, unmount } =
+    const { act, confirm, haptic, result, store, unmount } =
       await renderModel(GRANTED);
 
     await act(async () => result.current.loadSample());
     await settle();
 
-    expect(alert).not.toHaveBeenCalled();
+    expect(confirm).not.toHaveBeenCalled();
     expect(store.getAppState().habits.length).toBeGreaterThan(0);
     expect(haptic.success).toHaveBeenCalledTimes(1);
     await unmount();
   });
 
   it("should ask before adding to habits that already exist", async () => {
-    const { act, alert, result, store, unmount } = await renderModel(
+    const { act, confirm, result, store, unmount } = await renderModel(
       GRANTED,
       (store) => {
         store.createHabit(input({ name: "Walk outside" }));
@@ -432,26 +432,21 @@ describe("loading the sample data", () => {
 
     await act(async () => result.current.loadSample());
 
-    expect(alert).toHaveBeenCalledWith(
-      settings.loadSampleTitle,
-      settings.loadSampleBody,
-      expect.any(Array),
-    );
+    expect(askedBy(confirm)).toMatchObject({
+      title: settings.loadSampleTitle,
+      body: settings.loadSampleBody,
+      confirmLabel: settings.load,
+      cancelLabel: common.cancel,
+    });
     expect(store.getAppState().habits).toHaveLength(1);
     await unmount();
   });
 
-  it("should keep the habits as they are when the confirmation is cancelled", async () => {
-    const { act, alert, result, store, unmount } = await renderModel(
-      GRANTED,
-      (store) => {
-        store.createHabit(input({ name: "Walk outside" }));
-      },
-    );
+  it("should keep the habits as they are while the confirmation goes unanswered", async () => {
+    const { act, result, store, unmount } = await renderModel(GRANTED, (store) => {
+      store.createHabit(input({ name: "Walk outside" }));
+    });
     await act(async () => result.current.loadSample());
-
-    const cancel = buttonsOf(alert).find((button) => button.style === "cancel");
-    await act(async () => cancel?.onPress?.());
     await settle();
 
     expect(store.getAppState().habits.map((habit) => habit.name)).toEqual([
@@ -461,7 +456,7 @@ describe("loading the sample data", () => {
   });
 
   it("should keep the habits that were there once the confirmation is taken", async () => {
-    const { act, alert, result, store, unmount } = await renderModel(
+    const { act, confirm, result, store, unmount } = await renderModel(
       GRANTED,
       (store) => {
         store.createHabit(input({ name: "Walk outside" }));
@@ -469,8 +464,7 @@ describe("loading the sample data", () => {
     );
     await act(async () => result.current.loadSample());
 
-    const load = buttonsOf(alert).find((button) => button.text === settings.load);
-    await act(async () => load?.onPress?.());
+    await act(async () => askedBy(confirm).onConfirm?.());
     await settle();
 
     const names = store.getAppState().habits.map((habit) => habit.name);
@@ -482,7 +476,7 @@ describe("loading the sample data", () => {
 
 describe("deleting everything", () => {
   it("should ask before deleting anything", async () => {
-    const { act, alert, haptic, result, unmount } = await renderModel(
+    const { act, confirm, haptic, result, unmount } = await renderModel(
       GRANTED,
       (store) => {
         store.createHabit(input());
@@ -491,17 +485,19 @@ describe("deleting everything", () => {
 
     await act(async () => result.current.deleteEverything());
 
-    expect(alert).toHaveBeenCalledWith(
-      settings.deleteAllTitle,
-      settings.deleteAllBody,
-      expect.any(Array),
-    );
+    expect(askedBy(confirm)).toMatchObject({
+      title: settings.deleteAllTitle,
+      body: settings.deleteAllBody,
+      confirmLabel: settings.deleteEverything,
+      cancelLabel: common.cancel,
+      destructive: true,
+    });
     expect(haptic.warning).toHaveBeenCalledTimes(1);
     await unmount();
   });
 
-  it("should keep everything when the confirmation is cancelled", async () => {
-    const { act, alert, result, store, unmount } = await renderModel(
+  it("should keep everything while the confirmation goes unanswered", async () => {
+    const { act, result, store, unmount } = await renderModel(
       GRANTED,
       (store) => {
         const habit = store.createHabit(input({ name: "Walk outside" }));
@@ -509,9 +505,6 @@ describe("deleting everything", () => {
       },
     );
     await act(async () => result.current.deleteEverything());
-
-    const cancel = buttonsOf(alert).find((button) => button.style === "cancel");
-    await act(async () => cancel?.onPress?.());
     await settle();
 
     expect(store.getAppState().habits).toHaveLength(1);
@@ -520,7 +513,7 @@ describe("deleting everything", () => {
   });
 
   it("should delete every habit and its history once the confirmation is taken", async () => {
-    const { act, alert, result, store, unmount } = await renderModel(
+    const { act, confirm, result, store, unmount } = await renderModel(
       GRANTED,
       (store) => {
         const habit = store.createHabit(input());
@@ -529,10 +522,7 @@ describe("deleting everything", () => {
     );
     await act(async () => result.current.deleteEverything());
 
-    const remove = buttonsOf(alert).find(
-      (button) => button.style === "destructive",
-    );
-    await act(async () => remove?.onPress?.());
+    await act(async () => askedBy(confirm).onConfirm?.());
     await settle();
 
     expect(store.getAppState().habits).toEqual([]);
@@ -649,7 +639,7 @@ describe("choosing a language", () => {
     loaded.i18n.setLanguage("pt-BR");
 
     const { result, unmount } = await loaded.testingLibrary.renderHook(() =>
-      loaded.useSettingsModel(),
+      loaded.useSettingsModel(loaded.confirm),
     );
 
     expect(result.current.language).toBe("pt-BR");
@@ -690,7 +680,7 @@ describe("the fade a language change rides on", () => {
 
     const { act, renderHook } = loaded.testingLibrary;
     const rendered = await renderHook(() => ({
-      model: loaded.useSettingsModel(),
+      model: loaded.useSettingsModel(loaded.confirm),
       fade: loaded.switching.useLanguageSwitch(),
     }));
     return { ...loaded, act, ...rendered };
