@@ -1,6 +1,4 @@
 import { Color } from "expo-router";
-import { useColorScheme, type ColorSchemeName } from "react-native";
-import { accent } from "./accent";
 import { materialPalette } from "./material-palette";
 import type { SystemPalette } from "./types";
 
@@ -25,21 +23,20 @@ const iosPalette: SystemPalette = {
   destructive: Color.ios.systemRed,
 };
 
-function resolve(scheme: ColorSchemeName): SystemPalette {
-  return materialPalette(scheme, accent) ?? iosPalette;
-}
+/**
+ * The palette a `StyleSheet` is built from. Neither half carries a value: the
+ * iOS entries are semantic references and the Android ones name a theme
+ * attribute, so both are resolved by the system rather than by this module, and
+ * neither is tied to the appearance that was current when it was imported.
+ */
+export const colors: SystemPalette = materialPalette() ?? iosPalette;
 
 /**
- * The palette a `StyleSheet` is built from, resolved once at module scope. The
- * iOS values are references that follow the appearance on their own; a Material
- * palette is concrete values, and this one is the light appearance. Anything that
- * has to follow a change reads `useSystemColors()`.
+ * Kept as the seam a screen asks the palette through, though it no longer has
+ * an appearance to read: nothing here resolves in JavaScript any more.
  */
-export const colors: SystemPalette = resolve("light");
-
-/** The scheme goes through the resolver, so React Compiler sees the dependency. */
 export function useSystemColors(): SystemPalette {
-  return resolve(useColorScheme());
+  return colors;
 }
 
 /**
