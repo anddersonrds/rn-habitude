@@ -1,5 +1,4 @@
 import { ComposeSymbol } from "@/components/ui/compose-symbol";
-import { useSystemColors } from "@/theme";
 import {
   Box,
   Card,
@@ -7,6 +6,7 @@ import {
   Row,
   Text,
   TextButton,
+  useMaterialColors,
 } from "@expo/ui/jetpack-compose";
 import {
   alpha,
@@ -35,7 +35,7 @@ export function HabitRow({
   onDelete,
 }: Props) {
   const { t } = useTranslation(["today", "common"]);
-  const colors = useSystemColors();
+  const material = useMaterialColors();
   const [showingActions, setShowingActions] = useState(false);
   const { habit, done, subtitle } = item;
 
@@ -85,7 +85,7 @@ export function HabitRow({
             {subtitle !== null && (
               <Text
                 style={{ typography: "bodySmall" }}
-                color={String(colors.secondaryText)}
+                color={material.onSurfaceVariant}
               >
                 {subtitle}
               </Text>
@@ -95,7 +95,7 @@ export function HabitRow({
           <ComposeSymbol
             name={done ? "checkmark.circle.fill" : "circle"}
             size={26}
-            color={done ? habit.color : colors.mutedText}
+            color={done ? habit.color : material.outline}
           />
         </Row>
 
@@ -108,7 +108,7 @@ export function HabitRow({
               <Text>{t("history")}</Text>
             </TextButton>
             <TextButton onClick={onDelete}>
-              <Text color={String(colors.destructive)}>{t("common:delete")}</Text>
+              <Text color={material.error}>{t("common:delete")}</Text>
             </TextButton>
           </Row>
         )}

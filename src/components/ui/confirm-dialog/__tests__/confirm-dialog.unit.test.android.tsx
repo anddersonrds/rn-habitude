@@ -3,7 +3,7 @@ import type { ConfirmRequest } from "@/lib/utils/confirmations";
 import { pressComposeButton } from "@/test-utils/native-events";
 import { composeButton, nativeView, nativeViews } from "@/test-utils/native-views";
 import { renderWithProviders } from "@/test-utils/render";
-import { colors } from "@/theme";
+import { getMaterialColors } from "@expo/ui/jetpack-compose";
 import { fireEvent, screen, waitFor } from "@testing-library/react-native";
 import { Pressable } from "react-native";
 import type { TestInstance } from "test-renderer";
@@ -117,9 +117,11 @@ describe("useConfirm", () => {
   it("should mark a destructive action with the error colour and an icon", async () => {
     const { container } = await ask({ destructive: true });
 
+    const { error } = getMaterialColors();
+
     expect(dialogView(container).props.colors).toMatchObject({
-      iconContentColor: colors.destructive,
-      titleContentColor: colors.destructive,
+      iconContentColor: error,
+      titleContentColor: error,
     });
     await waitFor(() => expect(iconViews(container)).toHaveLength(1));
   });

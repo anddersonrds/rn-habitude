@@ -1,16 +1,74 @@
 import { ComposeSymbol } from "@/components/ui/compose-symbol";
 import type { ConfirmRequest } from "@/lib/utils/confirmations";
-import { accent, colors } from "@/theme";
-import { AlertDialog, Host, Text, TextButton } from "@expo/ui/jetpack-compose";
+import {
+  AlertDialog,
+  Host,
+  Text,
+  TextButton,
+  useMaterialColors,
+} from "@expo/ui/jetpack-compose";
 import { useCallback, useState } from "react";
-import { useColorScheme } from "react-native";
 import type { Confirmation } from "./types";
 
 /* What marks a destructive action, since Material 3 has no destructive button. */
 const WARNING = "exclamationmark.triangle.fill";
 
+type DialogProps = {
+  request: ConfirmRequest;
+  onDismiss: () => void;
+  onAnswer: () => void;
+};
+
+/**
+ * Inside the host rather than around it, because `useMaterialColors()` reads the
+ * palette the host is themed with and that only exists below it.
+ */
+function Dialog({ request, onDismiss, onAnswer }: DialogProps) {
+  const material = useMaterialColors();
+  const destructive = request.destructive === true;
+
+  return (
+    <AlertDialog
+      onDismissRequest={onDismiss}
+      colors={
+        destructive
+          ? {
+              iconContentColor: material.error,
+              titleContentColor: material.error,
+            }
+          : undefined
+      }
+    >
+      {destructive && (
+        <AlertDialog.Icon>
+          <ComposeSymbol name={WARNING} color={material.error} />
+        </AlertDialog.Icon>
+      )}
+      <AlertDialog.Title>
+        <Text>{request.title}</Text>
+      </AlertDialog.Title>
+      <AlertDialog.Text>
+        <Text>{request.body}</Text>
+      </AlertDialog.Text>
+      <AlertDialog.ConfirmButton>
+        <TextButton onClick={onAnswer}>
+          <Text color={destructive ? material.error : undefined}>
+            {request.confirmLabel}
+          </Text>
+        </TextButton>
+      </AlertDialog.ConfirmButton>
+      {request.cancelLabel != null && (
+        <AlertDialog.DismissButton>
+          <TextButton onClick={onDismiss}>
+            <Text>{request.cancelLabel}</Text>
+          </TextButton>
+        </AlertDialog.DismissButton>
+      )}
+    </AlertDialog>
+  );
+}
+
 export function useConfirm(): Confirmation {
-  const scheme = useColorScheme();
   const [asked, setAsked] = useState<ConfirmRequest | null>(null);
 
   const confirm = useCallback((request: ConfirmRequest) => {
@@ -24,47 +82,9 @@ export function useConfirm(): Confirmation {
     asked?.onConfirm?.();
   };
 
-  const destructive = asked?.destructive === true;
-
   const dialog = asked ? (
-    <Host matchContents colorScheme={scheme} seedColor={accent}>
-      <AlertDialog
-        onDismissRequest={dismiss}
-        colors={
-          destructive
-            ? {
-                iconContentColor: colors.destructive,
-                titleContentColor: colors.destructive,
-              }
-            : undefined
-        }
-      >
-        {destructive && (
-          <AlertDialog.Icon>
-            <ComposeSymbol name={WARNING} color={colors.destructive} />
-          </AlertDialog.Icon>
-        )}
-        <AlertDialog.Title>
-          <Text>{asked.title}</Text>
-        </AlertDialog.Title>
-        <AlertDialog.Text>
-          <Text>{asked.body}</Text>
-        </AlertDialog.Text>
-        <AlertDialog.ConfirmButton>
-          <TextButton onClick={answer}>
-            <Text color={destructive ? String(colors.destructive) : undefined}>
-              {asked.confirmLabel}
-            </Text>
-          </TextButton>
-        </AlertDialog.ConfirmButton>
-        {asked.cancelLabel != null && (
-          <AlertDialog.DismissButton>
-            <TextButton onClick={dismiss}>
-              <Text>{asked.cancelLabel}</Text>
-            </TextButton>
-          </AlertDialog.DismissButton>
-        )}
-      </AlertDialog>
+    <Host matchContents>
+      <Dialog request={asked} onDismiss={dismiss} onAnswer={answer} />
     </Host>
   ) : null;
 
