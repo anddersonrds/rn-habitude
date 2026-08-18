@@ -80,7 +80,12 @@ export function TodayScreen() {
             />
           </View>
         ) : (
-          <Host style={styles.host} useViewportSizeMeasurement>
+          <Host
+            /* A Compose host takes a colour string, not the descriptor the
+            shared style carries. */
+            style={[styles.host, { backgroundColor: material.surface }]}
+            useViewportSizeMeasurement
+          >
             <LazyColumn
               contentPadding={{ start: 16, top: 12, end: 16, bottom: 24 }}
               verticalArrangement={{ spacedBy: 8 }}

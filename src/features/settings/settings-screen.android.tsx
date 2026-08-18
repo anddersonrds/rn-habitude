@@ -93,7 +93,8 @@ export function SettingsScreen() {
 
   return (
     <>
-      <Host style={{ flex: 1 }}>
+      {/* The background stops the navigator showing through between the rows. */}
+      <Host style={{ flex: 1, backgroundColor: material.surface }}>
         <LazyColumn
           contentPadding={{
             start: 16,
