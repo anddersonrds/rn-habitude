@@ -6,100 +6,64 @@ const {
 const fs = require("fs");
 const path = require("path");
 
-/**
- * The app owns its Android theme because the generated one does not expose the
- * attributes a descriptor resolves against: `Theme.AppCompat.DayNight` carries
- * `colorPrimary` and little else, while `PlatformColor("?attr/colorSurface")`
- * needs the Material 3 role set. Owning the theme is also what makes the night
- * variant and dynamic color the platform's job rather than JavaScript's.
- */
+/* The generated theme inherits `Theme.AppCompat.DayNight`, which exposes no
+Material 3 role for `PlatformColor("?attr/…")` to resolve against. */
 const BASE_THEME = "Theme.Habitude.Base";
 
-/**
- * `SchemeTonalSpot` from the app accent, which is the scheme `@expo/ui`'s
- * Compose `Host` seeds itself with, so a screen and the host inside it agree.
- * These fill the roles below Android 12; from 12 on the wallpaper does.
- */
-const SEED = "#32ADE6";
-
-const LIGHT = {
-  surface: "#f6fafe",
-  surface_container: "#ebeef3",
-  surface_container_low: "#f0f4f8",
-  surface_container_high: "#e5e8ed",
-  on_surface: "#181c1f",
-  on_surface_variant: "#41484d",
-  outline: "#71787e",
-  outline_variant: "#c1c7ce",
-  error: "#ba1a1a",
-  on_error: "#ffffff",
-  primary: "#1e6586",
-  on_primary: "#ffffff",
+/* `SchemeTonalSpot` from the accent, computed once with
+`@material/material-color-utilities`, whose ESM a config plugin cannot require.
+These fill the roles below Android 12; from 12 on the wallpaper does. */
+const ROLES = {
+  colorSurface: { light: "#f6fafe", dark: "#0f1417" },
+  colorSurfaceContainer: { light: "#ebeef3", dark: "#1c2023" },
+  colorSurfaceContainerLow: { light: "#f0f4f8", dark: "#181c1f" },
+  colorSurfaceContainerHigh: { light: "#e5e8ed", dark: "#262b2e" },
+  colorOnSurface: { light: "#181c1f", dark: "#dfe3e7" },
+  colorOnSurfaceVariant: { light: "#41484d", dark: "#c1c7ce" },
+  colorOutline: { light: "#71787e", dark: "#8b9297" },
+  colorOutlineVariant: { light: "#c1c7ce", dark: "#41484d" },
+  colorError: { light: "#ba1a1a", dark: "#ffb4ab" },
+  colorOnError: { light: "#ffffff", dark: "#690005" },
+  colorPrimary: { light: "#1e6586", dark: "#91cef4" },
+  colorOnPrimary: { light: "#ffffff", dark: "#00344a" },
 };
 
-const DARK = {
-  surface: "#0f1417",
-  surface_container: "#1c2023",
-  surface_container_low: "#181c1f",
-  surface_container_high: "#262b2e",
-  on_surface: "#dfe3e7",
-  on_surface_variant: "#c1c7ce",
-  outline: "#8b9297",
-  outline_variant: "#41484d",
-  error: "#ffb4ab",
-  on_error: "#690005",
-  primary: "#91cef4",
-  on_primary: "#00344a",
-};
+function resources(body) {
+  return `<?xml version="1.0" encoding="utf-8"?>\n<resources>\n${body}\n</resources>\n`;
+}
 
-/** The role each generated color fills, in the order Material 3 names them. */
-const ATTRIBUTES = [
-  "colorSurface",
-  "colorSurfaceContainer",
-  "colorSurfaceContainerLow",
-  "colorSurfaceContainerHigh",
-  "colorOnSurface",
-  "colorOnSurfaceVariant",
-  "colorOutline",
-  "colorOutlineVariant",
-  "colorError",
-  "colorOnError",
-  "colorPrimary",
-  "colorOnPrimary",
-];
-
-const RESOURCE_NAMES = Object.keys(LIGHT);
-
-function colorsXml(palette) {
-  const entries = Object.entries(palette)
-    .map(([name, value]) => `  <color name="habitude_${name}">${value}</color>`)
-    .join("\n");
-
-  return `<?xml version="1.0" encoding="utf-8"?>\n<resources>\n${entries}\n</resources>\n`;
+function colorsXml(scheme) {
+  return resources(
+    Object.entries(ROLES)
+      .map(
+        ([role, value]) =>
+          `  <color name="habitude_${role}">${value[scheme]}</color>`,
+      )
+      .join("\n"),
+  );
 }
 
 function baseThemeXml() {
-  const items = ATTRIBUTES.map(
-    (attribute, index) =>
-      `    <item name="${attribute}">@color/habitude_${RESOURCE_NAMES[index]}</item>`,
-  ).join("\n");
+  const items = Object.keys(ROLES)
+    .map((role) => `    <item name="${role}">@color/habitude_${role}</item>`)
+    .join("\n");
 
-  return `<?xml version="1.0" encoding="utf-8"?>\n<resources>\n  <style name="${BASE_THEME}" parent="Theme.Material3.DayNight.NoActionBar">\n${items}\n  </style>\n</resources>\n`;
+  return resources(
+    `  <style name="${BASE_THEME}" parent="Theme.Material3.DayNight.NoActionBar">\n${items}\n  </style>`,
+  );
 }
 
-/**
- * From Android 12 the roles come from the wallpaper, so the base theme drops
- * every color it declares and takes the dynamic parent instead. A style
- * redeclared under a qualifier replaces the whole style, not the items it
- * repeats, which is why nothing from the light file survives here.
- */
+/* A style redeclared under a qualifier replaces the whole style, so none of the
+colors above survive here and the dynamic parent fills the roles instead. */
 function dynamicThemeXml() {
-  return `<?xml version="1.0" encoding="utf-8"?>\n<resources>\n  <style name="${BASE_THEME}" parent="Theme.Material3.DynamicColors.DayNight.NoActionBar" />\n</resources>\n`;
+  return resources(
+    `  <style name="${BASE_THEME}" parent="Theme.Material3.DynamicColors.DayNight.NoActionBar" />`,
+  );
 }
 
 const FILES = [
-  ["values", "colors_habitude.xml", () => colorsXml(LIGHT)],
-  ["values-night", "colors_habitude.xml", () => colorsXml(DARK)],
+  ["values", "colors_habitude.xml", () => colorsXml("light")],
+  ["values-night", "colors_habitude.xml", () => colorsXml("dark")],
   ["values", "themes_habitude.xml", baseThemeXml],
   ["values-v31", "themes_habitude.xml", dynamicThemeXml],
 ];
@@ -127,18 +91,14 @@ function withHabitudeThemeResources(config) {
   ]);
 }
 
-/**
- * `AppTheme` keeps the items Expo puts on it and inherits the roles, except the
- * `colorPrimary` Expo pins: an item on the theme itself beats the one it
- * inherits, so leaving it there would override the wallpaper's primary and the
- * accent fallback alike.
- */
 function withHabitudeAppTheme(config) {
   return withAndroidStyles(config, (config) => {
     for (const style of config.modResults.resources.style ?? []) {
       if (style.$.name !== "AppTheme") continue;
 
       style.$.parent = BASE_THEME;
+      /* An item on the theme beats the one it inherits, so Expo's pinned
+      `colorPrimary` would override the wallpaper's. */
       style.item = (style.item ?? []).filter(
         (item) => item.$.name !== "colorPrimary",
       );
@@ -148,13 +108,9 @@ function withHabitudeAppTheme(config) {
   });
 }
 
-/**
- * A `PlatformColor` descriptor is resolved when the prop reaches the view, not
- * when the view draws, so nothing re-reads the theme while the activity lives.
- * Dropping `uiMode` is what makes Android rebuild the activity on an appearance
- * change, which is the platform's own behaviour and the only thing that makes
- * the palette follow.
- */
+/* A descriptor is resolved when the prop reaches the view, not when the view
+draws, so only a new view reads the theme again. Dropping `uiMode` is what makes
+Android rebuild the activity on an appearance change. */
 function withAppearanceRecreation(config) {
   return withAndroidManifest(config, (config) => {
     for (const application of config.modResults.manifest.application ?? []) {
@@ -178,7 +134,3 @@ module.exports = function withMaterialTheme(config) {
     withHabitudeAppTheme(withHabitudeThemeResources(config)),
   );
 };
-
-module.exports.SEED = SEED;
-module.exports.LIGHT = LIGHT;
-module.exports.DARK = DARK;

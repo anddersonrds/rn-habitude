@@ -19,10 +19,8 @@ type DialogProps = {
   onAnswer: () => void;
 };
 
-/**
- * Inside the host rather than around it, because `useMaterialColors()` reads the
- * palette the host is themed with and that only exists below it.
- */
+/* Inside the host, because `useMaterialColors()` reads the host's palette and
+that context only exists below it. */
 function Dialog({ request, onDismiss, onAnswer }: DialogProps) {
   const material = useMaterialColors();
   const destructive = request.destructive === true;

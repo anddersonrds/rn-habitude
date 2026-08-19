@@ -1,11 +1,8 @@
 import { colors, useSystemColors } from "@/theme";
 import { renderHook } from "@testing-library/react-native";
 
-/*
-A descriptor carries the attribute it names rather than a value, so the shape is
-what the assertions read. A colour string here is the frozen palette that shipped
-in 0.6.0, and no other gate can see it.
-*/
+/* A colour string here is the frozen palette 0.6.0 shipped, and no other gate
+can see it. */
 type Descriptor = { resource_paths: string[] };
 
 function attributes(value: unknown) {

@@ -1,11 +1,7 @@
 const { withProjectBuildGradle } = require("expo/config-plugins");
 
-/**
- * `react-native-android-widget` asks for `work-runtime:2.8.1` and Glance under
- * it asks for `work-runtime-ktx:2.7.1`. WorkManager 2.8.0 folded the ktx classes
- * into the main artifact, so the two resolve to the same classes and the build
- * fails on duplicates. Aligning the versions leaves one copy.
- */
+/* WorkManager 2.8.0 folded the ktx classes into the main artifact, so the 2.7.1
+Glance asks for duplicates the 2.8.1 the widget asks for and the build fails. */
 const ANCHOR = "allprojects {";
 
 const ALIGNMENT = `allprojects {

@@ -24,17 +24,12 @@ const iosPalette: SystemPalette = {
 };
 
 /**
- * The palette a `StyleSheet` is built from. Neither half carries a value: the
- * iOS entries are semantic references and the Android ones name a theme
- * attribute, so both are resolved by the system rather than by this module, and
+ * The palette a `StyleSheet` is built from. Neither half carries a value, so
  * neither is tied to the appearance that was current when it was imported.
  */
 export const colors: SystemPalette = materialPalette() ?? iosPalette;
 
-/**
- * Kept as the seam a screen asks the palette through, though it no longer has
- * an appearance to read: nothing here resolves in JavaScript any more.
- */
+/** The seam a screen asks the palette through, now that both sides are static. */
 export function useSystemColors(): SystemPalette {
   return colors;
 }

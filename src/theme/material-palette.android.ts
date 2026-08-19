@@ -2,14 +2,9 @@ import { PlatformColor } from "react-native";
 import type { SystemPalette } from "./types";
 
 /**
- * A descriptor names a Material 3 role and the platform reads it off the app's
- * own theme, which carries a night variant and takes its roles from the
- * wallpaper on Android 12 and up. Nothing here asks for the appearance, because
- * the resource qualifier is what answers that question.
- *
- * The resolution happens when the prop reaches the view, not when the view
- * draws, so an appearance change is followed by the activity being recreated.
- * `plugins/withMaterialTheme.js` is what arranges both halves.
+ * Names a Material 3 role for the platform to resolve off the theme
+ * `plugins/withMaterialTheme.js` writes. Nothing here asks for the appearance:
+ * the resource qualifier answers that.
  */
 function role(attribute: string) {
   return PlatformColor(`?attr/${attribute}`);
