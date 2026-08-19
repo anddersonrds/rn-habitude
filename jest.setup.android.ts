@@ -43,8 +43,16 @@ jest.mock("expo", () => {
 
       return {
         ...module,
-        getMaterialColors: ({ scheme = "light" }: MaterialColorsOptions = {}) =>
-          new Proxy({}, { get: (_target, role: string) => roleColor(role, scheme) }),
+        /* The package forwards `null` when the caller asks for no options, which
+        is what following the system looks like from JavaScript. */
+        getMaterialColors: (options?: MaterialColorsOptions | null) =>
+          new Proxy(
+            {},
+            {
+              get: (_target, role: string) =>
+                roleColor(role, options?.scheme ?? "light"),
+            },
+          ),
       };
     },
   };

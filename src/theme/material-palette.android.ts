@@ -1,32 +1,27 @@
-import { getMaterialColors } from "@expo/ui/jetpack-compose";
-import type { ColorSchemeName, ColorValue } from "react-native";
+import { PlatformColor } from "react-native";
 import type { SystemPalette } from "./types";
 
 /**
- * Material 3 is the role system; Material You is one way of filling it, from the
- * wallpaper, and `Color.android.dynamic.*` is that one. This fills the roles from
- * `seed`, the app accent, which is the same hex as the cyan habit color.
+ * Names a Material 3 role for the platform to resolve off the theme
+ * `plugins/withMaterialTheme.js` writes. Nothing here asks for the appearance:
+ * the resource qualifier answers that.
  */
-export function materialPalette(
-  scheme: ColorSchemeName,
-  seed: ColorValue,
-): SystemPalette {
-  const material = getMaterialColors({
-    scheme: scheme === "dark" ? "dark" : "light",
-    seedColor: seed,
-  });
+function role(attribute: string) {
+  return PlatformColor(`?attr/${attribute}`);
+}
 
+export function materialPalette(): SystemPalette {
   return {
-    background: material.surface,
-    groupedBackground: material.surface,
-    secondaryBackground: material.surfaceContainer,
-    text: material.onSurface,
-    secondaryText: material.onSurfaceVariant,
-    tertiaryText: material.outline,
-    mutedText: material.outline,
-    fill: material.surfaceContainerHigh,
-    subtleFill: material.surfaceContainerLow,
-    separator: material.outlineVariant,
-    destructive: material.error,
+    background: role("colorSurface"),
+    groupedBackground: role("colorSurface"),
+    secondaryBackground: role("colorSurfaceContainer"),
+    text: role("colorOnSurface"),
+    secondaryText: role("colorOnSurfaceVariant"),
+    tertiaryText: role("colorOutline"),
+    mutedText: role("colorOutline"),
+    fill: role("colorSurfaceContainerHigh"),
+    subtleFill: role("colorSurfaceContainerLow"),
+    separator: role("colorOutlineVariant"),
+    destructive: role("colorError"),
   };
 }

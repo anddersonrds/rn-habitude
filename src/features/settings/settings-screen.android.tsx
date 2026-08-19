@@ -1,6 +1,6 @@
 import { useConfirm } from "@/components/ui/confirm-dialog";
 import { formatCount } from "@/lib/utils/numbers";
-import { accent, success, useSystemColors } from "@/theme";
+import { success } from "@/theme";
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -8,10 +8,10 @@ import {
   LazyColumn,
   Text,
   TextButton,
+  useMaterialColors,
 } from "@expo/ui/jetpack-compose";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useColorScheme } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SettingsButton } from "./components/settings-button";
 import { SettingsLabel } from "./components/settings-label";
@@ -23,12 +23,12 @@ const TAB_BAR_HEIGHT = 80;
 
 /* Compose has no `Section`, so its header is a label of our own. */
 function SectionLabel({ children }: { children: string }) {
-  const colors = useSystemColors();
+  const material = useMaterialColors();
 
   return (
     <Text
       style={{ typography: "labelLarge" }}
-      color={String(colors.secondaryText)}
+      color={material.onSurfaceVariant}
     >
       {children}
     </Text>
@@ -36,12 +36,12 @@ function SectionLabel({ children }: { children: string }) {
 }
 
 function Footnote({ children }: { children: string }) {
-  const colors = useSystemColors();
+  const material = useMaterialColors();
 
   return (
     <Text
       style={{ typography: "bodySmall" }}
-      color={String(colors.secondaryText)}
+      color={material.onSurfaceVariant}
     >
       {children}
     </Text>
@@ -54,8 +54,7 @@ function Footnote({ children }: { children: string }) {
  */
 export function SettingsScreen() {
   const { t, i18n } = useTranslation(["settings", "language"]);
-  const colors = useSystemColors();
-  const scheme = useColorScheme();
+  const material = useMaterialColors();
   const { bottom: bottomInset } = useSafeAreaInsets();
   const [choosingLanguage, setChoosingLanguage] = useState(false);
   const { confirm, dialog } = useConfirm();
@@ -86,15 +85,16 @@ export function SettingsScreen() {
     permissionColor === "green"
       ? success
       : permissionColor === "red"
-        ? String(colors.destructive)
-        : String(colors.secondaryText);
+        ? material.error
+        : material.onSurfaceVariant;
 
   const activeLanguage =
     languages.find((entry) => entry.tag === language)?.label ?? "";
 
   return (
     <>
-      <Host style={{ flex: 1 }} colorScheme={scheme} seedColor={accent}>
+      {/* The background stops the navigator showing through between the rows. */}
+      <Host style={{ flex: 1, backgroundColor: material.surface }}>
         <LazyColumn
           contentPadding={{
             start: 16,
@@ -177,7 +177,7 @@ export function SettingsScreen() {
           />
           {hasHabits && (
             <TextButton onClick={deleteEverything}>
-              <Text color={String(colors.destructive)}>
+              <Text color={material.error}>
                 {t("deleteAllData")}
               </Text>
             </TextButton>

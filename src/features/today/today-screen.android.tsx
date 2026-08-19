@@ -3,7 +3,7 @@ import { EmptyState } from "@/components/empty-state";
 import { AppSymbol } from "@/components/ui/app-symbol";
 import { ComposeSymbol } from "@/components/ui/compose-symbol";
 import { useConfirm } from "@/components/ui/confirm-dialog";
-import { accent, success, useSystemColors } from "@/theme";
+import { accent, success } from "@/theme";
 import {
   Card,
   Column,
@@ -12,6 +12,7 @@ import {
   LinearProgressIndicator,
   Row,
   Text,
+  useMaterialColors,
 } from "@expo/ui/jetpack-compose";
 import {
   clip,
@@ -22,7 +23,7 @@ import {
 } from "@expo/ui/jetpack-compose/modifiers";
 import { Stack } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Pressable, useColorScheme, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { EaseView } from "react-native-ease";
 import { HabitRow } from "./components/habit-row";
 import { useTodayModel } from "./hooks/use-today-model";
@@ -39,8 +40,7 @@ export function TodayScreen() {
   const { t } = useTranslation(["today", "common"]);
   const { confirm, dialog } = useConfirm();
   const model = useTodayModel(confirm);
-  const colors = useSystemColors();
-  const scheme = useColorScheme();
+  const material = useMaterialColors();
 
   const progressSummary = model.allDone
     ? t("allDone")
@@ -81,9 +81,9 @@ export function TodayScreen() {
           </View>
         ) : (
           <Host
-            style={styles.host}
-            colorScheme={scheme}
-            seedColor={accent}
+            /* A Compose host takes a colour string, not the descriptor the
+            shared style carries. */
+            style={[styles.host, { backgroundColor: material.surface }]}
             useViewportSizeMeasurement
           >
             <LazyColumn
@@ -92,7 +92,7 @@ export function TodayScreen() {
             >
               <Text
                 style={{ typography: "labelLarge" }}
-                color={String(colors.secondaryText)}
+                color={material.onSurfaceVariant}
               >
                 {model.dateLabel}
               </Text>
@@ -107,7 +107,7 @@ export function TodayScreen() {
                     <ComposeSymbol
                       name="moon.zzz.fill"
                       size={25}
-                      color={colors.mutedText}
+                      color={material.outline}
                     />
                     <Column verticalArrangement={{ spacedBy: 2 }}>
                       <Text style={{ typography: "titleMedium" }}>
@@ -115,7 +115,7 @@ export function TodayScreen() {
                       </Text>
                       <Text
                         style={{ typography: "bodySmall" }}
-                        color={String(colors.secondaryText)}
+                        color={material.onSurfaceVariant}
                       >
                         {t("restDay")}
                       </Text>
@@ -159,7 +159,7 @@ export function TodayScreen() {
                 <>
                   <Text
                     style={{ typography: "labelLarge" }}
-                    color={String(colors.secondaryText)}
+                    color={material.onSurfaceVariant}
                   >
                     {t("checkInSection")}
                   </Text>
@@ -175,7 +175,7 @@ export function TodayScreen() {
                   ))}
                   <Text
                     style={{ typography: "bodySmall" }}
-                    color={String(colors.secondaryText)}
+                    color={material.onSurfaceVariant}
                   >
                     {t("checkInFooter")}
                   </Text>

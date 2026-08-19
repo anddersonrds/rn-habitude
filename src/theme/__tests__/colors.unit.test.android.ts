@@ -1,55 +1,45 @@
-import { materialPalette } from "@/theme/material-palette";
-import { accent, colors, useSystemColors } from "@/theme";
-import type { MaterialColorsOptions } from "@expo/ui/jetpack-compose";
-import { getMaterialColors } from "@expo/ui/jetpack-compose";
+import { colors, useSystemColors } from "@/theme";
 import { renderHook } from "@testing-library/react-native";
 
-/*
-Every role answers with the scheme and the seed it came from, so one assertion
-covers the mapping, the appearance and the seed at once.
-*/
-jest.mock("@expo/ui/jetpack-compose", () => ({
-  getMaterialColors: jest.fn(({ scheme, seedColor }: MaterialColorsOptions) =>
-    new Proxy(
-      {},
-      { get: (_target, role: string) => `${role}/${scheme}/${String(seedColor)}` },
-    ),
-  ),
-}));
+/* A colour string here is the frozen palette 0.6.0 shipped, and no other gate
+can see it. */
+type Descriptor = { resource_paths: string[] };
 
-function role(name: string, scheme: "light" | "dark" = "light") {
-  return `${name}/${scheme}/${accent}`;
+function attributes(value: unknown) {
+  return (value as Descriptor).resource_paths;
 }
 
 describe("the Android palette", () => {
-  it("should fill every key from a Material role seeded with the accent", () => {
-    expect(colors).toEqual({
-      background: role("surface"),
-      groupedBackground: role("surface"),
-      secondaryBackground: role("surfaceContainer"),
-      text: role("onSurface"),
-      secondaryText: role("onSurfaceVariant"),
-      tertiaryText: role("outline"),
-      mutedText: role("outline"),
-      fill: role("surfaceContainerHigh"),
-      subtleFill: role("surfaceContainerLow"),
-      separator: role("outlineVariant"),
-      destructive: role("error"),
+  it("should name a Material 3 role for every key", () => {
+    expect(
+      Object.fromEntries(
+        Object.entries(colors).map(([key, value]) => [key, attributes(value)]),
+      ),
+    ).toEqual({
+      background: ["?attr/colorSurface"],
+      groupedBackground: ["?attr/colorSurface"],
+      secondaryBackground: ["?attr/colorSurfaceContainer"],
+      text: ["?attr/colorOnSurface"],
+      secondaryText: ["?attr/colorOnSurfaceVariant"],
+      tertiaryText: ["?attr/colorOutline"],
+      mutedText: ["?attr/colorOutline"],
+      fill: ["?attr/colorSurfaceContainerHigh"],
+      subtleFill: ["?attr/colorSurfaceContainerLow"],
+      separator: ["?attr/colorOutlineVariant"],
+      destructive: ["?attr/colorError"],
     });
   });
 
-  it("should generate the dark palette from the same seed", () => {
-    /* `?.` because `tsc` resolves the stand-in, whose return is nullable. */
-    expect(materialPalette("dark", accent)?.text).toBe(role("onSurface", "dark"));
+  it("should hold no token the platform cannot resolve", () => {
+    for (const value of Object.values(colors)) {
+      expect(typeof value).not.toBe("string");
+      expect(typeof value).not.toBe("number");
+    }
   });
 
-  it("should read the appearance through the hook", async () => {
+  it("should answer the hook with the same palette", async () => {
     const { result } = await renderHook(() => useSystemColors());
 
-    expect(result.current.background).toBe(role("surface"));
-    expect(getMaterialColors).toHaveBeenLastCalledWith({
-      scheme: "light",
-      seedColor: accent,
-    });
+    expect(result.current).toBe(colors);
   });
 });
