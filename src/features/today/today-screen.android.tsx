@@ -38,10 +38,18 @@ const CONTENT_ENTER = {
 /* The bar carries no title on Android, so this is the screen's own, drawn in
 the Compose tree at the ramp's largest step. */
 function ScreenTitle({ children }: { children: string }) {
+  const material = useMaterialColors();
+
+  /* The padding is the wrapper's: a `Host` lays out its Compose content and
+  passes no style of its own down to it. */
   return (
-    <Host matchContents style={styles.title}>
-      <Text style={{ typography: "headlineLarge" }}>{children}</Text>
-    </Host>
+    <View style={styles.title}>
+      <Host matchContents>
+        <Text style={{ typography: "headlineLarge" }} color={material.onSurface}>
+          {children}
+        </Text>
+      </Host>
+    </View>
   );
 }
 
@@ -104,7 +112,10 @@ export function TodayScreen() {
               contentPadding={{ start: 16, top: 12, end: 16, bottom: 24 }}
               verticalArrangement={{ spacedBy: 8 }}
             >
-              <Text style={{ typography: "headlineLarge" }}>
+              <Text
+                style={{ typography: "headlineLarge" }}
+                color={material.onSurface}
+              >
                 {t("tabs:today")}
               </Text>
 

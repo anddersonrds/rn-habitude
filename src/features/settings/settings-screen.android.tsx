@@ -109,7 +109,10 @@ export function SettingsScreen() {
           }}
           verticalArrangement={{ spacedBy: 8 }}
         >
-          <Text style={{ typography: "headlineLarge" }}>
+          <Text
+            style={{ typography: "headlineLarge" }}
+            color={material.onSurface}
+          >
             {t("tabs:settings")}
           </Text>
 
