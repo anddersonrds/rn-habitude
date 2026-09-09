@@ -14,7 +14,11 @@ import { styles } from "./styles";
 
 const HISTORY_WEEKS = 52;
 
-/** Full-year consistency, reached with a zoom transition from the habit card. */
+/**
+ * Full-year consistency. The header is a Material 3 small top app bar with a
+ * surface of its own, so the content starts below it and asks for no inset of
+ * its own the way the iOS large title does.
+ */
 export function HabitHistoryScreen() {
   const { t, i18n } = useTranslation("history");
   const model = useHabitHistoryModel();
@@ -27,11 +31,7 @@ export function HabitHistoryScreen() {
   return (
     <>
       <Stack.Screen options={{ title: habit.name }} />
-      <ScrollView
-        style={styles.container}
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={styles.content}
-      >
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <View style={[styles.icon, { backgroundColor: `${habit.color}26` }]}>
