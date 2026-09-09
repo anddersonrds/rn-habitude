@@ -80,8 +80,7 @@ function AppStack() {
         name="habit-history"
         options={{
           title: "",
-          /* eslint-disable-next-line no-restricted-syntax -- A route file cannot
-          take an `.android` sibling, and the title is empty on both platforms. */
+          /* eslint-disable-next-line no-restricted-syntax -- A route file cannot fork. */
           headerLargeTitleEnabled: true,
           headerBackButtonDisplayMode: "minimal",
         }}

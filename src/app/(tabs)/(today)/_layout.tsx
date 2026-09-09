@@ -10,8 +10,7 @@ export default function TodayLayout() {
         name="index"
         options={{
           title: t("today"),
-          /* eslint-disable-next-line no-restricted-syntax -- A route file cannot
-          fork; the Android screen blanks this and draws its own. */
+          /* eslint-disable-next-line no-restricted-syntax -- A route file cannot fork. */
           headerLargeTitleEnabled: true,
         }}
       />
