@@ -45,6 +45,7 @@ const routing = jest.requireMock<{
 
 const today = en.translations.today;
 const common = en.translations.common;
+const tabs = en.translations.tabs;
 
 /* A Wednesday. Every fixture below is dated against it. */
 const TODAY = "2026-07-29";
@@ -104,12 +105,16 @@ function progressBar(container: TestInstance): TestInstance {
   return found;
 }
 
-/** The bar is not in the screen's tree, so this renders what it handed the stack. */
+/** The bar is not in the screen's tree, so this reads what it handed the stack. */
+function screenOptions(): { title: string; headerRight: () => ReactElement } {
+  const [call] = routing.Stack.Screen.mock.calls;
+  if (!call) throw new Error("The screen sets no options on the stack.");
+  return (call[0] as { options: { title: string; headerRight: () => ReactElement } })
+    .options;
+}
+
 function headerAction(): ReactElement {
-  const [options] = routing.Stack.Screen.mock.calls.map(
-    (call) => (call[0] as { options: { headerRight: () => ReactElement } }).options,
-  );
-  return options.headerRight();
+  return screenOptions().headerRight();
 }
 
 async function renderToday() {
@@ -266,5 +271,29 @@ describe("what the screen answers", () => {
     await fireEvent.press(getByLabelText(common.addHabit));
 
     expect(routing.router.push).toHaveBeenCalledWith("/habit-form");
+  });
+});
+
+describe("the screen's own title", () => {
+  it("should leave the bar without a title of its own", async () => {
+    seedHabit();
+
+    await renderToday();
+
+    expect(screenOptions().title).toBe("");
+  });
+
+  it("should draw the title in the content", async () => {
+    seedHabit();
+
+    const { container } = await renderToday();
+
+    expect(nativeView(container, "text", tabs.today)).toBeTruthy();
+  });
+
+  it("should draw the title with no habits to list", async () => {
+    const { container } = await renderToday();
+
+    expect(nativeView(container, "text", tabs.today)).toBeTruthy();
   });
 });

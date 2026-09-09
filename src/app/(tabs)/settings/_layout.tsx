@@ -10,8 +10,9 @@ export default function SettingsLayout() {
         name="index"
         options={{
           title: t("settings"),
-          /* eslint-disable-next-line no-restricted-syntax -- Android has no large
-          title of its own to draw yet. */
+          /* eslint-disable-next-line no-restricted-syntax -- A route file cannot
+          take an `.android` sibling. The Android screen blanks this title and
+          draws its own, so the two never appear together. */
           headerLargeTitleEnabled: true,
         }}
       />

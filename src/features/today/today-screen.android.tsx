@@ -35,9 +35,19 @@ const CONTENT_ENTER = {
   easing: "easeOut",
 } as const;
 
+/* The bar carries no title on Android, so this is the screen's own, drawn in
+the Compose tree at the ramp's largest step. */
+function ScreenTitle({ children }: { children: string }) {
+  return (
+    <Host matchContents style={styles.title}>
+      <Text style={{ typography: "headlineLarge" }}>{children}</Text>
+    </Host>
+  );
+}
+
 /** The add button stays React Native, because no Compose tree reaches the bar. */
 export function TodayScreen() {
-  const { t } = useTranslation(["today", "common"]);
+  const { t } = useTranslation(["today", "common", "tabs"]);
   const { confirm, dialog } = useConfirm();
   const model = useTodayModel(confirm);
   const material = useMaterialColors();
@@ -50,6 +60,9 @@ export function TodayScreen() {
     <>
       <Stack.Screen
         options={{
+          /* The screen draws the title itself, so the bar keeps only the action
+          and the two never appear at once. */
+          title: "",
           headerRight: () => (
             <Pressable
               accessibilityRole="button"
@@ -71,6 +84,7 @@ export function TodayScreen() {
       >
         {!model.hasHabits ? (
           <View style={styles.empty}>
+            <ScreenTitle>{t("tabs:today")}</ScreenTitle>
             <EmptyState
               symbol="checklist"
               title={t("common:noHabitsYet")}
@@ -90,6 +104,10 @@ export function TodayScreen() {
               contentPadding={{ start: 16, top: 12, end: 16, bottom: 24 }}
               verticalArrangement={{ spacedBy: 8 }}
             >
+              <Text style={{ typography: "headlineLarge" }}>
+                {t("tabs:today")}
+              </Text>
+
               <Text
                 style={{ typography: "labelLarge" }}
                 color={material.onSurfaceVariant}

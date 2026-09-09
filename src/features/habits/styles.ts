@@ -21,6 +21,16 @@ export const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: layout.bottomPadding,
   },
+  screenTitle: {
+    marginBottom: 12,
+    marginLeft: 4,
+  },
+  /* The empty branch sits outside the scroll content, which is what carries
+  the edge padding. */
+  emptyTitle: {
+    paddingHorizontal: layout.screenPadding,
+    paddingTop: 12,
+  },
   sectionLabel: {
     marginBottom: 8,
     marginLeft: 4,

@@ -44,6 +44,7 @@ const routing = jest.requireMock<{
 }>("expo-router");
 
 const habits = en.translations.habits;
+const tabs = en.translations.tabs;
 const common = en.translations.common;
 const inPortuguese = ptBR.translations.habits;
 const schedule = en.translations.schedule;
@@ -102,12 +103,16 @@ function seedHabit(
  * screen last handed the stack. Last rather than first: the reorder button
  * changes to Done once the mode is on.
  */
-function header(): ReactElement {
+function screenOptions(): { title: string; headerRight: () => ReactElement } {
   const calls = routing.Stack.Screen.mock.calls;
-  const { options } = calls[calls.length - 1][0] as {
-    options: { headerRight: () => ReactElement };
-  };
-  return options.headerRight();
+  const last = calls[calls.length - 1];
+  if (!last) throw new Error("The screen sets no options on the stack.");
+  return (last[0] as { options: { title: string; headerRight: () => ReactElement } })
+    .options;
+}
+
+function header(): ReactElement {
+  return screenOptions().headerRight();
 }
 
 /** Every row's accessible name, in the order the screen drew them. */
@@ -532,5 +537,29 @@ describe("putting the habits in a different order", () => {
       fill(habits.rowLabel, { name: "Read", schedule: schedule.everyDay }),
       fill(habits.rowLabel, { name: "Walk outside", schedule: schedule.everyDay }),
     ]);
+  });
+});
+
+describe("the screen's own title", () => {
+  it("should leave the bar without a title of its own", async () => {
+    seedHabit();
+
+    await renderList();
+
+    expect(screenOptions().title).toBe("");
+  });
+
+  it("should draw the title in the content", async () => {
+    seedHabit();
+
+    const { getByText } = await renderList();
+
+    expect(getByText(tabs.habits)).toBeOnTheScreen();
+  });
+
+  it("should draw the title with no habits to list", async () => {
+    const { getByText } = await renderList();
+
+    expect(getByText(tabs.habits)).toBeOnTheScreen();
   });
 });

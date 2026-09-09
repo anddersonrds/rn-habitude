@@ -21,7 +21,7 @@ import { styles } from "./styles";
  * gesture and the heat graph the rows draw are both React Native already.
  */
 export function HabitsScreen() {
-  const { t, i18n } = useTranslation(["habits", "common"]);
+  const { t, i18n } = useTranslation(["habits", "common", "tabs"]);
   const { confirm, dialog } = useConfirm();
   const {
     rows,
@@ -71,6 +71,9 @@ export function HabitsScreen() {
     <>
       <Stack.Screen
         options={{
+          /* The screen draws the title itself, so the bar keeps only the
+          actions and the two never appear at once. */
+          title: "",
           headerRight: () => (
             <View style={styles.headerActions}>
               {canReorder && (
@@ -100,6 +103,9 @@ export function HabitsScreen() {
 
       {!hasHabits ? (
         <View style={styles.empty}>
+          <Text variant="largeTitle" style={styles.emptyTitle}>
+            {t("tabs:habits")}
+          </Text>
           <EmptyState
             symbol="square.grid.2x2"
             title={t("common:noHabitsYet")}
@@ -114,6 +120,9 @@ export function HabitsScreen() {
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
+          <Text variant="largeTitle" style={styles.screenTitle}>
+            {t("tabs:habits")}
+          </Text>
           <Text variant="footnote" secondary style={styles.sectionLabel}>
             {countLabel}
           </Text>

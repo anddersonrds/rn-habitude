@@ -10,6 +10,7 @@ import {
   TextButton,
   useMaterialColors,
 } from "@expo/ui/jetpack-compose";
+import { Stack } from "expo-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -53,7 +54,7 @@ function Footnote({ children }: { children: string }) {
  * row this screen owns.
  */
 export function SettingsScreen() {
-  const { t, i18n } = useTranslation(["settings", "language"]);
+  const { t, i18n } = useTranslation(["settings", "language", "tabs"]);
   const material = useMaterialColors();
   const { bottom: bottomInset } = useSafeAreaInsets();
   const [choosingLanguage, setChoosingLanguage] = useState(false);
@@ -93,6 +94,10 @@ export function SettingsScreen() {
 
   return (
     <>
+      {/* The screen draws the title itself, so the bar carries none and the two
+      never appear at once. */}
+      <Stack.Screen options={{ title: "" }} />
+
       {/* The background stops the navigator showing through between the rows. */}
       <Host style={{ flex: 1, backgroundColor: material.surface }}>
         <LazyColumn
@@ -104,6 +109,10 @@ export function SettingsScreen() {
           }}
           verticalArrangement={{ spacedBy: 8 }}
         >
+          <Text style={{ typography: "headlineLarge" }}>
+            {t("tabs:settings")}
+          </Text>
+
           <SectionLabel>{t("language:title")}</SectionLabel>
           <DropdownMenu
             expanded={choosingLanguage}
