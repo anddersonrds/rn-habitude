@@ -5,7 +5,7 @@ import { AppSymbol } from "@/components/ui/app-symbol";
 import { Text } from "@/components/ui/text";
 import { formatCount, formatPercent } from "@/lib/utils/numbers";
 import { foregroundOnColor } from "@/lib/utils/foreground-on-color";
-import { colors, tints } from "@/theme";
+import { accent, colors, tints } from "@/theme";
 import { Link, Stack } from "expo-router";
 import { PressableScale } from "pressto";
 import { useTranslation } from "react-i18next";
@@ -17,6 +17,11 @@ import { styles } from "./styles";
 /** What fits the card without scrolling. */
 const DETAIL_WEEKS = 18;
 
+/**
+ * The action is in the header rather than a toolbar, and the header carries its
+ * own surface: iOS blurs the content passing under a transparent bar and
+ * Material 3 asks a pushed screen for a small opaque one.
+ */
 export function HabitDetailScreen() {
   const { t, i18n } = useTranslation("habitDetail");
   const model = useHabitDetailModel();
@@ -38,19 +43,22 @@ export function HabitDetailScreen() {
 
   return (
     <>
-      <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Button
-          icon="pencil"
-          accessibilityLabel={t("editHabit")}
-          onPress={editHabit}
-        />
-      </Stack.Toolbar>
+      <Stack.Screen
+        options={{
+          headerTransparent: false,
+          headerRight: () => (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("editHabit")}
+              onPress={editHabit}
+            >
+              <AppSymbol name="pencil" size={22} tintColor={accent} />
+            </Pressable>
+          ),
+        }}
+      />
 
-      <ScrollView
-        style={styles.container}
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={styles.content}
-      >
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <Animated.View entering={FadeIn.duration(260)} style={styles.hero}>
           <View style={[styles.heroIcon, { backgroundColor: `${habit.color}26` }]}>
             <AppSymbol name={habit.icon} size={34} tintColor={habit.color} />
@@ -168,38 +176,36 @@ export function HabitDetailScreen() {
           </View>
         </Animated.View>
 
-        {/* The heat card is the zoom source: tapping it expands the same grid
-            into the full-history screen instead of sliding a new card in. */}
+        {/* The zoom the iOS card opens with has no Android equivalent, so the
+            card is a plain link into the same screen. */}
         <Animated.View entering={FadeInDown.duration(280).delay(120)}>
           <Link href={historyHref} asChild>
-            <Link.Trigger withAppleZoom>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t("historyLabel", { name: habit.name })}
-                accessibilityHint={t("historyHint")}
-                style={styles.heatCard}
-              >
-                <View style={styles.heatHeader}>
-                  <View style={styles.heatTitle}>
-                    <Text variant="headline">{t("history")}</Text>
-                    <Text variant="footnote" secondary>
-                      {t("historyRange")}
-                    </Text>
-                  </View>
-                  <AppSymbol
-                    name="arrow.up.left.and.arrow.down.right"
-                    size={13}
-                    tintColor={colors.tertiaryText}
-                  />
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("historyLabel", { name: habit.name })}
+              accessibilityHint={t("historyHint")}
+              style={styles.heatCard}
+            >
+              <View style={styles.heatHeader}>
+                <View style={styles.heatTitle}>
+                  <Text variant="headline">{t("history")}</Text>
+                  <Text variant="footnote" secondary>
+                    {t("historyRange")}
+                  </Text>
                 </View>
-                <HeatGraph
-                  columns={heat.columns}
-                  accent={habit.color}
-                  cellSize={11}
-                  gap={3}
+                <AppSymbol
+                  name="arrow.up.left.and.arrow.down.right"
+                  size={13}
+                  tintColor={colors.tertiaryText}
                 />
-              </Pressable>
-            </Link.Trigger>
+              </View>
+              <HeatGraph
+                columns={heat.columns}
+                accent={habit.color}
+                cellSize={11}
+                gap={3}
+              />
+            </Pressable>
           </Link>
         </Animated.View>
       </ScrollView>
