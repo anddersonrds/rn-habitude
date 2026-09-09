@@ -1,14 +1,9 @@
 import type { TextStyle } from "react-native";
 
-/** Roboto, the family Material 3 specifies and the one `ui-rounded` never was. */
+/** Roboto. `ui-rounded` is an alias Android cannot resolve. */
 export const appFontFamily = "sans-serif";
 
-/**
- * The same ramp keys filled from the Material 3 type scale, so a screen asks for
- * `headline` on both platforms and gets what the platform calls that.
- * Tracking is positive throughout: the negative values on the iOS side are
- * calibrated for SF, and Roboto under them reads cramped.
- */
+/** The same keys, from the Material 3 scale. The iOS tracking is SF's, not Roboto's. */
 export const typography = {
   /* headlineLarge */
   largeTitle: { fontSize: 32, fontWeight: "400", letterSpacing: 0 },

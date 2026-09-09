@@ -37,8 +37,7 @@ describe("Text", () => {
     expect(node).toBeOnTheScreen();
   });
 
-  /* The sizes themselves are the ramp's, and each platform's asserts its own.
-  What belongs here is that the component reaches for the right entry. */
+  /* The sizes are the ramp's, and each platform's own suite asserts them. */
   it("should descend the type ramp from the large title to the caption", async () => {
     const sizes: number[] = [];
 

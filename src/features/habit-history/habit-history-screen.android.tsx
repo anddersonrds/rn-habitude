@@ -14,11 +14,7 @@ import { styles } from "./styles";
 
 const HISTORY_WEEKS = 52;
 
-/**
- * Full-year consistency. The header is a Material 3 small top app bar with a
- * surface of its own, so the content starts below it and asks for no inset of
- * its own the way the iOS large title does.
- */
+/** Full-year consistency. The Android header is opaque, so it needs no inset. */
 export function HabitHistoryScreen() {
   const { t, i18n } = useTranslation("history");
   const model = useHabitHistoryModel();

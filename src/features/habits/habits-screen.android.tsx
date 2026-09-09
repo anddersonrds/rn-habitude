@@ -71,8 +71,7 @@ export function HabitsScreen() {
     <>
       <Stack.Screen
         options={{
-          /* The screen draws the title itself, so the bar keeps only the
-          actions and the two never appear at once. */
+          /* The screen draws the title, so the bar carries none. */
           title: "",
           headerRight: () => (
             <View style={styles.headerActions}>

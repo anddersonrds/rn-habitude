@@ -23,8 +23,7 @@ export const styles = StyleSheet.create({
     marginBottom: 12,
     marginLeft: 4,
   },
-  /* The empty branch sits outside the scroll content, which is what carries
-  the edge padding. */
+  /* The empty branch sits outside the content that carries the edge padding. */
   emptyTitle: {
     paddingHorizontal: layout.screenPadding,
     paddingTop: 12,

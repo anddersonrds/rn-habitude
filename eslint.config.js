@@ -16,12 +16,8 @@ const FEATURES = [
 
 const DATA_LAYER = ['./src/lib/data'];
 
-/*
-A view forks by gaining an `.android` sibling beside the default file, never by
-a `.ios` one: a single `tsc` pass resolves the default and nothing else. So the
-half only iOS reads is a `.ios` file or a default file that has such a sibling,
-and those are the only places an API iOS alone implements belongs.
-*/
+/* The half only iOS reads: a `.ios` file, or a default file with an `.android`
+sibling, which is how a view forks here. */
 function collectIosOnly(dir, found = []) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const file = join(dir, entry.name);

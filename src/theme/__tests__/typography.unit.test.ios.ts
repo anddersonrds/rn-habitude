@@ -1,7 +1,6 @@
 import { appFontFamily, typography } from "@/theme";
 
-/* `styles[variant]` is an index into this object, so a key the ramp does not
-carry is a variant that silently draws unstyled. */
+/* A key the ramp does not carry is a variant that draws unstyled. */
 const RAMP = [
   "largeTitle",
   "title",

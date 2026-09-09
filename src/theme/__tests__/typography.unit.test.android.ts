@@ -1,8 +1,7 @@
 import { appFontFamily, typography } from "@/theme";
 import type { TextStyle } from "react-native";
 
-/* `styles[variant]` is an index into this object, so a key the ramp does not
-carry is a variant that silently draws unstyled. */
+/* A key the ramp does not carry is a variant that draws unstyled. */
 const RAMP = [
   "largeTitle",
   "title",
@@ -35,8 +34,7 @@ describe("the Android type ramp", () => {
   });
 
   it("should track no tighter than the font was drawn for", () => {
-    /* Widened because a single `tsc` pass reads the iOS ramp, where one key
-    carries no tracking at all. */
+    /* A single `tsc` pass reads the iOS ramp, where one key has no tracking. */
     const ramp: Record<string, TextStyle> = typography;
 
     for (const style of Object.values(ramp)) {

@@ -94,8 +94,7 @@ export function SettingsScreen() {
 
   return (
     <>
-      {/* The screen draws the title itself, so the bar carries none and the two
-      never appear at once. */}
+      {/* The screen draws the title, so the bar carries none. */}
       <Stack.Screen options={{ title: "" }} />
 
       {/* The background stops the navigator showing through between the rows. */}

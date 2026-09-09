@@ -35,13 +35,10 @@ const CONTENT_ENTER = {
   easing: "easeOut",
 } as const;
 
-/* The bar carries no title on Android, so this is the screen's own, drawn in
-the Compose tree at the ramp's largest step. */
 function ScreenTitle({ children }: { children: string }) {
   const material = useMaterialColors();
 
-  /* The padding is the wrapper's: a `Host` lays out its Compose content and
-  passes no style of its own down to it. */
+  /* A `Host` passes no style of its own down to what it composes. */
   return (
     <View style={styles.title}>
       <Host matchContents>
@@ -68,8 +65,7 @@ export function TodayScreen() {
     <>
       <Stack.Screen
         options={{
-          /* The screen draws the title itself, so the bar keeps only the action
-          and the two never appear at once. */
+          /* The screen draws the title, so the bar carries none. */
           title: "",
           headerRight: () => (
             <Pressable

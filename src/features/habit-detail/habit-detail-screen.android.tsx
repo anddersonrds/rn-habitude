@@ -17,11 +17,7 @@ import { styles } from "./styles";
 /** What fits the card without scrolling. */
 const DETAIL_WEEKS = 18;
 
-/**
- * The action is in the header rather than a toolbar, and the header carries its
- * own surface: iOS blurs the content passing under a transparent bar and
- * Material 3 asks a pushed screen for a small opaque one.
- */
+/** Opaque rather than the transparent bar iOS blurs its content under. */
 export function HabitDetailScreen() {
   const { t, i18n } = useTranslation("habitDetail");
   const model = useHabitDetailModel();

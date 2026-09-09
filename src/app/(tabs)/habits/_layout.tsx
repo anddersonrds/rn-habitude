@@ -11,8 +11,7 @@ export default function HabitsLayout() {
         options={{
           title: t("habits"),
           /* eslint-disable-next-line no-restricted-syntax -- A route file cannot
-          take an `.android` sibling. The Android screen blanks this title and
-          draws its own, so the two never appear together. */
+          fork; the Android screen blanks this and draws its own. */
           headerLargeTitleEnabled: true,
         }}
       />
