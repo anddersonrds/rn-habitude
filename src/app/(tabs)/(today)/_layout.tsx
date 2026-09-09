@@ -8,7 +8,11 @@ export default function TodayLayout() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{ title: t("today"), headerLargeTitleEnabled: true }}
+        options={{
+          title: t("today"),
+          /* eslint-disable-next-line no-restricted-syntax -- A route file cannot fork. */
+          headerLargeTitleEnabled: true,
+        }}
       />
     </Stack>
   );

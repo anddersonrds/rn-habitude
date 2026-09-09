@@ -8,7 +8,11 @@ export default function HabitsLayout() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{ title: t("habits"), headerLargeTitleEnabled: true }}
+        options={{
+          title: t("habits"),
+          /* eslint-disable-next-line no-restricted-syntax -- A route file cannot fork. */
+          headerLargeTitleEnabled: true,
+        }}
       />
     </Stack>
   );

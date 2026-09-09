@@ -1,4 +1,4 @@
-import { colors } from "@/theme";
+import { colors, continuousCorner } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
   },
   notificationArtwork: {
     borderRadius: 30,
-    borderCurve: "continuous",
+    ...continuousCorner,
     padding: 22,
     alignItems: "center",
     gap: 18,
@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
     gap: 4,
     padding: 16,
     borderRadius: 22,
-    borderCurve: "continuous",
+    ...continuousCorner,
     backgroundColor: colors.secondaryBackground,
     boxShadow: "0 8px 24px rgba(0, 0, 0, 0.08)",
   },
@@ -42,7 +42,7 @@ export const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 7,
-    borderCurve: "continuous",
+    ...continuousCorner,
     alignItems: "center",
     justifyContent: "center",
   },

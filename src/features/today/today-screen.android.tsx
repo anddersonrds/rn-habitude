@@ -35,9 +35,24 @@ const CONTENT_ENTER = {
   easing: "easeOut",
 } as const;
 
+function ScreenTitle({ children }: { children: string }) {
+  const material = useMaterialColors();
+
+  /* A `Host` passes no style of its own down to what it composes. */
+  return (
+    <View style={styles.title}>
+      <Host matchContents>
+        <Text style={{ typography: "headlineLarge" }} color={material.onSurface}>
+          {children}
+        </Text>
+      </Host>
+    </View>
+  );
+}
+
 /** The add button stays React Native, because no Compose tree reaches the bar. */
 export function TodayScreen() {
-  const { t } = useTranslation(["today", "common"]);
+  const { t } = useTranslation(["today", "common", "tabs"]);
   const { confirm, dialog } = useConfirm();
   const model = useTodayModel(confirm);
   const material = useMaterialColors();
@@ -50,6 +65,8 @@ export function TodayScreen() {
     <>
       <Stack.Screen
         options={{
+          /* The screen draws the title, so the bar carries none. */
+          title: "",
           headerRight: () => (
             <Pressable
               accessibilityRole="button"
@@ -71,6 +88,7 @@ export function TodayScreen() {
       >
         {!model.hasHabits ? (
           <View style={styles.empty}>
+            <ScreenTitle>{t("tabs:today")}</ScreenTitle>
             <EmptyState
               symbol="checklist"
               title={t("common:noHabitsYet")}
@@ -90,6 +108,13 @@ export function TodayScreen() {
               contentPadding={{ start: 16, top: 12, end: 16, bottom: 24 }}
               verticalArrangement={{ spacedBy: 8 }}
             >
+              <Text
+                style={{ typography: "headlineLarge" }}
+                color={material.onSurface}
+              >
+                {t("tabs:today")}
+              </Text>
+
               <Text
                 style={{ typography: "labelLarge" }}
                 color={material.onSurfaceVariant}

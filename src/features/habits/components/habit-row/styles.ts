@@ -1,4 +1,4 @@
-import { colors, layout } from "@/theme";
+import { colors, continuousCorner, layout } from "@/theme";
 import { StyleSheet } from "react-native";
 
 /** Every row is this tall while reordering, which is what makes the drag exact. */
@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   row: {
     backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     marginBottom: ROW_GAP,
   },
   content: {
@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 11,
-    borderCurve: "continuous",
+    ...continuousCorner,
     alignItems: "center",
     justifyContent: "center",
   },

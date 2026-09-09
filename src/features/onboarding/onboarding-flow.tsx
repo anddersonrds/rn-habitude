@@ -88,6 +88,8 @@ export function OnboardingFlow() {
         onTransitionEnd={model.handleTransitionEnd}
       >
         <ScrollView
+          /* eslint-disable-next-line no-restricted-syntax -- The flow shows no
+          header, and Android pads for the safe area itself below. */
           contentInsetAdjustmentBehavior="automatic"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[

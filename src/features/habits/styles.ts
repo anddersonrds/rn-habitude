@@ -1,4 +1,4 @@
-import { colors, layout } from "@/theme";
+import { colors, continuousCorner, layout } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -19,6 +19,15 @@ export const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: layout.bottomPadding,
   },
+  screenTitle: {
+    marginBottom: 12,
+    marginLeft: 4,
+  },
+  /* The empty branch sits outside the content that carries the edge padding. */
+  emptyTitle: {
+    paddingHorizontal: layout.screenPadding,
+    paddingTop: 12,
+  },
   sectionLabel: {
     marginBottom: 8,
     marginLeft: 4,
@@ -30,7 +39,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     paddingHorizontal: 16,
     paddingVertical: 14,
     marginBottom: 16,

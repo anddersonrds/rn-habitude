@@ -59,6 +59,17 @@ const { useSafeAreaInsets } = jest.requireMock<{
   useSafeAreaInsets: jest.Mock;
 }>("react-native-safe-area-context");
 
+const routing = jest.requireMock<{
+  Stack: { Screen: jest.Mock };
+}>("expo-router");
+
+/** The bar is not in the screen's tree, so this reads what it handed the stack. */
+function screenOptions(): { title: string } {
+  const [call] = routing.Stack.Screen.mock.calls;
+  if (!call) throw new Error("The screen sets no options on the stack.");
+  return (call[0] as { options: { title: string } }).options;
+}
+
 const notifications = jest.requireMock<{
   getNotificationPermission: jest.Mock;
   ensureNotificationPermission: jest.Mock;
@@ -67,6 +78,7 @@ const notifications = jest.requireMock<{
 
 const settings = en.translations.settings;
 const language = en.translations.language;
+const tabs = en.translations.tabs;
 
 const TODAY = "2026-07-29";
 const EVERY_DAY = [0, 1, 2, 3, 4, 5, 6];
@@ -424,5 +436,19 @@ describe("the language row", () => {
     expect(i18n.language).toBe("pt-BR");
     /* The screen redraws in the new language without being remounted. */
     expect(languageRowTexts(container)[0]).toBe(ptBR.translations.language.title);
+  });
+});
+
+describe("the screen's own title", () => {
+  it("should leave the bar without a title of its own", async () => {
+    await renderSettings();
+
+    expect(screenOptions().title).toBe("");
+  });
+
+  it("should draw the title in the content", async () => {
+    const { container } = await renderSettings();
+
+    expect(nativeView(container, "text", tabs.settings)).toBeTruthy();
   });
 });

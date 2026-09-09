@@ -1,4 +1,4 @@
-import { colors, tints } from "@/theme";
+import { colors, continuousCorner, tints } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 14,
     borderRadius: 26,
-    borderCurve: "continuous",
+    ...continuousCorner,
     backgroundColor: colors.secondaryBackground,
     shadowColor: tints.black,
     shadowOpacity: 0.15,

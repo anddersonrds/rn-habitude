@@ -1,3 +1,4 @@
+import { continuousCorner } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -18,6 +19,6 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   cell: {
-    borderCurve: "continuous",
+    ...continuousCorner,
   },
 });

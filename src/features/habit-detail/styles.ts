@@ -1,4 +1,4 @@
-import { colors, layout } from "@/theme";
+import { colors, continuousCorner, layout } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 20,
-    borderCurve: "continuous",
+    ...continuousCorner,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 15,
     borderRadius: layout.ctaRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
   },
   restCard: {
     flexDirection: "row",
@@ -44,14 +44,14 @@ export const styles = StyleSheet.create({
     gap: 12,
     padding: 14,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     backgroundColor: colors.secondaryBackground,
   },
   restIcon: {
     width: 42,
     height: 42,
     borderRadius: 12,
-    borderCurve: "continuous",
+    ...continuousCorner,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: colors.fill,
@@ -64,7 +64,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     overflow: "hidden",
   },
   featuredStat: {
@@ -78,7 +78,7 @@ export const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    borderCurve: "continuous",
+    ...continuousCorner,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -112,7 +112,7 @@ export const styles = StyleSheet.create({
   heatCard: {
     backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     padding: 16,
   },
   heatHeader: {

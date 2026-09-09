@@ -8,7 +8,11 @@ export default function SettingsLayout() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{ title: t("settings"), headerLargeTitleEnabled: true }}
+        options={{
+          title: t("settings"),
+          /* eslint-disable-next-line no-restricted-syntax -- A route file cannot fork. */
+          headerLargeTitleEnabled: true,
+        }}
       />
     </Stack>
   );
