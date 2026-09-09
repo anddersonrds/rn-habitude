@@ -8,7 +8,12 @@ export default function TodayLayout() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{ title: t("today"), headerLargeTitleEnabled: true }}
+        options={{
+          title: t("today"),
+          /* eslint-disable-next-line no-restricted-syntax -- Android has no large
+          title of its own to draw yet. */
+          headerLargeTitleEnabled: true,
+        }}
       />
     </Stack>
   );

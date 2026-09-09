@@ -8,7 +8,12 @@ export default function SettingsLayout() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{ title: t("settings"), headerLargeTitleEnabled: true }}
+        options={{
+          title: t("settings"),
+          /* eslint-disable-next-line no-restricted-syntax -- Android has no large
+          title of its own to draw yet. */
+          headerLargeTitleEnabled: true,
+        }}
       />
     </Stack>
   );

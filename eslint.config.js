@@ -1,4 +1,6 @@
 // https://docs.expo.dev/guides/using-eslint/
+const { readdirSync } = require('node:fs');
+const { join } = require('node:path');
 const { defineConfig } = require('eslint/config');
 const expoConfig = require('eslint-config-expo/flat');
 
@@ -13,6 +15,53 @@ const FEATURES = [
 ];
 
 const DATA_LAYER = ['./src/lib/data'];
+
+/*
+A view forks by gaining an `.android` sibling beside the default file, never by
+a `.ios` one: a single `tsc` pass resolves the default and nothing else. So the
+half only iOS reads is a `.ios` file or a default file that has such a sibling,
+and those are the only places an API iOS alone implements belongs.
+*/
+function collectIosOnly(dir, found = []) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const file = join(dir, entry.name);
+    if (entry.isDirectory()) collectIosOnly(file, found);
+    else if (entry.name.includes('.ios.')) found.push(file);
+    else if (entry.name.includes('.android.'))
+      found.push(file.replace('.android.', '.'));
+  }
+  return found;
+}
+
+const IOS_ONLY_FILES = collectIosOnly('src');
+
+const IOS_ONLY_APIS = [
+  {
+    selector: 'JSXAttribute[name.name="contentInsetAdjustmentBehavior"]',
+    message:
+      '`contentInsetAdjustmentBehavior` is honoured by iOS alone. Give the screen an `.android` sibling that pads its own content past the header.',
+  },
+  {
+    selector: 'Property[key.name="headerLargeTitleEnabled"]',
+    message:
+      '`headerLargeTitleEnabled` is honoured by iOS alone. Android draws the title in the screen content, so fork the screen options into an `.android` sibling.',
+  },
+  {
+    selector: 'Property[key.name="borderCurve"]',
+    message:
+      '`borderCurve` is honoured by iOS alone. Declare it in a file only iOS reads, and leave the radius itself shared.',
+  },
+  {
+    selector: 'JSXMemberExpression[object.name="Stack"][property.name="Toolbar"]',
+    message:
+      '`Stack.Toolbar` renders nothing on Android. Give the screen an `.android` sibling that puts the action in `headerRight`.',
+  },
+  {
+    selector: 'Property[key.name="presentation"][value.value="formSheet"]',
+    message:
+      '`presentation: "formSheet"` is honoured by iOS alone. Fork the presentation into an `.android` sibling.',
+  },
+];
 
 module.exports = defineConfig([
   expoConfig,
@@ -54,6 +103,18 @@ module.exports = defineConfig([
           ],
         },
       ],
+    },
+  },
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-syntax': ['error', ...IOS_ONLY_APIS],
+    },
+  },
+  {
+    files: IOS_ONLY_FILES,
+    rules: {
+      'no-restricted-syntax': 'off',
     },
   },
   {

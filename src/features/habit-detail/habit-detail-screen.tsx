@@ -1,3 +1,6 @@
+/* eslint-disable no-restricted-syntax -- The toolbar and the automatic
+inset are still shared, so Android has neither the edit action nor a
+content that clears the header. */
 import { HeatGraph } from "@/components/heat-graph";
 import { useHabitHeat } from "@/components/heat-graph/hooks/use-habit-heat";
 import { Stat } from "@/components/stat";

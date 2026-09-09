@@ -29,6 +29,8 @@ export function HabitHistoryScreen() {
       <Stack.Screen options={{ title: habit.name }} />
       <ScrollView
         style={styles.container}
+        /* eslint-disable-next-line no-restricted-syntax -- The inset is still
+        shared, so Android draws its content under the header. */
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.content}
       >

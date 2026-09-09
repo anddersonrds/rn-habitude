@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax -- The continuous corner is still
+declared in this shared file. Its home is a file only iOS reads. */
 import { layout } from "@/theme";
 import { StyleSheet } from "react-native";
 
