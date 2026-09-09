@@ -1,6 +1,4 @@
-/* eslint-disable no-restricted-syntax -- The continuous corner is still
-declared in this shared file. Its home is a file only iOS reads. */
-import { colors, layout } from "@/theme";
+import { colors, continuousCorner, layout } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -16,7 +14,7 @@ export const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     padding: 16,
     gap: 16,
   },
@@ -29,7 +27,7 @@ export const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 11,
-    borderCurve: "continuous",
+    ...continuousCorner,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -44,7 +42,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     paddingVertical: 16,
   },
   statDivider: {

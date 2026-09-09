@@ -1,6 +1,4 @@
-/* eslint-disable no-restricted-syntax -- The continuous corner is still
-declared in this shared file. Its home is a file only iOS reads. */
-import { colors, layout } from "@/theme";
+import { colors, continuousCorner, layout } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -42,7 +40,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     paddingHorizontal: 16,
     paddingVertical: 14,
     marginBottom: 16,

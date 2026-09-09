@@ -1,6 +1,4 @@
-/* eslint-disable no-restricted-syntax -- The continuous corner is still
-declared in this shared file. Its home is a file only iOS reads. */
-import { appFontFamily, colors, layout } from "@/theme";
+import { appFontFamily, colors, continuousCorner, layout } from "@/theme";
 import { StyleSheet } from "react-native";
 
 /** Swatch diameter in the color grid. */
@@ -24,7 +22,7 @@ export const styles = StyleSheet.create({
     gap: 10,
     backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     paddingHorizontal: 12,
     paddingVertical: 10,
     marginTop: 12,
@@ -33,7 +31,7 @@ export const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 11,
-    borderCurve: "continuous",
+    ...continuousCorner,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -53,7 +51,7 @@ export const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     paddingHorizontal: 16,
     overflow: "hidden",
   },
@@ -69,7 +67,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: layout.ctaRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
   },
   pickerHost: {
     height: 34,
@@ -117,7 +115,7 @@ export const styles = StyleSheet.create({
     color: colors.text,
     backgroundColor: colors.fill,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     paddingHorizontal: 14,
     paddingVertical: 6,
     textAlign: "center",
@@ -133,7 +131,7 @@ export const styles = StyleSheet.create({
   iconCard: {
     backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     padding: 14,
   },
   iconGrid: {
@@ -146,14 +144,14 @@ export const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 14,
-    borderCurve: "continuous",
+    ...continuousCorner,
     alignItems: "center",
     justifyContent: "center",
   },
   colorCard: {
     backgroundColor: colors.secondaryBackground,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     padding: COLOR_CARD_PADDING,
   },
   colorGrid: {
@@ -183,7 +181,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 14,
     borderRadius: layout.cardRadius,
-    borderCurve: "continuous",
+    ...continuousCorner,
     backgroundColor: colors.secondaryBackground,
   },
   keyboardAccessory: {

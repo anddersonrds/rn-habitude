@@ -1,5 +1,4 @@
-/* eslint-disable no-restricted-syntax -- The continuous corner is still
-declared in this shared file. Its home is a file only iOS reads. */
+import { continuousCorner } from "@/theme";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -20,6 +19,6 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   cell: {
-    borderCurve: "continuous",
+    ...continuousCorner,
   },
 });
