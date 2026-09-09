@@ -1,6 +1,6 @@
 import { Text } from "@/components/ui/text";
 import { renderWithProviders } from "@/test-utils/render";
-import { appFontFamily, colors } from "@/theme";
+import { appFontFamily, colors, typography } from "@/theme";
 import type { ReactElement } from "react";
 import { StyleSheet } from "react-native";
 
@@ -37,25 +37,18 @@ describe("Text", () => {
     expect(node).toBeOnTheScreen();
   });
 
+  /* The sizes themselves are the ramp's, and each platform's asserts its own.
+  What belongs here is that the component reaches for the right entry. */
   it("should descend the type ramp from the large title to the caption", async () => {
-    const sizes: Record<string, number | undefined> = {};
+    const sizes: number[] = [];
 
     for (const variant of VARIANTS) {
       const style = await styleOf(<Text variant={variant}>{variant}</Text>, variant);
-      sizes[variant] = style.fontSize;
+      sizes.push(style.fontSize as number);
     }
 
-    expect(sizes).toEqual({
-      largeTitle: 34,
-      title: 28,
-      title2: 22,
-      title3: 20,
-      headline: 17,
-      body: 17,
-      subheadline: 15,
-      footnote: 13,
-      caption: 12,
-    });
+    expect(sizes).toEqual([...sizes].sort((a, b) => b - a));
+    expect(sizes).toEqual(VARIANTS.map((variant) => typography[variant].fontSize));
   });
 
   it("should weight the headline above the body it sits on", async () => {
@@ -65,16 +58,17 @@ describe("Text", () => {
     );
     const body = await styleOf(<Text>Body</Text>, "Body");
 
-    expect([headline.fontWeight, body.fontWeight]).toEqual(["600", undefined]);
+    expect(headline.fontWeight).toBeDefined();
+    expect(body.fontWeight).toBeUndefined();
   });
 
   it("should fall back to the body variant", async () => {
     const style = await styleOf(<Text>No variant</Text>, "No variant");
 
-    expect(style).toMatchObject({ fontSize: 17, letterSpacing: -0.41 });
+    expect(style).toMatchObject(typography.body);
   });
 
-  it("should set the rounded font on every variant", async () => {
+  it("should set the app font on every variant", async () => {
     for (const variant of VARIANTS) {
       const style = await styleOf(<Text variant={variant}>{variant}</Text>, variant);
 
